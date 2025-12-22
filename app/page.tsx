@@ -1,65 +1,141 @@
-import Image from "next/image";
+import DashboardLayout from "@/components/DashboardLayout";
+import WelcomeBanner from "@/components/WelcomeBanner";
+import ScheduleTable, { ScheduleItem } from "@/components/ScheduleTable";
+import ScheduleChart, { ChartData } from "@/components/ScheduleChart"; // <--- Import
+
+// 1. Table Data
+
+ const scheduleData: ScheduleItem[] = [
+  {
+    id: "1",
+    clientName: "Sophia Johnson",
+    clientImage: "https://i.pravatar.cc/150?img=32",
+    caregiver: "Dr. Alex Thompson",
+    checkIn: "09:00 AM",
+    checkOut: "05:30 PM",
+  },
+  {
+    id: "2",
+    clientName: "Isabella Miller",
+    clientImage: "https://i.pravatar.cc/150?img=44",
+    caregiver: "Dr. Emily Carter",
+    checkIn: "09:00 AM",
+    checkOut: "05:30 PM",
+  },
+  {
+    id: "3",
+    clientName: "Ethan Brown",
+    clientImage: "https://i.pravatar.cc/150?img=12",
+    caregiver: "Dr. Sarah Mitchell",
+    checkIn: "09:00 AM",
+    checkOut: "05:30 PM",
+  },
+];
+
+// 2. Chart Data (Define bar heights here)
+const chartData: ChartData[] = [
+  { month: "Jan", clientHeight: "h-12", caregiverHeight: "h-20" },
+  { month: "Feb", clientHeight: "h-8",  caregiverHeight: "h-32" },
+  { month: "Mar", clientHeight: "h-24", caregiverHeight: "h-16" },
+  { month: "Apr", clientHeight: "h-10", caregiverHeight: "h-8" },
+  { month: "May", clientHeight: "h-20", caregiverHeight: "h-28" },
+  { month: "Jun", clientHeight: "h-12", caregiverHeight: "h-24" },
+  { month: "Jul", clientHeight: "h-16", caregiverHeight: "h-10" },
+];
+
+
+// Define your data here (or fetch it from an API later)
+
+
+
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <DashboardLayout>
+      {/* Welcome Section */}
+      <WelcomeBanner name="Racine" />
+
+      {/* STATS GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Card 1 */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Clients</p>
+              <h3 className="text-3xl font-bold text-gray-800 mt-2">106</h3>
+            </div>
+            <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+              <i className="fa-regular fa-user"></i>
+            </div>
+          </div>
+          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
+            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +16% from last month
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Card 2 */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Employee</p>
+              <h3 className="text-3xl font-bold text-gray-800 mt-2">21</h3>
+            </div>
+            <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
+              <i className="fa-solid fa-user-tie"></i>
+            </div>
+          </div>
+          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
+            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +2% from last month
+          </p>
         </div>
-      </main>
-    </div>
+
+        {/* Card 3 */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Caregiver</p>
+              <h3 className="text-3xl font-bold text-gray-800 mt-2">75</h3>
+            </div>
+            <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
+              <i className="fa-solid fa-user-nurse"></i>
+            </div>
+          </div>
+          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
+            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +9% from last month
+          </p>
+        </div>
+
+        {/* Card 4 */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Schedules</p>
+              <h3 className="text-3xl font-bold text-gray-800 mt-2">503</h3>
+            </div>
+            <div className="p-2 bg-pink-50 rounded-lg text-pink-600">
+              <i className="fa-regular fa-calendar"></i>
+            </div>
+          </div>
+          <p className="text-xs text-red-500 mt-4 font-medium flex items-center">
+            <i className="fa-solid fa-arrow-trend-down mr-1"></i> 10% from last month
+          </p>
+        </div>
+      </div>
+      
+      {/* ... Today's Schedule / Overall Schedule... */}
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+       {/* ... Today's Schedule... */}
+       <ScheduleTable data={scheduleData} />
+
+       {/* Chart Component (Clean and Reusable!) */}
+        <ScheduleChart data={chartData} />
+
+
+        </div>
+
+ 
+      
+    </DashboardLayout>
   );
 }
