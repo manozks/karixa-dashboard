@@ -7,7 +7,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 interface User {
   id: string;
   name: string;
-  role: string; // 'Employee' or 'CareGiver'
+  role: string;
   image: string;
   lastMessage: string;
   time: string;
@@ -45,33 +45,43 @@ const messagesData: ChatMessage[] = [
   { id: '2', sender: 'other', text: 'She took her meds without any hesitation today. Also, I encouraged her to join the painting session later. She smiled and agreed.', time: '12:40 AM', image: 'https://i.pravatar.cc/150?img=1' },
   { id: '3', sender: 'me', text: 'Morning, Emma! Thanks for the update. Let know if she\'s ready for her morning medicine', time: '12:40 AM', image: 'https://i.pravatar.cc/150?img=12' },
   { id: '4', sender: 'me', text: 'That\'s great to hear! She\'s really opened up lately. Appreciate you encouraging those activities', time: '12:40 AM', image: 'https://i.pravatar.cc/150?img=12' },
-  { id: '5', sender: 'me', text: 'Good morning! I\'ve just arrived at Charlotte White\'s residence. Everything looks good so far.', time: '12:40 AM', image: 'https://i.pravatar.cc/150?img=12' },
 ];
 
 const emailData: EmailItem[] = [
-  { id: '1', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work. There are few missed attendance so we couldn\'t issue new payment to you. Could you look into it and fill the attendance.', sender: 'Karixa Team', date: '23 Feb, 2025' },
-  { id: '2', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work. There are few missed attendance so we couldn\'t issue new payment to you. Could you look into it and fill the attendance.', sender: 'Karixa Team', date: '23 Feb, 2025' },
-  { id: '3', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work. There are few missed attendance so we couldn\'t issue new payment to you. Could you look into it and fill the attendance.', sender: 'Karixa Team', date: '23 Feb, 2025' },
+  { id: '1', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work...', sender: 'Karixa Team', date: '23 Feb, 2025' },
+  { id: '2', subject: 'Request for new billing', preview: 'There are few missed attendance so we...', sender: 'Karixa Team', date: '23 Feb, 2025' },
 ];
 
 export default function MessagePage() {
   const [selectedUserId, setSelectedUserId] = useState<string>('1');
   const [activeTab, setActiveTab] = useState<'chat' | 'emails'>('chat');
-  
-  // Sidebar states
   const [sidebarFilter, setSidebarFilter] = useState<'Employee' | 'CareGiver'>('Employee');
+  
+  // --- Responsive State ---
+  // true = showing chat (mobile), false = showing list (mobile)
+  const [showMobileChat, setShowMobileChat] = useState(false);
 
   const selectedUser = users.find(u => u.id === selectedUserId) || users[0];
   const filteredUsers = users.filter(u => u.role === sidebarFilter);
 
+  // Helper to handle user click
+  const handleUserClick = (id: string) => {
+    setSelectedUserId(id);
+    setShowMobileChat(true); // Switch view on mobile
+  };
+
   return (
     <DashboardLayout>
-      <div className="flex h-[calc(100vh-100px)] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="flex h-[calc(100vh-100px)] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
         
-        {/* ================= LEFT SIDEBAR ================= */}
-        <div className="w-80 border-r border-gray-100 flex flex-col h-full bg-white flex-shrink-0">
+        {/* ================= LEFT SIDEBAR (List) ================= */}
+        {/* Logic: Hidden on mobile IF chat is open. Always visible on Desktop (md:flex) */}
+        <div className={`
+            w-full md:w-80 flex-col h-full bg-white flex-shrink-0 border-r border-gray-100
+            ${showMobileChat ? 'hidden md:flex' : 'flex'}
+        `}>
           
-          {/* 1. Sidebar Header (Text + Icons) */}
+          {/* 1. Sidebar Header */}
           <div className="p-4 pb-2 flex justify-between items-center">
              <h2 className="text-lg font-bold text-gray-800">Message</h2>
              <div className="flex gap-3 text-gray-400">
@@ -92,7 +102,7 @@ export default function MessagePage() {
             </div>
           </div>
 
-          {/* 3. Filter Tabs (Employee / CareGiver) */}
+          {/* 3. Filter Tabs */}
           <div className="px-4 pb-2">
             <div className="flex bg-gray-50 p-1 rounded-lg">
               <button 
@@ -115,7 +125,7 @@ export default function MessagePage() {
             {filteredUsers.map((user) => (
               <div 
                 key={user.id} 
-                onClick={() => setSelectedUserId(user.id)}
+                onClick={() => handleUserClick(user.id)}
                 className={`flex gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedUserId === user.id ? 'bg-blue-50/40' : ''}`}
               >
                 <div className="relative">
@@ -134,18 +144,30 @@ export default function MessagePage() {
           </div>
         </div>
 
-        {/* ================= RIGHT CONTENT AREA ================= */}
-        <div className="flex-1 flex flex-col bg-white min-w-0">
+        {/* ================= RIGHT CONTENT AREA (Chat/Email) ================= */}
+        {/* Logic: Hidden on mobile IF chat is CLOSED. Always visible on Desktop (md:flex) */}
+        <div className={`
+            flex-1 flex-col bg-white min-w-0 h-full
+            ${!showMobileChat ? 'hidden md:flex' : 'flex'}
+        `}>
           
-          {/* 1. Active User Header */}
-          <div className="h-16 flex items-center justify-between px-6 border-b border-gray-50">
+          {/* 1. Header with Back Button (Mobile Only) */}
+          <div className="h-16 flex items-center justify-between px-4 md:px-6 border-b border-gray-50 shrink-0">
             <div className="flex items-center gap-3">
+              {/* BACK BUTTON (Visible on Mobile only) */}
+              <button 
+                onClick={() => setShowMobileChat(false)}
+                className="md:hidden text-gray-500 hover:text-gray-800 mr-1"
+              >
+                <i className="fa-solid fa-arrow-left text-lg"></i>
+              </button>
+
               <div className="relative">
-                 <img src={selectedUser.image} alt="Active" className="w-10 h-10 rounded-full object-cover" />
+                 <img src={selectedUser.image} alt="Active" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" />
                  {selectedUser.online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand border-2 border-white rounded-full"></span>}
               </div>
-              <div>
-                <h3 className="font-bold text-gray-800 text-sm">{selectedUser.name}</h3>
+              <div className="overflow-hidden">
+                <h3 className="font-bold text-gray-800 text-sm truncate max-w-[150px] md:max-w-xs">{selectedUser.name}</h3>
                 <p className="text-xs text-gray-400">Active Now</p>
               </div>
             </div>
@@ -155,8 +177,8 @@ export default function MessagePage() {
             </div>
           </div>
 
-          {/* 2. Main Tab Switcher (Chat vs Emails) */}
-          <div className="px-6 py-2 border-b border-gray-50">
+          {/* 2. Main Tab Switcher */}
+          <div className="px-4 md:px-6 py-2 border-b border-gray-50 shrink-0">
             <div className="flex bg-gray-50/80 p-1 rounded-lg">
               <button 
                 onClick={() => setActiveTab('chat')}
@@ -178,7 +200,7 @@ export default function MessagePage() {
           </div>
 
           {/* 3. Content View */}
-          <div className="flex-1 overflow-hidden relative">
+          <div className="flex-1 overflow-hidden relative w-full">
             {activeTab === 'chat' ? (
               <ChatView />
             ) : (
@@ -196,18 +218,17 @@ export default function MessagePage() {
 // ================= SUB-COMPONENT: Chat View =================
 function ChatView() {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full">
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
           {messagesData.map((msg) => (
             <div key={msg.id} className={`flex gap-3 ${msg.sender === 'me' ? 'flex-row-reverse' : ''}`}>
-              <img src={msg.image} className="w-8 h-8 rounded-full self-end mb-1" />
-              <div className={`max-w-[70%]`}>
+              <img src={msg.image} className="w-8 h-8 rounded-full self-end mb-1 shrink-0" />
+              <div className={`max-w-[75%] md:max-w-[70%]`}>
                 {/* Time Stamp Row */}
                 <div className={`flex items-center gap-2 mb-1 ${msg.sender === 'me' ? 'justify-end' : ''}`}>
-                   {msg.sender !== 'me' && <span className="text-xs font-semibold text-gray-700">Isabella Anderson</span>}
+                   {msg.sender !== 'me' && <span className="hidden md:inline text-xs font-semibold text-gray-700">Isabella Anderson</span>}
                    <span className="text-[10px] text-gray-400">{msg.time}</span>
-                   {msg.sender === 'me' && <span className="text-xs font-semibold text-gray-700">You</span>}
                 </div>
                 {/* Message Bubble */}
                 <div className={`p-3 rounded-2xl text-sm leading-relaxed ${
@@ -223,13 +244,13 @@ function ChatView() {
       </div>
 
       {/* Input Area */}
-      <div className="p-4">
-           <div className="bg-white border border-gray-200 rounded-lg px-4 py-2 flex items-center gap-3 shadow-sm">
+      <div className="p-4 shrink-0">
+           <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 flex items-center gap-2 md:gap-3 shadow-sm">
               <button className="text-gray-400 hover:text-gray-600 rotate-45"><i className="fa-solid fa-paperclip"></i></button>
-              <button className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-microphone"></i></button>
-              <input type="text" placeholder="Send your message..." className="flex-1 bg-transparent text-sm focus:outline-none text-gray-700 py-2" />
-              <button className="bg-brand text-white px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-1">
-                Send <i className="fa-solid fa-paper-plane text-[10px]"></i>
+              <button className="hidden md:block text-gray-400 hover:text-gray-600"><i className="fa-solid fa-microphone"></i></button>
+              <input type="text" placeholder="Type a message..." className="flex-1 bg-transparent text-sm focus:outline-none text-gray-700 py-2 min-w-0" />
+              <button className="bg-brand text-white px-3 md:px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-1 shrink-0">
+                <span className="hidden md:inline">Send</span> <i className="fa-solid fa-paper-plane text-[10px]"></i>
               </button>
            </div>
       </div>
@@ -242,30 +263,17 @@ function EmailView() {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
 
   return (
-    <div className="h-full flex flex-col relative bg-gray-50/30">
+    <div className="h-full flex flex-col relative bg-gray-50/30 w-full">
       
       {/* Email List */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 pb-40"> 
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-32 md:pb-40"> 
         {emailData.map((mail) => (
-          <div key={mail.id} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2">
+          <div key={mail.id} className="bg-white p-4 md:p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2">
             <div className="flex justify-between items-start">
               <h3 className="font-bold text-gray-800 text-sm">{mail.subject}</h3>
-              <span className="text-xs text-gray-400">{mail.date}</span>
+              <span className="text-xs text-gray-400 whitespace-nowrap ml-2">{mail.date}</span>
             </div>
-            <p className="text-sm text-gray-600 leading-relaxed">{mail.preview}</p>
-            <div className="mt-2 text-xs text-gray-500 font-medium">
-              Thanks ! <br/> {mail.sender}
-            </div>
-          </div>
-        ))}
-        {/* Duplicate for scrolling demo */}
-        {emailData.map((mail) => (
-          <div key={`${mail.id}-dup`} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2">
-            <div className="flex justify-between items-start">
-              <h3 className="font-bold text-gray-800 text-sm">{mail.subject}</h3>
-              <span className="text-xs text-gray-400">{mail.date}</span>
-            </div>
-            <p className="text-sm text-gray-600 leading-relaxed">{mail.preview}</p>
+            <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-none">{mail.preview}</p>
             <div className="mt-2 text-xs text-gray-500 font-medium">
               Thanks ! <br/> {mail.sender}
             </div>
@@ -274,7 +282,11 @@ function EmailView() {
       </div>
 
       {/* Collapsible Compose Section */}
-      <div className={`absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out z-20 ${isComposeOpen ? 'h-[400px]' : 'h-[50px]'}`}>
+      <div className={`
+        absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] 
+        transition-all duration-300 ease-in-out z-20 w-full
+        ${isComposeOpen ? 'h-[90%] md:h-[400px]' : 'h-[50px]'}
+      `}>
         
         {/* Header Toggle */}
         <div 
@@ -287,7 +299,7 @@ function EmailView() {
 
         {/* Form Content */}
         {isComposeOpen && (
-          <div className="p-6 pt-0 h-[350px] flex flex-col gap-3">
+          <div className="p-4 md:p-6 pt-0 h-[calc(100%-50px)] flex flex-col gap-3">
             <div>
               <label className="text-xs text-gray-500 mb-1 block">To</label>
               <input type="email" defaultValue="isabella.anderson@gmail.com" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand text-gray-700" />
@@ -300,7 +312,7 @@ function EmailView() {
               <label className="text-xs text-gray-500 mb-1 block">Message</label>
               <textarea placeholder="Enter your message" className="w-full h-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand resize-none text-gray-700"></textarea>
             </div>
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex justify-between items-center mt-4 shrink-0">
               <button className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-paperclip text-lg"></i></button>
               <button className="bg-brand text-white px-5 py-2 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-2">
                 Send <i className="fa-solid fa-paper-plane"></i>
