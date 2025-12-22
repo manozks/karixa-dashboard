@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 /* Your custom CSS... */
-
+.bg-gray-50 {
+    background-color: #F8FAFC;
+}
 .band-logo img {
       height: 50px;
     filter: brightness(0) invert(1);

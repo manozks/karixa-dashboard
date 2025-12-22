@@ -93,8 +93,8 @@ const pathname = usePathname();
             href="/" 
             className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/" 
-                ? "bg-white/10 border-r-4 border-white text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
             }`}
           >
             <i className="fa-solid fa-table-columns w-6 text-center text-lg"></i>
@@ -106,8 +106,8 @@ const pathname = usePathname();
             href="/notification" 
             className={`flex items-center px-6 py-3  relative ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/notification" 
-                ? "bg-white/10 border-r-4 border-white text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
             }`}
           >
             <div className="relative">
@@ -117,7 +117,7 @@ const pathname = usePathname();
             {!isCollapsed && (
               <>
                 <span className="ml-3 whitespace-nowrap">Notification</span>
-                <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">13</span>
+                <span className="ml-auto bg-white text-blue-800 text-xs px-2 py-0.5 rounded-full">13</span>
               </>
             )}
           </Link>
