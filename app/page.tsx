@@ -130,8 +130,6 @@ export default function Home() {
 
        {/* Chart Component (Clean and Reusable!) */}
         <ScheduleChart data={chartData} />
-
-
         </div>
 
  

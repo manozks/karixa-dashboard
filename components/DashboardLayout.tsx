@@ -94,7 +94,7 @@ const pathname = usePathname();
             className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/" 
                 ? "bg-white/10 border-r-4 border-white text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent" // Inactive Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent rounded-lg" // Inactive Style
             }`}
           >
             <i className="fa-solid fa-table-columns w-6 text-center text-lg"></i>
@@ -104,10 +104,10 @@ const pathname = usePathname();
           {/* Notification Link */}
           <Link 
             href="/notification" 
-            className={`flex items-center px-6 py-3 transition-all group relative ${isCollapsed ? "justify-center" : ""} ${
+            className={`flex items-center px-6 py-3  relative ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/notification" 
                 ? "bg-white/10 border-r-4 border-white text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent" // Inactive Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-4 border-transparent rounded-lg" // Inactive Style
             }`}
           >
             <div className="relative">
