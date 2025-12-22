@@ -122,10 +122,15 @@ const pathname = usePathname();
             )}
           </Link>
           {/* Message */}
-          <a href="#" className={`flex items-center rounded-lg px-6 py-3 text-blue-100 hover:bg-white/10 hover:text-white transition-all group ${isCollapsed ? "justify-center" : ""}`}>
+          <Link href="/message"  className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname === "/message" 
+                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+            }`}>
             <i className="fa-regular fa-message w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Message</span>}
-          </a>
+            
+          </Link>
 
           {/* Group Label */}
           {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-6 truncate">Manage</div>}
