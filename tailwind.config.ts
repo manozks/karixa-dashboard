@@ -13,7 +13,7 @@ const config: Config = {
         darkblue: '#006ba1'
       },
       fontFamily: {
-        sans: ['var(--font-inter)'], 
+       sans: ['var(--font-manrope)', 'sans-serif'],
       },
     },
   },

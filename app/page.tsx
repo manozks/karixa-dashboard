@@ -1,7 +1,41 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import WelcomeBanner from "@/components/WelcomeBanner";
 import ScheduleTable, { ScheduleItem } from "@/components/ScheduleTable";
-import ScheduleChart, { ChartData } from "@/components/ScheduleChart"; // <--- Import
+import ScheduleChart, { ChartData } from "@/components/ScheduleChart";
+import AttendanceCard from "@/components/AttendanceCard";
+import UpcomingReminders, { ReminderItem } from "@/components/UpcomingReminders";
+import StatsCards from "@/components/StatsCards";
+
+// Define your reminder data
+const reminderData: ReminderItem[] = [
+  {
+    id: "1",
+    day: "1 Apr",
+    weekday: "Friday",
+    title: "Liam Brown Daycare with Chloe",
+    location: "Melbourne",
+    time: "9 AM - 5 PM",
+    highlight: true, // Highlight this one blue
+  },
+  {
+    id: "2",
+    day: "3 Apr",
+    weekday: "Sunday",
+    title: "Isabella Medical Meeting",
+    location: "Sydney",
+    time: "10 AM - 4 PM",
+    highlight: false,
+  },
+  {
+    id: "3",
+    day: "4 Apr",
+    weekday: "Monday",
+    title: "Liam Brown Daycare",
+    location: "Brisbane",
+    time: "8 AM - 6 PM",
+    highlight: false,
+  },
+];
 
 // 1. Table Data
 
@@ -55,73 +89,9 @@ export default function Home() {
       {/* Welcome Section */}
       <WelcomeBanner name="Racine" />
 
-      {/* STATS GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Card 1 */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Clients</p>
-              <h3 className="text-3xl font-bold text-gray-800 mt-2">106</h3>
-            </div>
-            <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
-              <i className="fa-regular fa-user"></i>
-            </div>
-          </div>
-          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
-            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +16% from last month
-          </p>
-        </div>
+      {/* STATS Section */}   
+       <StatsCards />
 
-        {/* Card 2 */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Employee</p>
-              <h3 className="text-3xl font-bold text-gray-800 mt-2">21</h3>
-            </div>
-            <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
-              <i className="fa-solid fa-user-tie"></i>
-            </div>
-          </div>
-          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
-            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +2% from last month
-          </p>
-        </div>
-
-        {/* Card 3 */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Caregiver</p>
-              <h3 className="text-3xl font-bold text-gray-800 mt-2">75</h3>
-            </div>
-            <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
-              <i className="fa-solid fa-user-nurse"></i>
-            </div>
-          </div>
-          <p className="text-xs text-green-600 mt-4 font-medium flex items-center">
-            <i className="fa-solid fa-arrow-trend-up mr-1"></i> +9% from last month
-          </p>
-        </div>
-
-        {/* Card 4 */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Schedules</p>
-              <h3 className="text-3xl font-bold text-gray-800 mt-2">503</h3>
-            </div>
-            <div className="p-2 bg-pink-50 rounded-lg text-pink-600">
-              <i className="fa-regular fa-calendar"></i>
-            </div>
-          </div>
-          <p className="text-xs text-red-500 mt-4 font-medium flex items-center">
-            <i className="fa-solid fa-arrow-trend-down mr-1"></i> 10% from last month
-          </p>
-        </div>
-      </div>
-      
       {/* ... Today's Schedule / Overall Schedule... */}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -130,6 +100,16 @@ export default function Home() {
 
        {/* Chart Component (Clean and Reusable!) */}
         <ScheduleChart data={chartData} />
+        </div>
+
+         {/* ... Daily Attendance / Upcoming Reminder... */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* ... Daily Attendance... */}
+          <AttendanceCard />
+
+           {/* ... Daily Attendance... */}
+          <UpcomingReminders reminders={reminderData} />
+
         </div>
 
  

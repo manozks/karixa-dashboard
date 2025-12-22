@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
   title: "Karixa Dashboard",
@@ -20,7 +20,7 @@ export default function RootLayout({
         {/* Loading FontAwesome CDN */}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
       </head>
-      <body className={`${inter.variable} font-sans bg-gray-50 text-gray-800`}>
+      <body className={`${manrope.variable} font-sans bg-gray-50 text-gray-800`}>
         {children}
       </body>
     </html>
