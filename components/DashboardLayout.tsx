@@ -66,7 +66,8 @@ const pathname = usePathname();
       
 
         {/* Logo Area */}
-        <div 
+        <Link
+          href="/"
           className={`h-16 flex items-center mt-3 transition-all duration-300 overflow-hidden whitespace-nowrap shrink-0 ${
             isCollapsed ? "justify-center px-0" : "px-6"
           }`}
@@ -82,7 +83,7 @@ const pathname = usePathname();
               <img src="/images/logo.png" alt="Karixa" className="" />
             </span>
           )}
-        </div>
+        </Link>
 
         
 
@@ -93,8 +94,8 @@ const pathname = usePathname();
             href="/" 
             className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/" 
-                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-[#0085C9] border border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-[#0085C9] hover:text-white border border-[transparent] rounded-lg" // Inactive Style
             }`}
           >
             <i className="fa-solid fa-table-columns w-6 text-center text-lg"></i>
@@ -106,8 +107,8 @@ const pathname = usePathname();
             href="/notification" 
             className={`flex items-center px-6 py-3  relative ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/notification" 
-                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white rounded-lg" // Inactive Style
             }`}
           >
             <div className="relative">
@@ -124,7 +125,7 @@ const pathname = usePathname();
           {/* Message */}
           <Link href="/message"  className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/message" 
-                ? "bg-white/10 border-1 border-[#00629B] text-white rounded-lg" // Active Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
                 : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
             }`}>
             <i className="fa-regular fa-message w-6 text-center text-lg"></i>
@@ -201,7 +202,7 @@ const pathname = usePathname();
         </div>
 
         {/* Footer Profile */}
-        <div className="p-4 border-t border-white/10 whitespace-nowrap overflow-hidden shrink-0">
+        <div className="p-4 bg-[#0085C9] m-2 rounded-lg border border-[#00629B] border-white/10 whitespace-nowrap overflow-hidden shrink-0">
           <div className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}>
             <img src="/images/manoj.jpg" alt="User" className="w-9 h-9 rounded-full border-2 border-white/30 flex-shrink-0" />
             {!isCollapsed && (

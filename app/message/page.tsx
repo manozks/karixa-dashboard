@@ -48,45 +48,50 @@ const messagesData: ChatMessage[] = [
 ];
 
 const emailData: EmailItem[] = [
-  { id: '1', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work...', sender: 'Karixa Team', date: '23 Feb, 2025' },
-  { id: '2', subject: 'Request for new billing', preview: 'There are few missed attendance so we...', sender: 'Karixa Team', date: '23 Feb, 2025' },
+  { id: '1', subject: 'Request for new billing', preview: 'Hey, Isabella, we have reviewed your work...', sender: 'Cosmos Care Team', date: '23 Feb, 2025' },
+  { id: '2', subject: 'Request for new billing', preview: 'There are few missed attendance so we...', sender: 'Cosmos Care Team', date: '23 Feb, 2025' },
 ];
 
 export default function MessagePage() {
   const [selectedUserId, setSelectedUserId] = useState<string>('1');
   const [activeTab, setActiveTab] = useState<'chat' | 'emails'>('chat');
   const [sidebarFilter, setSidebarFilter] = useState<'Employee' | 'CareGiver'>('Employee');
-  
-  // --- Responsive State ---
-  // true = showing chat (mobile), false = showing list (mobile)
   const [showMobileChat, setShowMobileChat] = useState(false);
+
+  // --- Modal State ---
+  // 'mail' = Envelope Icon Clicked | 'chat' = Chat Icon Clicked | null = Closed
+  const [activeModal, setActiveModal] = useState<'mail' | 'chat' | null>(null);
 
   const selectedUser = users.find(u => u.id === selectedUserId) || users[0];
   const filteredUsers = users.filter(u => u.role === sidebarFilter);
 
-  // Helper to handle user click
   const handleUserClick = (id: string) => {
     setSelectedUserId(id);
-    setShowMobileChat(true); // Switch view on mobile
+    setShowMobileChat(true);
   };
 
   return (
     <DashboardLayout>
       <div className="flex h-[calc(100vh-100px)] bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
         
-        {/* ================= LEFT SIDEBAR (List) ================= */}
-        {/* Logic: Hidden on mobile IF chat is open. Always visible on Desktop (md:flex) */}
+        {/* ================= LEFT SIDEBAR ================= */}
         <div className={`
             w-full md:w-80 flex-col h-full bg-white flex-shrink-0 border-r border-gray-100
             ${showMobileChat ? 'hidden md:flex' : 'flex'}
         `}>
           
-          {/* 1. Sidebar Header */}
+          {/* 1. Sidebar Header (With Triggers) */}
           <div className="p-4 pb-2 flex justify-between items-center">
              <h2 className="text-lg font-bold text-gray-800">Message</h2>
              <div className="flex gap-3 text-gray-400">
-                <button className="hover:text-gray-600"><i className="fa-regular fa-comment text-lg"></i></button>
-                <button className="hover:text-gray-600"><i className="fa-regular fa-envelope text-lg"></i></button>
+                {/* CHAT TRIGGER */}
+                <button onClick={() => setActiveModal('chat')} className="hover:text-gray-600 transition-colors">
+                  <i className="fa-regular fa-comment text-lg"></i>
+                </button>
+                {/* MAIL TRIGGER */}
+                <button onClick={() => setActiveModal('mail')} className="hover:text-gray-600 transition-colors">
+                  <i className="fa-regular fa-envelope text-lg"></i>
+                </button>
              </div>
           </div>
 
@@ -94,40 +99,22 @@ export default function MessagePage() {
           <div className="px-4 pb-3">
             <div className="relative">
               <i className="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-              <input 
-                type="text" 
-                placeholder="Search Anything..." 
-                className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:outline-none focus:border-brand placeholder-gray-400"
-              />
+              <input type="text" placeholder="Search Anything..." className="w-full pl-8 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-xs focus:outline-none focus:border-brand placeholder-gray-400" />
             </div>
           </div>
 
           {/* 3. Filter Tabs */}
           <div className="px-4 pb-2">
             <div className="flex bg-gray-50 p-1 rounded-lg">
-              <button 
-                onClick={() => setSidebarFilter('Employee')}
-                className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${sidebarFilter === 'Employee' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}
-              >
-                Employee
-              </button>
-              <button 
-                onClick={() => setSidebarFilter('CareGiver')}
-                className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${sidebarFilter === 'CareGiver' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}
-              >
-                CareGiver
-              </button>
+              <button onClick={() => setSidebarFilter('Employee')} className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${sidebarFilter === 'Employee' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}>Employee</button>
+              <button onClick={() => setSidebarFilter('CareGiver')} className={`flex-1 py-1.5 text-xs font-medium rounded transition-all ${sidebarFilter === 'CareGiver' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500'}`}>CareGiver</button>
             </div>
           </div>
 
           {/* 4. User List */}
           <div className="flex-1 overflow-y-auto">
             {filteredUsers.map((user) => (
-              <div 
-                key={user.id} 
-                onClick={() => handleUserClick(user.id)}
-                className={`flex gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedUserId === user.id ? 'bg-blue-50/40' : ''}`}
-              >
+              <div key={user.id} onClick={() => handleUserClick(user.id)} className={`flex gap-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 transition-colors ${selectedUserId === user.id ? 'bg-blue-50/40' : ''}`}>
                 <div className="relative">
                   <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
                   {user.online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand border-2 border-white rounded-full"></span>}
@@ -144,24 +131,17 @@ export default function MessagePage() {
           </div>
         </div>
 
-        {/* ================= RIGHT CONTENT AREA (Chat/Email) ================= */}
-        {/* Logic: Hidden on mobile IF chat is CLOSED. Always visible on Desktop (md:flex) */}
+        {/* ================= RIGHT CONTENT AREA ================= */}
         <div className={`
             flex-1 flex-col bg-white min-w-0 h-full
             ${!showMobileChat ? 'hidden md:flex' : 'flex'}
         `}>
-          
-          {/* 1. Header with Back Button (Mobile Only) */}
+          {/* Header */}
           <div className="h-16 flex items-center justify-between px-4 md:px-6 border-b border-gray-50 shrink-0">
             <div className="flex items-center gap-3">
-              {/* BACK BUTTON (Visible on Mobile only) */}
-              <button 
-                onClick={() => setShowMobileChat(false)}
-                className="md:hidden text-gray-500 hover:text-gray-800 mr-1"
-              >
+              <button onClick={() => setShowMobileChat(false)} className="md:hidden text-gray-500 hover:text-gray-800 mr-1">
                 <i className="fa-solid fa-arrow-left text-lg"></i>
               </button>
-
               <div className="relative">
                  <img src={selectedUser.image} alt="Active" className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover" />
                  {selectedUser.online && <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand border-2 border-white rounded-full"></span>}
@@ -177,95 +157,144 @@ export default function MessagePage() {
             </div>
           </div>
 
-          {/* 2. Main Tab Switcher */}
+          {/* Main Tab Switcher */}
           <div className="px-4 md:px-6 py-2 border-b border-gray-50 shrink-0">
             <div className="flex bg-gray-50/80 p-1 rounded-lg">
-              <button 
-                onClick={() => setActiveTab('chat')}
-                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
-                  activeTab === 'chat' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Chat
-              </button>
-              <button 
-                onClick={() => setActiveTab('emails')}
-                className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
-                  activeTab === 'emails' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                Emails
-              </button>
+              <button onClick={() => setActiveTab('chat')} className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'chat' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500 hover:text-gray-700'}`}>Chat</button>
+              <button onClick={() => setActiveTab('emails')} className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === 'emails' ? 'bg-white shadow-sm text-gray-800' : 'text-gray-500 hover:text-gray-700'}`}>Emails</button>
             </div>
           </div>
 
-          {/* 3. Content View */}
+          {/* Content View */}
           <div className="flex-1 overflow-hidden relative w-full">
-            {activeTab === 'chat' ? (
-              <ChatView />
-            ) : (
-              <EmailView />
-            )}
+            {activeTab === 'chat' ? <ChatView /> : <EmailView />}
           </div>
-
         </div>
+
+        {/* ================= MODAL COMPONENT (Rendered conditionally) ================= */}
+        {activeModal && (
+          <ComposeModal 
+            type={activeModal} 
+            onClose={() => setActiveModal(null)} 
+          />
+        )}
 
       </div>
     </DashboardLayout>
   );
 }
 
-// ================= SUB-COMPONENT: Chat View =================
+// ==========================================
+// SUB-COMPONENT: Compose Modal (POPUP)
+// ==========================================
+function ComposeModal({ type, onClose }: { type: 'mail' | 'chat', onClose: () => void }) {
+  const isMail = type === 'mail';
+  const title = isMail ? "Create mail" : "Create Message";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 pb-2">
+          <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+            <i className="fa-solid fa-times text-lg"></i>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6 space-y-4">
+          
+          {/* TO Field  */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-gray-500 ml-1">To</label>
+            <div className="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 flex flex-wrap gap-2 min-h-[42px]">
+               {/* Dummy Tags matching your image */}
+               <span className="bg-gray-200/80 text-gray-700 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-gray-300">
+                  isabella.anderson@gmail.com <i className="fa-solid fa-times hover:text-red-500 cursor-pointer"></i>
+               </span>
+               <span className="bg-gray-200/80 text-gray-700 text-xs px-2 py-1 rounded-md flex items-center gap-1 border border-gray-300">
+                  michael.johnson@yahoo.com <i className="fa-solid fa-times hover:text-red-500 cursor-pointer"></i>
+               </span>
+               {/* Input for typing more */}
+               <input type="text" className="bg-transparent text-sm focus:outline-none flex-1 min-w-[100px]" placeholder="" />
+            </div>
+          </div>
+
+                
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-gray-500 ml-1">Subject</label>
+              <input 
+                type="text" 
+                placeholder="Enter your subject" 
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all placeholder-gray-400"
+              />
+            </div>
+       
+
+          {/* Message */}
+          <div className="space-y-1.5">
+           
+            <label className="text-xs font-medium text-gray-500 ml-1">Message</label>
+            <textarea 
+              placeholder="Enter your message" 
+              className="w-full h-32 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/20 transition-all resize-none placeholder-gray-400"
+            ></textarea>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 pt-2 flex justify-between items-center">
+          <label className="flex items-center gap-2 cursor-pointer group">
+             <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-brand focus:ring-brand" />
+             <span className="text-xs text-gray-500 group-hover:text-gray-700 select-none">Send in Message as well</span>
+          </label>
+          
+          <button className="bg-brand hover:bg-darkblue text-white px-8 py-2.5 rounded-xl font-medium text-sm transition-all shadow-lg shadow-brand/30">
+            Send
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ================= SUB-COMPONENTS (ChatView & EmailView - Same as before) =================
 function ChatView() {
   return (
     <div className="flex flex-col h-full w-full">
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
           {messagesData.map((msg) => (
             <div key={msg.id} className={`flex gap-3 ${msg.sender === 'me' ? 'flex-row-reverse' : ''}`}>
               <img src={msg.image} className="w-8 h-8 rounded-full self-end mb-1 shrink-0" />
               <div className={`max-w-[75%] md:max-w-[70%]`}>
-                {/* Time Stamp Row */}
                 <div className={`flex items-center gap-2 mb-1 ${msg.sender === 'me' ? 'justify-end' : ''}`}>
                    {msg.sender !== 'me' && <span className="hidden md:inline text-xs font-semibold text-gray-700">Isabella Anderson</span>}
                    <span className="text-[10px] text-gray-400">{msg.time}</span>
                 </div>
-                {/* Message Bubble */}
-                <div className={`p-3 rounded-2xl text-sm leading-relaxed ${
-                  msg.sender === 'me' 
-                    ? 'bg-blue-50 text-gray-800 rounded-br-none' 
-                    : 'bg-gray-100 text-gray-700 rounded-bl-none'
-                }`}>
-                  {msg.text}
-                </div>
+                <div className={`p-3 rounded-2xl text-sm leading-relaxed ${msg.sender === 'me' ? 'bg-blue-50 text-gray-800 rounded-br-none' : 'bg-gray-100 text-gray-700 rounded-bl-none'}`}>{msg.text}</div>
               </div>
             </div>
           ))}
       </div>
-
-      {/* Input Area */}
       <div className="p-4 shrink-0">
            <div className="bg-white border border-gray-200 rounded-lg px-3 py-2 flex items-center gap-2 md:gap-3 shadow-sm">
               <button className="text-gray-400 hover:text-gray-600 rotate-45"><i className="fa-solid fa-paperclip"></i></button>
-              <button className="hidden md:block text-gray-400 hover:text-gray-600"><i className="fa-solid fa-microphone"></i></button>
               <input type="text" placeholder="Type a message..." className="flex-1 bg-transparent text-sm focus:outline-none text-gray-700 py-2 min-w-0" />
-              <button className="bg-brand text-white px-3 md:px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-1 shrink-0">
-                <span className="hidden md:inline">Send</span> <i className="fa-solid fa-paper-plane text-[10px]"></i>
-              </button>
+              <button className="bg-brand text-white px-3 md:px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-1 shrink-0">Send <i className="fa-solid fa-paper-plane text-[10px]"></i></button>
            </div>
       </div>
     </div>
   );
 }
 
-// ================= SUB-COMPONENT: Email View =================
 function EmailView() {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
-
   return (
     <div className="h-full flex flex-col relative bg-gray-50/30 w-full">
-      
-      {/* Email List */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 pb-32 md:pb-40"> 
         {emailData.map((mail) => (
           <div key={mail.id} className="bg-white p-4 md:p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-2">
@@ -274,53 +303,23 @@ function EmailView() {
               <span className="text-xs text-gray-400 whitespace-nowrap ml-2">{mail.date}</span>
             </div>
             <p className="text-sm text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-none">{mail.preview}</p>
-            <div className="mt-2 text-xs text-gray-500 font-medium">
-              Thanks ! <br/> {mail.sender}
-            </div>
+            <div className="mt-2 text-xs text-gray-500 font-medium">Thanks ! <br/> {mail.sender}</div>
           </div>
         ))}
       </div>
-
-      {/* Collapsible Compose Section */}
-      <div className={`
-        absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] 
-        transition-all duration-300 ease-in-out z-20 w-full
-        ${isComposeOpen ? 'h-[90%] md:h-[400px]' : 'h-[50px]'}
-      `}>
-        
-        {/* Header Toggle */}
-        <div 
-          onClick={() => setIsComposeOpen(!isComposeOpen)} 
-          className="h-[50px] flex items-center justify-between px-6 cursor-pointer hover:bg-gray-50 transition-colors"
-        >
+      <div className={`absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] transition-all duration-300 ease-in-out z-20 w-full ${isComposeOpen ? 'h-[90%] md:h-[400px]' : 'h-[50px]'}`}>
+        <div onClick={() => setIsComposeOpen(!isComposeOpen)} className="h-[50px] flex items-center justify-between px-6 cursor-pointer hover:bg-gray-50 transition-colors">
           <span className="text-sm font-semibold text-gray-700">Create Mail</span>
           <i className={`fa-solid fa-chevron-up transition-transform duration-300 ${isComposeOpen ? 'rotate-180' : ''} text-gray-400`}></i>
         </div>
-
-        {/* Form Content */}
         {isComposeOpen && (
           <div className="p-4 md:p-6 pt-0 h-[calc(100%-50px)] flex flex-col gap-3">
-            <div>
-              <label className="text-xs text-gray-500 mb-1 block">To</label>
-              <input type="email" defaultValue="isabella.anderson@gmail.com" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand text-gray-700" />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 mb-1 block">Subject</label>
-              <input type="text" placeholder="Enter your subject" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand text-gray-700" />
-            </div>
-            <div className="flex-1">
-              <label className="text-xs text-gray-500 mb-1 block">Message</label>
-              <textarea placeholder="Enter your message" className="w-full h-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand resize-none text-gray-700"></textarea>
-            </div>
-            <div className="flex justify-between items-center mt-4 shrink-0">
-              <button className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-paperclip text-lg"></i></button>
-              <button className="bg-brand text-white px-5 py-2 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-2">
-                Send <i className="fa-solid fa-paper-plane"></i>
-              </button>
-            </div>
+            <div><label className="text-xs text-gray-500 mb-1 block">To</label><input type="email" defaultValue="isabella.anderson@gmail.com" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand text-gray-700" /></div>
+            <div><label className="text-xs text-gray-500 mb-1 block">Subject</label><input type="text" placeholder="Enter your subject" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand text-gray-700" /></div>
+            <div className="flex-1"><label className="text-xs text-gray-500 mb-1 block">Message</label><textarea placeholder="Enter your message" className="w-full h-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand resize-none text-gray-700"></textarea></div>
+            <div className="flex justify-between items-center mt-1 shrink-0"><button className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-paperclip text-lg"></i></button><button className="bg-brand text-white px-5 py-2 rounded-lg text-xs font-medium hover:bg-darkblue transition-colors flex items-center gap-2">Send <i className="fa-solid fa-paper-plane"></i></button></div>
           </div>
         )}
-
       </div>
     </div>
   );
