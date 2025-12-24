@@ -1,11 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // <--- 1. Import useRouter
 import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
-import AuthLayout from "@/components/ui/AuthLayout"; 
+import AuthLayout from "@/components/ui/AuthLayout";
 
 export default function SignInPage() {
+  const router = useRouter(); // <--- 2. Initialize router
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent page reload
+
+    // Add your actual authentication logic here (API call)
+    console.log("Signing in...");
+
+    // 3. Navigate to the Dashboard (Root URL "/")
+    router.push("/"); 
+  };
+
+
   return (
      <AuthLayout>
 
@@ -16,7 +30,7 @@ export default function SignInPage() {
             </div>
 
             {/* Form Fields */}
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
                 
                 <InputField 
                     label="Username or Email" 
