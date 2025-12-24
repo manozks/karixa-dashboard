@@ -25,7 +25,7 @@ export default function SignUpPage() {
       {/* Header Section */}
       {/* Note: Following image text "Welcome Back" exactly, though unusual for sign up */}
       <div className="text-center lg:text-left space-y-2">
-        <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mt-8">Welcome Back</h2>
         <p className="text-gray-500 text-sm">Enter your email and password to access your account</p>
       </div>
 
