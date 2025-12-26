@@ -137,10 +137,14 @@ const pathname = usePathname();
           {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-6 truncate">Manage</div>}
 
           {/* Client */}
-          <a href="#" className={`flex items-center rounded-lg px-6 py-3 text-blue-100 hover:bg-white/10 hover:text-white transition-all group ${isCollapsed ? "justify-center" : ""}`}>
-            <i className="fa-regular fa-user w-6 text-center text-lg"></i>
-            {!isCollapsed && <span className="ml-3 whitespace-nowrap">Client</span>}
-          </a>
+          <Link href="/clients" className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname === "/clients" 
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
+                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+            }`}>
+            <i className="fa-regular fa-message w-6 text-center text-lg"></i>
+            {!isCollapsed && <span className="ml-3 whitespace-nowrap">Clients</span>}
+          </Link>
 
           {/* Employees */}
           <a href="#" className={`flex items-center rounded-lg px-6 py-3 text-blue-100 hover:bg-white/10 hover:text-white transition-all group ${isCollapsed ? "justify-center" : ""}`}>
