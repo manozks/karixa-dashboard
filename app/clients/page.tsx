@@ -20,6 +20,8 @@ interface Client {
   checkOut: string;
 }
 
+
+
 // --- Mock Data ---
 const clientsData: Client[] = [
   { id: '1', name: 'Nina Mcintire', avatar: 'https://i.pravatar.cc/150?img=1', shiftStart: '8:30 AM', shiftEnd: '7:00 PM', caregiver: { name: 'Dr. Emily Carter', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=5' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
@@ -143,12 +145,22 @@ export default function ClientsPage() {
                     </td>
                     
                     {/* Client Name */}
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={client.avatar} alt={client.name} className="w-9 h-9 rounded-full object-cover" />
-                        <span className="text-sm font-medium text-gray-800">{client.name}</span>
-                      </div>
-                    </td>
+                    {/* Client Name - NOW CLICKABLE */}
+<td className="p-4">
+  <Link 
+    href="/clients/profile" 
+    className="flex items-center gap-3 group cursor-pointer"
+  >
+    <img 
+      src={client.avatar} 
+      alt={client.name} 
+      className="w-9 h-9 rounded-full object-cover group-hover:opacity-80 transition-opacity" 
+    />
+    <span className="text-sm font-medium text-gray-800 group-hover:text-[#0074D9] transition-colors">
+      {client.name}
+    </span>
+  </Link>
+</td>
 
                     {/* Shift */}
                     <td className="p-4">

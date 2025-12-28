@@ -191,12 +191,12 @@ export default function AddClientPage() {
                 Next
               </button>
             ) : (
-              <button 
+              <Link href="/clients"
                 onClick={() => console.log("Submit Form")}
                 className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-8 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-blue-900/10"
               >
                 Create a New Client
-              </button>
+              </Link>
             )}
 
           </div>
