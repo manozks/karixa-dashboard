@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 
 export default function CaregiverProfilePage({ params }: { params: { id: string } }) {
-  const [activeTab, setActiveTab] = useState("General Info"); // Default to General Info for testing
+  const [activeTab, setActiveTab] = useState("General Info");
 
   const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Notes"];
 
@@ -35,7 +35,12 @@ export default function CaregiverProfilePage({ params }: { params: { id: string 
                  </div>
               </div>
               <div className="flex gap-3">
-                 <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50"><i className="fa-solid fa-download mr-1"></i> Edit Profile</button>
+                 <Link 
+                    href="/clients/add" 
+                    className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center"
+                 >
+                    <i className="fa-solid fa-download mr-1"></i> Edit Profile
+                 </Link>
                  <button className="px-4 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Message</button>
               </div>
            </div>
@@ -82,11 +87,12 @@ export default function CaregiverProfilePage({ params }: { params: { id: string 
   );
 }
 
+// --- Tab Render Helper ---
 function renderTabContent(tab: string) {
   switch (tab) {
+    case "General Info": return <GeneralInfoTab />;
     case "Schedule": return <ScheduleTab />; 
     case "Clients": return <ClientsTab />; 
-    case "General Info": return <GeneralInfoTab />;
     case "Attendance": return <AttendanceTab />; 
     case "Notes": return <NotesTab />;
     default: return <div className="text-center py-20 text-gray-400">Content for {tab} is coming soon...</div>;
@@ -94,7 +100,7 @@ function renderTabContent(tab: string) {
 }
 
 // =========================================================================
-// GENERAL INFO TAB 
+// 1. GENERAL INFO TAB 
 // =========================================================================
 function GeneralInfoTab() {
   return (
@@ -106,7 +112,7 @@ function GeneralInfoTab() {
              <InfoItem label="Name" value="Nina Mcintire" />
              <InfoItem label="DOB" value="24 Oct, 1933" />
              <InfoItem label="Gender" value="Female" />
-             <InfoItem label="Social Security Number (SSN)" value="(703) 981-7142" />
+             <InfoItem label="Social Security Number (SSN)" value="(***) ***-7142" />
              <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Email Address" value="nina@gmail.com" />
              <InfoItem label="Language Spoken" value="English" />
@@ -183,34 +189,106 @@ function DocItem({ label, file }: { label: string, file: string }) {
 }
 
 // =========================================================================
-// 1. SCHEDULE TAB 
+// 2. SCHEDULE TAB (Fixed: Now calls CreateVisitModal correctly)
 // =========================================================================
 function ScheduleTab() {
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showVisitSummary, setShowVisitSummary] = useState(false);
+  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+
+  // Define the grid data
+  const calendarDays = [
+    { date: 30, type: 'prev' }, 
+    { date: 1, type: 'next' }, { date: 2, type: 'next' }, { date: 3, type: 'next' }, { date: 4, type: 'next' }, { date: 5, type: 'next' },
+    { date: 6, type: 'current' }, { date: 7, type: 'current' }, { date: 8, type: 'current' }, { date: 9, type: 'current' }, { date: 10, type: 'current' }, { date: 11, type: 'current' }, { date: 12, type: 'current' },
+    { date: 13, type: 'current' }, { date: 14, type: 'current' }, { date: 15, type: 'current' }, { date: 16, type: 'current' }, { date: 17, type: 'current' }, { date: 18, type: 'current' }, { date: 19, type: 'current' },
+    { date: 20, type: 'current' }, { date: 21, type: 'current' }, 
+    { 
+      date: 22, 
+      type: 'current', 
+      event: { color: 'yellow', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 23, 
+      type: 'current', 
+      event: { color: 'green', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 24, 
+      type: 'current', 
+      event: { color: 'green', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 25, 
+      type: 'current', 
+      event: { color: 'green', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 26, 
+      type: 'current', 
+      event: { color: 'green', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 27, 
+      type: 'current', 
+      event: { color: 'green', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { 
+      date: 28, 
+      type: 'current', 
+      event: { color: 'blue', time: '7 AM - 3 PM | 8 Hours', staff: 'Juan, Chinchu' } 
+    },
+    { date: 29, type: 'current' }, { date: 30, type: 'current' }, 
+    { date: 1, type: 'next' }, { date: 2, type: 'next' }, { date: 3, type: 'next' }
+  ];
+
+  // Handle Event Click
+  const handleEventClick = (day: any) => {
+    setSelectedVisit({
+      date: `${day.date} April, 2025`,
+      time: day.event.time,
+      caregiver: day.event.staff,
+      status: "Completed",
+      location: "1509 Oakview Dr, McLean VA"
+    });
+    setShowVisitSummary(true);
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-800">Schedule</h3>
-          <p className="text-sm text-gray-500 mt-1">23 April, 2025 | Sunday <span className="text-[#0074D9] font-medium">• Today</span></p>
+          <h3 className="text-xl font-bold text-gray-800">Schedule</h3>
+          <p className="text-sm text-gray-500 mt-1 font-medium">23 April, 2025 | Sunday <span className="text-[#0074D9] ml-1">• Today</span></p>
         </div>
         
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm text-sm text-gray-700">
-            <i className="fa-regular fa-calendar text-gray-400 mr-2"></i> 23 Apr - 29 Apr, 2025 <i className="fa-solid fa-chevron-right ml-2 text-xs text-gray-400"></i>
+        <div className="flex items-center gap-3">
+          {/* Date Navigator */}
+          <div className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm h-10">
+            <i className="fa-regular fa-calendar text-gray-400 mr-2"></i>
+            <span className="text-sm font-medium text-gray-700 mr-3">23 Apr - 29 Apr, 2025</span>
+            <div className="flex gap-1 border-l border-gray-200 pl-2">
+               <button className="text-gray-400 hover:text-gray-600 px-1"><i className="fa-solid fa-chevron-left text-xs"></i></button>
+               <button className="text-gray-400 hover:text-gray-600 px-1"><i className="fa-solid fa-chevron-right text-xs"></i></button>
+            </div>
           </div>
+
+          {/* View Dropdown */}
           <div className="relative">
-            <select className="appearance-none bg-white border border-gray-200 rounded-lg pl-4 pr-10 py-2 text-sm font-medium text-gray-700 shadow-sm outline-none">
+            <select className="h-10 pl-4 pr-8 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white focus:outline-none focus:border-brand appearance-none cursor-pointer">
               <option>Monthly</option>
+              <option>Weekly</option>
+              <option>Daily</option>
             </select>
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
           </div>
+
+          {/* Create Button */}
           <button 
-            onClick={() => setShowModal(true)}
-            className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"
+            onClick={() => setShowCreateModal(true)}
+            className="h-10 bg-[#0074D9] hover:bg-[#0062b8] text-white px-5 rounded-lg text-sm font-bold shadow-sm transition-colors"
           >
             Create Visit
           </button>
@@ -219,35 +297,172 @@ function ScheduleTab() {
 
       {/* Calendar Grid */}
       <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
-        <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50/50">
+        
+        {/* Days Header */}
+        <div className="grid grid-cols-7 border-b border-gray-200 bg-[#F8FAFC]">
           {["Sun", "Mon", "Tue", "Wed", "Thru", "Fri", "Sat"].map((day) => (
-            <div key={day} className="py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">{day}</div>
+            <div key={day} className="py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">{day}</div>
           ))}
         </div>
-        <div className="grid grid-cols-7 divide-x divide-gray-100 divide-y">
-          {[...Array(7)].map((_, i) => (
-             <div key={i} className={`min-h-[120px] p-2 ${i > 2 ? 'bg-white' : 'bg-gray-50/30'}`}>
-                <div className="text-right text-xs text-gray-400 mb-2">{23 + i}</div>
-                {i > 3 && (
-                   <div className="bg-[#28A745] text-white p-1.5 rounded-md shadow-sm text-[10px] mb-1">
-                      <div className="font-bold">7 AM - 3 PM | 8 Hours</div>
-                      <div className="opacity-90">Juan, Chinchu</div>
-                   </div>
-                )}
-                {i === 2 && (
-                   <div className="bg-[#D9A300] text-white p-1.5 rounded-md shadow-sm text-[10px] mb-1">
-                      <div className="font-bold">7 AM - 3 PM | 8 Hours</div>
-                      <div className="opacity-90">Juan, Chinchu</div>
-                   </div>
-                )}
+
+        {/* Days Grid */}
+        <div className="grid grid-cols-7 divide-x divide-gray-100 divide-y border-b border-gray-100">
+          {calendarDays.map((day, i) => (
+             <div key={i} className={`min-h-[140px] p-2 relative group transition-colors ${day.type !== 'current' ? 'bg-gray-50/30' : 'bg-white hover:bg-gray-50'}`}>
+                {/* Date Number */}
+                <span className={`absolute top-3 right-3 text-xs font-semibold ${day.type !== 'current' ? 'text-gray-300' : 'text-gray-500'}`}>
+                   {day.date}
+                </span>
+
+                {/* Event Card */}
+                <div className="pt-6 h-full flex flex-col justify-center">
+                   {day.event ? (
+                      <div 
+                         onClick={() => handleEventClick(day)}
+                         className={`
+                            p-2.5 rounded-md text-[11px] text-white shadow-sm cursor-pointer hover:opacity-90 hover:shadow-md transition-all transform hover:-translate-y-0.5
+                            ${day.event.color === 'yellow' ? 'bg-[#D9A300]' : 
+                              day.event.color === 'green' ? 'bg-[#28A745]' : 
+                              day.event.color === 'blue' ? 'bg-[#0056B3]' : 'bg-gray-500'}
+                         `}
+                      >
+                         <div className="font-bold mb-0.5">{day.event.time}</div>
+                         <div className="opacity-90">{day.event.staff}</div>
+                      </div>
+                   ) : (
+                      /* Hover Plus Icon for empty cells */
+                      <div 
+                        onClick={() => setShowCreateModal(true)}
+                        className="h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-gray-300 hover:text-[#0074D9]"
+                      >
+                         <i className="fa-solid fa-plus text-xl"></i>
+                      </div>
+                   )}
+                </div>
              </div>
           ))}
         </div>
       </div>
 
-      {/* Create Visit Modal */}
-      {showModal && <CreateVisitModal onClose={() => setShowModal(false)} />}
+      {/* --- MODALS --- */}
+      {/* FIXED: Using CreateVisitModal instead of CreateScheduleModal */}
+      {showCreateModal && <CreateVisitModal onClose={() => setShowCreateModal(false)} />}
+      
+      {showVisitSummary && selectedVisit && (
+         <VisitSummaryModal 
+            report={selectedVisit} 
+            onApprove={() => setShowVisitSummary(false)} 
+            onClose={() => setShowVisitSummary(false)} 
+         />
+      )}
+
     </div>
+  );
+}
+
+// --- VISIT SUMMARY MODAL ---
+function VisitSummaryModal({ report, onApprove, onClose }: { report: any, onApprove: () => void, onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-6xl shadow-2xl flex flex-col max-h-[95vh] animate-slide-up relative">
+          
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+             <h2 className="text-xl font-bold text-gray-800">Visit Summary</h2>
+             <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
+          </div>
+
+          <div className="p-8 overflow-y-auto bg-gray-50/30">
+             {/* Blue Banner */}
+             <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-center mb-6">
+                <p className="text-sm text-blue-800 font-medium">Early Clock in - Early Clock out</p>
+                <p className="text-xs text-blue-600">16 June, 2025 | Tuesday &nbsp; • &nbsp; 11:30 AM - 2:00 PM</p>
+             </div>
+
+             {/* Info Cards */}
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="bg-green-50/50 border border-green-100 p-4 rounded-xl relative">
+                   <span className="absolute top-4 right-4 text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold uppercase">Client</span>
+                   <div className="flex items-center gap-3 mb-2">
+                      <img src="https://i.pravatar.cc/150?img=1" className="w-10 h-10 rounded-full" />
+                      <h3 className="font-bold text-gray-800">Chen, Yueqiu</h3>
+                   </div>
+                   <div className="text-xs text-gray-500 grid grid-cols-2 gap-2">
+                      <p>Phone: (703)981-7142</p> <p>Code: T1019</p>
+                      <p className="col-span-2">Location: 2231 Colts Neck RD 412</p>
+                   </div>
+                </div>
+                <div className="bg-white border border-gray-200 p-4 rounded-xl relative">
+                   <span className="absolute top-4 right-4 text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-bold uppercase">Caregiver</span>
+                   <div className="flex items-center gap-3 mb-2">
+                      <img src="https://i.pravatar.cc/150?img=12" className="w-10 h-10 rounded-full" />
+                      <h3 className="font-bold text-gray-800">Surles, Michael Jackson</h3>
+                   </div>
+                   <div className="text-xs text-gray-500 grid grid-cols-2 gap-2">
+                      <p>Phone: (703)981-7142</p> <p>Email: surless@icloud.com</p>
+                      <p className="col-span-2">Specialist: PCA</p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Times & Map Section */}
+             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div className="lg:col-span-2 space-y-6">
+                   <div className="grid grid-cols-2 gap-8">
+                      <div>
+                         <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Arrival</h4>
+                         <div className="space-y-3 text-xs">
+                            <div className="flex justify-between"><span className="text-gray-500">Scheduled</span><span className="font-medium">06/16/2020 | 11:30 AM</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Corrected</span><span className="font-medium bg-white border px-2 py-1 rounded">06/16/2020 11:21 AM</span></div>
+                         </div>
+                      </div>
+                      <div>
+                         <h4 className="text-xs font-bold text-gray-700 uppercase mb-3">Departure</h4>
+                         <div className="space-y-3 text-xs">
+                            <div className="flex justify-between"><span className="text-gray-500">Scheduled</span><span className="font-medium">06/16/2020 | 11:30 AM</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500">Corrected</span><span className="font-medium bg-white border px-2 py-1 rounded">06/16/2020 11:21 AM</span></div>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="grid grid-cols-3 gap-4 border-t border-gray-200 pt-4">
+                      <div className="text-center"><p className="text-xs text-gray-500">Scheduled Time</p><p className="font-bold text-sm bg-white border rounded p-1 mt-1">2 Hrs 30 Mins</p></div>
+                      <div className="text-center"><p className="text-xs text-gray-500">Visit Time</p><p className="font-bold text-sm bg-white border rounded p-1 mt-1">2 Hrs 30 Mins</p></div>
+                      <div className="text-center"><p className="text-xs text-gray-500">Billable Time</p><p className="font-bold text-sm bg-white border rounded p-1 mt-1">2 Hrs 30 Mins</p></div>
+                   </div>
+                </div>
+
+                <div className="bg-white p-2 rounded-xl border border-gray-200 h-48 relative overflow-hidden">
+                   <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                      <img src="/map-placeholder.png" className="opacity-50 w-full h-full object-cover" />
+                      <span className="absolute text-xs font-bold bg-white px-2 py-1 rounded shadow">GPS / Geo Fench</span>
+                   </div>
+                   <div className="absolute bottom-2 left-2 bg-yellow-50 text-yellow-700 text-[10px] px-2 py-1 rounded border border-yellow-200">Needs Approval</div>
+                </div>
+             </div>
+
+             {/* Completed Tasks */}
+             <div>
+                <h4 className="text-sm font-bold text-gray-800 mb-3">Completed Tasks</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                   {['Bathing', 'Mouth Care', 'Dressing', 'Assist with commode', 'Assist with urinal', 'Assist with bedpan', 'Meal Prep', 'Assist with feeding', 'Prepare Breakfast', 'Housework', 'Shopping', 'Provide Medication'].map((task) => (
+                      <div key={task} className="flex items-center gap-2">
+                         <div className="w-4 h-4 bg-[#0074D9] rounded flex items-center justify-center"><i className="fa-solid fa-check text-white text-[10px]"></i></div>
+                         <span className="text-xs text-gray-600">{task}</span>
+                      </div>
+                   ))}
+                </div>
+             </div>
+          </div>
+
+          <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-white">
+             <button onClick={onClose} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-gray-50">Back</button>
+             <button onClick={onApprove} className="px-6 py-2.5 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Approve Visit</button>
+          </div>
+       </div>
+    </div>, document.body
   );
 }
 
@@ -267,7 +482,6 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
              <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
           </div>
 
-          {/* Stepper */}
           <div className="pt-6 px-8 flex justify-center bg-gray-50/30 pb-4">
              <div className="flex items-center gap-4 bg-blue-50/50 px-6 py-2 rounded-full border border-blue-100">
                 <div className={`flex items-center gap-2 ${step>=1?'text-[#0074D9]':'text-gray-400'}`}><span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step>=1 ? 'bg-[#0074D9] text-white' : 'bg-gray-200 text-gray-500'}`}>1</span> <span className="font-medium text-sm">Basic Information</span></div>
@@ -279,7 +493,6 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="p-8 overflow-y-auto flex-1">
-             {/* STEP 1: Basic Information  */}
              {step === 1 && (
                 <div className="space-y-6 animate-slide-up">
                    <div className="grid grid-cols-2 gap-6">
@@ -287,9 +500,24 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                       <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Employer</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select or Enter</option></select></div>
                    </div>
                    <div className="grid grid-cols-3 gap-6">
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Start Date</label><div className="relative"><input type="text" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"/><i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400"></i></div></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Time</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select Start Time</option></select></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700 opacity-0">End</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select End Time</option></select></div>
+                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Start Date</label><div className="relative"><input type="date" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"/></div></div>
+                        {/* Start Time Picker */}
+       <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Start Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+                        {/* End Time Picker */}
+      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">End Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
                    </div>
                    <div className="flex items-center gap-2"><input type="checkbox" className="rounded text-[#0074D9]" /><label className="text-sm text-gray-600">Flexible Time</label></div>
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Frequency</label><div className="flex gap-2"><select className="flex-1 border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select</option></select><button className="px-4 py-2 bg-gray-100 rounded-lg text-sm text-gray-600 border border-gray-200">Custom</button></div></div>
@@ -297,7 +525,6 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                 </div>
              )}
 
-             {/* STEP 2: Accounting */}
              {step === 2 && (
                 <div className="space-y-6 animate-slide-up">
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Service Type</label><input type="text" placeholder="Enter or Select" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
@@ -306,7 +533,6 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                 </div>
              )}
 
-             {/* STEP 3: Complete */}
              {step === 3 && (
                 <div className="flex flex-col items-center justify-center h-full animate-scale-up py-8">
                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4"><i className="fa-solid fa-check text-2xl text-green-600"></i></div>
@@ -371,7 +597,31 @@ function AssignClientModal({ onClose }: { onClose: () => void }) {
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Assign Client</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
              <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Client</label><select className="w-full border rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select or Enter</option></select></div>
-             <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Shift</label><div className="flex gap-2"><select className="flex-1 border rounded-lg p-2.5 text-sm text-gray-500"><option>Select Start Time</option></select><select className="flex-1 border rounded-lg p-2.5 text-sm text-gray-500"><option>Select End Time</option></select></div></div>
+             <div className="space-y-1">
+               <div className="grid grid-cols-2 gap-6">
+            {/* Start Time Picker */}  
+           <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">Start Date</label>
+            <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+            </div>
+           
+            {/* End Time Picker */}
+           <div className="space-y-1">
+            <label className="text-xs font-medium text-gray-700">End Time</label>
+            <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+            </div>
+            
+                        
+              
+               </div>
+               </div>
              <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Notes</label><textarea className="w-full border rounded-lg p-2.5 text-sm h-24" placeholder="Start typing..."></textarea></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2.5 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8] w-full">Request for Schedule</button></div>
@@ -472,4 +722,3 @@ function CreateNoteModal({ onClose }: { onClose: () => void }) {
     </div>, document.body
   );
 }
-

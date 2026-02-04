@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 
+
 export default function SchedulePage() {
   // State for View Mode (Clients vs Caregiver)
   const [viewMode, setViewMode] = useState<"Clients" | "Caregiver">("Clients");
@@ -240,9 +241,25 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                       <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Employer</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select or Enter</option></select></div>
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Start Date</label><input type="text" placeholder="dd/mm/yyyy" className="w-full border rounded-lg p-2.5 text-sm"/></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Time</label><select className="w-full border rounded-lg p-2.5 text-sm text-gray-500"><option>Select Start Time</option></select></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">End</label><select className="w-full border rounded-lg p-2.5 text-sm text-gray-500"><option>Select End Time</option></select></div>
+                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Start Date</label><input type="date" placeholder="dd/mm/yyyy" className="w-full border rounded-lg p-2.5 text-sm"/></div>
+                      {/* Start Time Picker */}
+       <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Start Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+
+      {/* End Time Picker */}
+      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">End Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
                    </div>
                    <div className="flex items-center gap-2"><input type="checkbox" /><label className="text-sm text-gray-600">Flexible Time</label></div>
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Frequency</label><div className="flex gap-2"><select className="flex-1 border rounded-lg p-2.5 text-sm"><option>Select</option></select><button className="px-4 border rounded-lg text-sm bg-gray-50">Custom</button></div></div>
@@ -308,7 +325,7 @@ function ApprovalNoteModal({ onClose }: { onClose: () => void }) {
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Approval Note</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
              <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Approved By</label><input className="w-full border rounded-lg p-2.5 text-sm" placeholder="Enter"/></div>
-             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Date</label><input className="w-full border rounded-lg p-2.5 text-sm" placeholder="dd/mm/yyyy"/></div>
+             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Date</label><input type="date" className="w-full border rounded-lg p-2.5 text-sm" placeholder="dd/mm/yyyy"/></div>
              <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Reason</label><select className="w-full border rounded-lg p-2.5 text-sm"><option>Select</option></select></div>
              <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Notes</label><textarea className="w-full border rounded-lg p-2.5 text-sm h-24" placeholder="Type..."></textarea></div>
              <div className="flex gap-4 pt-2"><label className="flex gap-2 text-sm"><input type="radio" name="app" /> Needs Approval</label><label className="flex gap-2 text-sm"><input type="radio" name="app" defaultChecked /> Approved for Billing</label></div>

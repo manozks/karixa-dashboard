@@ -35,7 +35,12 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                  </div>
               </div>
               <div className="flex gap-3">
-                 <button className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50"><i className="fa-solid fa-download mr-1"></i> Edit Profile</button>
+                 <Link 
+  href="/clients/add" 
+  className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center"
+>
+  <i className="fa-solid fa-download mr-1"></i> Edit Profile
+</Link>
                  <button className="px-4 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Message</button>
               </div>
            </div>
@@ -47,7 +52,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
               <div><span className="block text-xs text-gray-400 mb-1">DOB</span><span className="font-medium text-gray-800">24 Oct, 1933</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Gender</span><span className="font-medium text-gray-800">Female</span></div>
               
-              <div><span className="block text-xs text-gray-400 mb-1">Social Security Number</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
+              <div><span className="block text-xs text-gray-400 mb-1">Social Security Number</span><span className="font-medium text-gray-800">(***) ***-7142</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Phone/Mobile</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Email Address</span><span className="font-medium text-gray-800">nina@gmail.com</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Language Spoken</span><span className="font-medium text-gray-800">English</span></div>
@@ -173,7 +178,12 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up">
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Document</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
-             <div className="space-y-1.5"><label className="text-sm font-medium text-gray-700">Document Type</label><select className="w-full border rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option></select></div>
+             <div className="space-y-1.5"><label className="text-sm font-medium text-gray-700">Document Type</label><select className="w-full border rounded-lg p-2.5 text-sm bg-white text-gray-500">
+               <option>Select</option>
+               <option>Personal Care Assistant</option>
+               <option>Direct Support Professional</option>
+               <option>Training Certificate</option>
+               </select></div>
              <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center bg-gray-50"><i className="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2"></i><p className="text-xs text-gray-500">Drag and drop or click to upload file</p><p className="text-[10px] text-gray-400">pdf, word, png</p></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm">Continue</button></div>
@@ -322,8 +332,13 @@ function AddLicenseModal({ onClose }: { onClose: () => void }) {
        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up">
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Employee Trackable License</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Item Type</label><select className="w-full border rounded-lg p-2 text-sm"><option>Select</option></select></div><div><label className="text-xs text-gray-500">Item Number</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Incident Date</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div><div><label className="text-xs text-gray-500">Remark</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Item Type</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Select</option>
+               <option>Driving License</option>
+               <option>CPR Certificate</option>
+               
+               </select></div><div><label className="text-xs text-gray-500">Item Number</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Incident Date</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div><div><label className="text-xs text-gray-500">Remark</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
              <div className="border-2 border-dashed border-gray-200 p-6 flex flex-col items-center justify-center rounded-xl bg-gray-50"><i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i><p className="text-xs text-gray-500">Drag and drop or click to upload file</p></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Save</button></div>
@@ -373,7 +388,7 @@ function AddEmploymentModal({ onClose }: { onClose: () => void }) {
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Add Employment History</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Enter Position</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Company</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Start Date</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div><div><label className="text-xs text-gray-500">End Date</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Start Date</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div><div><label className="text-xs text-gray-500">End Date</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
              <div><label className="text-xs text-gray-500 block mb-1">Note</label><textarea className="w-full border rounded-lg p-2 text-sm h-24" placeholder="Start typing..."></textarea></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Save</button></div>
@@ -419,7 +434,11 @@ function ReferenceTab() {
        </div>
        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
           <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4">Name</th><th className="p-4">Contact & Type</th><th className="p-4">Status</th><th className="p-4">Date Contacted</th><th className="p-4">Notes summary</th><th className="p-4"></th></tr></thead>
-             <tbody className="divide-y divide-gray-50">{references.map((r, i) => (<tr key={i} className="hover:bg-gray-50"><td className="p-4">{r.name}</td><td className="p-4">{r.contact}</td><td className="p-4"><span className={`px-2 py-1 rounded text-xs border ${r.status === 'Completed' ? 'bg-green-50 text-green-700 border-green-200' : r.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-red-50 text-red-700 border-red-200'}`}>{r.status}</span></td><td className="p-4">{r.date}</td><td className="p-4">{r.notes}</td><td className="p-4 text-right"><button onClick={() => { setSelectedRef(r); setShowEditModal(true); }} className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-pen"></i></button></td></tr>))}</tbody>
+             <tbody className="divide-y divide-gray-50">{references.map((r, i) => (<tr key={i} className="hover:bg-gray-50">
+               <td className="p-4">{r.name}</td>
+               <td className="p-4">{r.contact}</td>
+               <td className="p-4"><span className={`px-2 py-1 rounded text-xs border ${r.status === 'Completed' ? 'bg-green-50 text-green-700 border-green-200' : r.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-red-50 text-red-700 border-red-200'}`}>{r.status}</span></td>
+               <td className="p-4">{r.date}</td><td className="p-4">{r.notes}</td><td className="p-4 text-right"><button onClick={() => { setSelectedRef(r); setShowEditModal(true); }} className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-pen"></i></button></td></tr>))}</tbody>
           </table>
        </div>
        {showAddModal && <AddReferenceModal onClose={() => setShowAddModal(false)} />}
@@ -434,11 +453,19 @@ function AddReferenceModal({ onClose }: { onClose: () => void }) {
        <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl flex flex-col animate-scale-up">
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Reference</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm"><option>Select Type</option></select></div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Jane Doe" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Select Type</option>
+               <option>Professional</option>
+               <option>Personal</option>
+               </select></div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Jane Doe" /></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Relationship to Employee</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Former Manager" /></div><div><label className="text-xs text-gray-500">Company/Organization Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Professional" /></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Phone Number</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="(785) 123 2321" /></div><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. email@example.com" /></div></div>
              <h3 className="font-bold text-sm text-gray-800 pt-2">Admin Vetting Details (Internal Use)</h3>
-             <div className="grid grid-cols-3 gap-4"><div><label className="text-xs text-gray-500">Years Known</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. 3" /></div><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm"><option>Pending</option></select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
+             <div className="grid grid-cols-3 gap-4"><div><label className="text-xs text-gray-500">Years Known</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. 3" /></div><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Pending</option>
+               <option>Complete</option>
+               <option>Not Verified</option>
+               </select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
              <div><label className="text-xs text-gray-500">Reference Notes</label><textarea className="w-full border rounded-lg p-2 text-sm h-24" placeholder="Start typing..."></textarea></div>
              <button className="text-[#0074D9] text-sm font-medium border border-[#0074D9] rounded-lg px-4 py-2 w-full flex items-center justify-center gap-2"><i className="fa-solid fa-plus"></i> Add Another Reference</button>
           </div>
@@ -454,8 +481,16 @@ function ReferenceDetailsModal({ reference, onClose }: { reference: any, onClose
        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up">
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Reference Details</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm"><option>Professional</option></select></div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" defaultValue="Maria Rod" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm"><option>Complete</option></select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Professional</option>
+               <option>Personal</option>
+               </select>
+               </div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Jane Doe" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Complete</option>
+               <option>Not Verified</option>
+               <option>Pending</option>
+               </select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
              <div><label className="text-xs text-gray-500">Reference Notes</label><textarea className="w-full border rounded-lg p-2 text-sm h-24" placeholder="Start typing..."></textarea></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Back</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Update</button></div>

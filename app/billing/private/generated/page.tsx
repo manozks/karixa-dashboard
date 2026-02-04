@@ -51,7 +51,7 @@ export default function PrivateBillGeneratedPage() {
               <h3 className="text-lg font-bold text-gray-800 mb-6">Billing Invoice</h3>
               
               <div className="flex gap-4 mb-6">
-                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center"><i className="fa-solid fa-leaf text-green-600"></i></div>
+                 <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center"><img src="/images/logo.png" className="w-full h-full object-contain" alt="Logo" /></div>
                  <div className="space-y-4 text-xs">
                     <div>
                        <p className="text-gray-400 mb-1">Billed By</p>

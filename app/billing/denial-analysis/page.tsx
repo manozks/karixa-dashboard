@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import BillingStatsHeader from "@/components/BillingStatsHeader";
@@ -23,7 +23,7 @@ export default function DenialAnalysisPage() {
     { id: 5, provider: "Noah Patel", date: "09/12/2022", claim: "CLAM1182", client: "Chloe Davis", dosFrom: "09/30/2027 4:00 PM", dosTo: "11/03/2027 6:00 PM", code: "T10644", ins: "Riverbend Assistance Program", billed: "567", paid: "500", denial: "67.00", dCode: "CR-13", status: "1/P", img: 5, cImg: 15 },
   ];
 
-  // Handle clicking the Denial Amount
+  // Handle clicking the Denial Amount (Optional: keep this if you want row clicks to also open it)
   const handleDenialClick = (claim: any) => {
     setSelectedClaim(claim);
     setShowAdjustmentModal(true);
@@ -33,8 +33,8 @@ export default function DenialAnalysisPage() {
     <DashboardLayout>
       <div className="p-0 space-y-6 bg-gray-50 min-h-screen">
         
-      {/* Header and Stats Cards */}
-                   <BillingStatsHeader />
+        {/* Header and Stats Cards */}
+        <BillingStatsHeader />
 
         {/* Main Content Area */}
         <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm p-6">
@@ -64,7 +64,13 @@ export default function DenialAnalysisPage() {
                  {/* DOWNLOAD ICON */}
                  <button onClick={() => setShowDownloadModal(true)} className="bg-blue-50 text-blue-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-blue-100 flex-shrink-0"><i className="fa-solid fa-download text-xs"></i></button>
                  
-                 <button className="bg-[#0074D9] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#0062b8] whitespace-nowrap">Mark As Adjustment</button>
+                 {/* --- MARK AS ADJUSTMENT BUTTON --- */}
+                 <button 
+                    onClick={() => setShowAdjustmentModal(true)}
+                    className="bg-[#0074D9] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#0062b8] whitespace-nowrap"
+                 >
+                    Mark As Adjustment
+                 </button>
               </div>
            </div>
 
@@ -123,26 +129,73 @@ export default function DenialAnalysisPage() {
 
         {/* --- MODALS --- */}
         {showDownloadModal && <DownloadModal onClose={() => setShowDownloadModal(false)} />}
-        {showAdjustmentModal && <ClaimAdjustmentModal claim={selectedClaim} onClose={() => setShowAdjustmentModal(false)} />}
+        {showAdjustmentModal && <ClaimAdjustmentModal onClose={() => setShowAdjustmentModal(false)} />}
 
       </div>
     </DashboardLayout>
   );
 }
 
-function StatsCard({ title, value, sub }: any) {
-   return (
-      <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm relative">
-         <div className="absolute top-5 right-5 text-gray-300 text-xl"><i className="fa-solid fa-dollar-sign"></i></div>
-         <p className="text-xs text-gray-500 mb-1">{title}</p>
-         <h3 className="text-2xl font-bold text-gray-800 mb-1">{value}</h3>
-         <p className="text-[10px] text-green-500 font-medium">{sub}</p>
-      </div>
-   )
+// =========================================================================
+// CLAIM ADJUSTMENT MODAL (Updated to match image_4991e3.png)
+// =========================================================================
+function ClaimAdjustmentModal({ onClose }: { onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-xl w-full max-w-[550px] shadow-2xl flex flex-col animate-scale-up relative">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center px-8 pt-8 pb-2">
+             <h2 className="text-2xl font-bold text-gray-900">Claim Adjustment</h2>
+             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <i className="fa-solid fa-xmark text-xl"></i>
+             </button>
+          </div>
+
+          {/* Body */}
+          <div className="px-8 py-6 space-y-6">
+             <div className="space-y-2">
+                <label className="text-sm text-gray-700 font-medium">Adjustment Amount less than</label>
+                <input 
+                    type="text" 
+                    placeholder="Enter amount" 
+                    className="w-full bg-[#F8FAFC] border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#0074D9] text-gray-700 placeholder-gray-400" 
+                />
+             </div>
+
+             <div className="flex items-center gap-8">
+                <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9]" />
+                    <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Write Off</span>
+                </label>
+                <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9]" />
+                    <span className="text-sm text-gray-600 group-hover:text-gray-800 transition-colors">Move to Patient Balance</span>
+                </label>
+             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-8 pb-8 pt-2 flex justify-end">
+             <button 
+                onClick={onClose} 
+                className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-8 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md active:scale-95"
+             >
+                Download
+             </button>
+          </div>
+
+       </div>
+    </div>, document.body
+  );
 }
 
 // =========================================================================
-// 1. DOWNLOAD MODAL 
+// DOWNLOAD MODAL (Kept same)
 // =========================================================================
 function DownloadModal({ onClose }: { onClose: () => void }) {
   return createPortal(
@@ -150,55 +203,9 @@ function DownloadModal({ onClose }: { onClose: () => void }) {
        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold text-gray-800">Download</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
-             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Date</label><div className="relative"><input type="text" placeholder="DD / MM / YYYY - DD / MM / YYYY" className="w-full border rounded-lg p-2.5 text-sm outline-none focus:border-brand" /><i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400"></i></div></div>
+             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Date</label><div className="relative"><input type="date" className="w-full border rounded-lg p-2.5 text-sm outline-none focus:border-brand" /></div></div>
           </div>
           <div className="p-6 border-t flex justify-end"><button onClick={onClose} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8]">Download</button></div>
-       </div>
-    </div>, document.body
-  );
-}
-
-// =========================================================================
-// 2. CLAIM ADJUSTMENT MODAL 
-// =========================================================================
-function ClaimAdjustmentModal({ claim, onClose }: { claim: any, onClose: () => void }) {
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
-       <div className="bg-white rounded-2xl w-full max-w-5xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up relative">
-          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold text-gray-800">Claim Adjustment</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
-          
-          <div className="p-0 overflow-y-auto">
-             <table className="w-full text-left text-xs">
-                <thead className="bg-gray-50 text-gray-500 font-semibold border-b border-gray-100">
-                   <tr>
-                      <th className="p-4">Group Code</th>
-                      <th className="p-4 w-1/3">Reason Code</th>
-                      <th className="p-4">Adjustment Amount</th>
-                      <th className="p-4 text-center">Move to Patient Balance</th>
-                      <th className="p-4 text-center">Write Off</th>
-                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                   <tr>
-                      <td className="p-4 text-gray-600 align-top">CR-Correction and Reversal (no financial liability)</td>
-                      <td className="p-4 text-gray-600 align-top">10- The diagnosis is inconsistent with the patient's gender. Usage: Refer to the 835 healthcare Policy identification segment (loop 2110 Service Payment Information REF), if present.</td>
-                      <td className="p-4 align-top font-medium">6.00</td>
-                      <td className="p-4 align-top text-center"><input type="checkbox" className="rounded" /></td>
-                      <td className="p-4 align-top text-center"><input type="checkbox" className="rounded" /></td>
-                   </tr>
-                </tbody>
-             </table>
-          </div>
-
-          <div className="bg-gray-200/50 p-4 border-t border-gray-200 grid grid-cols-6 gap-4 text-xs text-gray-600">
-             <div className="flex items-center gap-2 col-span-2"><img src={`https://i.pravatar.cc/150?img=${claim?.img || 1}`} className="w-6 h-6 rounded-full" /><span className="font-bold">{claim?.provider || "Noah Patel"}</span></div>
-             <div>{claim?.date || "09/12/2022"}</div>
-             <div>{claim?.claim || "CLAM1182"}</div>
-             <div className="flex items-center gap-2"><img src={`https://i.pravatar.cc/150?img=${claim?.cImg || 11}`} className="w-6 h-6 rounded-full" /><span>{claim?.client || "Chloe Davis"}</span></div>
-             <div>Riverbend Assistance Program</div>
-          </div>
-
-          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2.5 border rounded-lg text-sm font-medium hover:bg-gray-50">Close</button><button className="px-6 py-2.5 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Save</button></div>
        </div>
     </div>, document.body
   );

@@ -63,7 +63,7 @@ export default function ClientProfilePage() {
                     <span className="text-[10px] text-gray-400 italic">Signature</span>
                 </div>
                 </div>
-                </div>
+               </div>
           
              </div>
                         
@@ -141,7 +141,7 @@ function GeneralInfoTab() {
              <InfoItem label="Name" value="Nina Mcintire" />
              <InfoItem label="DOB" value="24 Oct, 1953" />
              <InfoItem label="Gender" value="Female" />
-             <InfoItem label="SSN" value="(703) 981-7142" />
+             <InfoItem label="SSN" value="***-**-7142" />
              <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Email Address" value="nina@gmail.com" />
              <InfoItem label="Language Spoken" value="English" />
@@ -180,7 +180,7 @@ function GeneralInfoTab() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
              <InfoItem label="Coordinator" value="Son Micle" />
              <InfoItem label="Insurance Provider  Status" value="Active" />
-             <InfoItem label="Region Code" value="VA - 7149" />             
+             <InfoItem label="Region Code" value="VA - 7149" />              
           </div>
            <div className="mt-2"></div>
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -206,8 +206,35 @@ function GeneralInfoTab() {
 // =========================================================================
 // 2. SCHEDULED TAB
 // =========================================================================
+// =========================================================================
+// 2. SCHEDULED TAB
+// =========================================================================
 function ScheduledTab() {
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // For Create Schedule
+  
+  // States for Visit Summary / Approval flow
+  const [showVisitSummary, setShowVisitSummary] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [selectedVisit, setSelectedVisit] = useState<any>(null);
+
+  // Handler when an Event Card is clicked
+  const handleEventClick = (date: number) => {
+    // Mock data for the modal based on the click
+    setSelectedVisit({
+      id: date,
+      caregiver: "Juan, Chinchu",
+      location: "1509 Oakview Dr, McLean VA",
+      date: `${date} April, 2025`,
+      status: "Completed"
+    });
+    setShowVisitSummary(true);
+  };
+
+  // Switch from Visit Summary to Approval Note
+  const handleApproveVisitClick = () => {
+    setShowVisitSummary(false);
+    setTimeout(() => setShowApprovalModal(true), 200);
+  };
 
   return (
      <div className="animate-fade-in space-y-6 relative">
@@ -222,7 +249,7 @@ function ScheduledTab() {
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
-          {/* Date Picker */}
+          {/* Date Picker (UI only for overview) */}
           <div className="flex items-center bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm">
             <i className="fa-regular fa-calendar text-gray-400 mr-2"></i>
             <span className="text-sm font-medium text-gray-700">23 Apr - 29 Apr, 2025</span>
@@ -242,7 +269,7 @@ function ScheduledTab() {
             <i className="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none"></i>
           </div>
 
-          {/* Add Button - Triggers Modal */}
+          {/* Add Button - Triggers Create Schedule Modal */}
           <button 
             onClick={() => setShowModal(true)}
             className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"
@@ -294,29 +321,64 @@ function ScheduledTab() {
           
           {/* Yellow Event */}
           <CalendarCell date={22} isCurrentMonth={true}>
-            <EventCard color="yellow" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+            <EventCard 
+                color="yellow" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(22)} 
+            />
           </CalendarCell>
           
           {/* Green Events */}
           <CalendarCell date={23} isCurrentMonth={true}>
-            <EventCard color="green" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+            <EventCard 
+                color="green" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(23)}
+            />
           </CalendarCell>
           <CalendarCell date={24} isCurrentMonth={true}>
-             <EventCard color="green" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+             <EventCard 
+                color="green" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(24)}
+             />
           </CalendarCell>
           <CalendarCell date={25} isCurrentMonth={true}>
-             <EventCard color="green" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+             <EventCard 
+                color="green" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(25)}
+             />
           </CalendarCell>
           <CalendarCell date={26} isCurrentMonth={true}>
-             <EventCard color="green" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+             <EventCard 
+                color="green" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(26)}
+             />
           </CalendarCell>
 
           {/* Mixed Events */}
           <CalendarCell date={27} isCurrentMonth={true}>
-             <EventCard color="green" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+             <EventCard 
+                color="green" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(27)}
+             />
           </CalendarCell>
           <CalendarCell date={28} isCurrentMonth={true}>
-             <EventCard color="blue" time="7 AM - 3 PM | 8 Hours" staff="Juan, Chinchu" />
+             <EventCard 
+                color="blue" 
+                time="7 AM - 3 PM | 8 Hours" 
+                staff="Juan, Chinchu" 
+                onClick={() => handleEventClick(28)}
+             />
           </CalendarCell>
 
           <CalendarCell date={29} isCurrentMonth={true} />
@@ -328,8 +390,22 @@ function ScheduledTab() {
         </div>
       </div>
 
-      {/* --- MODAL INJECTION --- */}
+      {/* --- MODALS --- */}
       {showModal && <CreateScheduleModal onClose={() => setShowModal(false)} />}
+      
+      {/* Visit Summary Modal (Triggered by clicking an EventCard) */}
+      {showVisitSummary && selectedVisit && (
+         <VisitSummaryModal 
+            report={selectedVisit} 
+            onApprove={handleApproveVisitClick} 
+            onClose={() => setShowVisitSummary(false)} 
+         />
+      )}
+
+      {/* Approval Note Modal (Triggered from Visit Summary) */}
+      {showApprovalModal && (
+         <ApprovalNoteModal onClose={() => setShowApprovalModal(false)} />
+      )}
       
     </div>
   );
@@ -346,39 +422,153 @@ function CaregiversTab() {
       <h3 className="font-bold text-gray-800 mb-4">Caregivers List</h3>
       <table className="w-full text-left text-sm">
          <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-            <tr><th className="p-3">Name</th><th className="p-3">ID</th><th className="p-3">Status</th></tr>
+            <tr><th className="p-3">SN</th><th className="p-3">Caregiver Name</th><th className="p-3">Caregiver ID</th><th className="p-3">Contact</th><th className="p-3">Assignment Dates</th><th className="p-3">Status</th><th className="p-3"></th></tr>
          </thead>
          <tbody className="divide-y divide-gray-50">
-            <tr><td className="p-3">Linda Thompson</td><td className="p-3">Cl-10523</td><td className="p-3 text-blue-600">Active</td></tr>
-            <tr><td className="p-3">Daniel Green</td><td className="p-3">Cl-20475</td><td className="p-3 text-green-600">Completed</td></tr>
+            <tr><td className="p-3">01</td><td className="p-3">Linda Thompson</td><td className="p-3">Cl-10523</td><td className="p-3">(415) 555-0145</td><td className="p-3">Feb 20 - Feb 25, 2025</td><td className="p-3 text-blue-600">Active</td><td><button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-trash-can text-xs"></i></button></td></tr>
+            <tr><td className="p-3">02</td><td className="p-3">Daniel Green</td><td className="p-3">Cl-20475</td><td className="p-3">(415) 555-0123</td><td className="p-3">Feb 18 - Feb 22, 2025</td><td className="p-3 text-green-600">Completed</td><td><button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-trash-can text-xs"></i></button></td></tr>
+            <tr><td className="p-3">03</td><td className="p-3">Sarah Johnson</td><td className="p-3">Cl-30125</td><td className="p-3">(415) 555-0167</td><td className="p-3">Feb 15 - Feb 20, 2025</td><td className="p-3 text-yellow-600">Pending</td><td><button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-trash-can text-xs"></i></button></td></tr>
+            <tr><td className="p-3">04</td><td className="p-3">Michael Brown</td><td className="p-3">Cl-40236</td><td className="p-3">(415) 555-0189</td><td className="p-3">Feb 10 - Feb 15, 2025</td><td className="p-3 text-green-600">Completed</td><td><button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-trash-can text-xs"></i></button></td></tr>
+            <tr><td className="p-3">05</td><td className="p-3">Emily Davis</td><td className="p-3">Cl-50347</td><td className="p-3">(415) 555-0198</td><td className="p-3">Feb 05 - Feb 10, 2025</td><td className="p-3 text-green-600">Completed</td><td><button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-trash-can text-xs"></i></button></td></tr>
          </tbody>
       </table>
     </div>
   );
 }
 
+
 // =========================================================================
 // 4. NOTE TAB
 // =========================================================================
 function NoteTab() {
-  const [showModal, setShowModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedNote, setSelectedNote] = useState<any>(null);
+
+  const notes = [
+    {
+      id: 1,
+      title: "Suffering with Headache",
+      date: "23 Feb, 2025",
+      author: "Rajesh Maharjan",
+      role: "Caregiver",
+      desc: "Here is a dummy note that will come here that will be added by different users or staffs or nurses taking care of the client. It will be detailed note so this note will be also used as references for future.",
+      img: 3
+    },
+    {
+      id: 2,
+      title: "Managing Chronic Pain",
+      date: "24 Feb, 2025",
+      author: "Anjali Prasad",
+      role: "Caregiver",
+      desc: "Notes regarding the patient's experiences with chronic pain management strategies and their effectiveness over the past week.",
+      img: 12
+    },
+    {
+      id: 3,
+      title: "Post-Surgery Recovery",
+      date: "25 Feb, 2025",
+      author: "Michael Johnson",
+      role: "Caregiver",
+      desc: "Detailed observations on recovery progress, pain levels, and mobility after surgery as documented by the recovery team.",
+      img: 8
+    },
+    {
+      id: 4,
+      title: "Nutritional Assessment",
+      date: "26 Feb, 2025",
+      author: "Sarah Lee",
+      role: "Caregiver",
+      desc: "A comprehensive note evaluating the nutritional needs and dietary intake of the patient to optimize healing and recovery.",
+      img: 5
+    },
+    {
+      id: 5,
+      title: "Mental Health Check-In",
+      date: "27 Feb, 2025",
+      author: "Emily Chen",
+      role: "Caregiver",
+      desc: "Psychological assessment notes regarding the patient's mental well-being and coping strategies implemented during the visit.",
+      img: 9
+    },
+    {
+        id: 6,
+        title: "Medication Review",
+        date: "28 Feb, 2025",
+        author: "David Smith",
+        role: "Caregiver",
+        desc: "Review and documentation of prescribed medications, dosages, and patient adherence to ensure optimal therapeutic outcomes.",
+        img: 7
+    },
+    {
+        id: 7,
+        title: "Physical Therapy Progress",
+        date: "1 Mar, 2025",
+        author: "Laura Davis",
+        role: "Caregiver",
+        desc: "Insights into the patient's physical therapy sessions, progress, and areas needing additional focus for recovery.",
+        img: 2
+    },
+    {
+        id: 8,
+        title: "Follow-Up Appointment Summary",
+        date: "2 Mar, 2025",
+        author: "James Wilson",
+        role: "Caregiver",
+        desc: "Summary notes from the follow-up appointment detailing the patient's status, concerns addressed, and next steps.",
+        img: 11
+    },
+    {
+        id: 9,
+        title: "Discharge Planning",
+        date: "3 Mar, 2025",
+        author: "Nisha Patel",
+        role: "Caregiver",
+        desc: "Notes outlining the discharge process, including recommendations for at-home care, follow-up appointments, and patient education.",
+        img: 15
+    }
+  ];
 
   return (
     <div className="animate-fade-in space-y-6">
        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <h3 className="text-lg font-bold text-gray-800">Notes</h3>
-          <button onClick={() => setShowModal(true)} className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors">
+          <div className="relative w-full md:w-64">
+             <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+             <input 
+                type="text" 
+                placeholder="Search..." 
+                className="w-full bg-gray-100 border-none rounded-lg pl-9 pr-4 py-2 text-sm focus:ring-1 focus:ring-brand" 
+             />
+          </div>
+          <button 
+            onClick={() => setShowCreateModal(true)} 
+            className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
              Create A Note
           </button>
        </div>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <NoteCard title="Suffering with Headache" date="23 Feb, 2025" author="Rajesh Maharjan" desc="Patient reported mild headache..." />
-          <NoteCard title="Managing Chronic Pain" date="24 Feb, 2025" author="Anjali Prasad" desc="Pain management strategies..." />
+
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {notes.map((note) => (
+            <div key={note.id} onClick={() => setSelectedNote(note)} className="cursor-pointer h-full">
+                <NoteCard 
+                    title={note.title} 
+                    date={note.date} 
+                    author={note.author} 
+                    role={note.role}
+                    desc={note.desc} 
+                    img={note.img}
+                />
+            </div>
+          ))}
        </div>
-       {showModal && <CreateNoteModal onClose={() => setShowModal(false)} />}
+
+       {showCreateModal && <CreateNoteModal onClose={() => setShowCreateModal(false)} />}
+       {selectedNote && <ViewNoteModal note={selectedNote} onClose={() => setSelectedNote(null)} />}
     </div>
   );
 }
+
+
 
 // =========================================================================
 // 5. ADL TAB
@@ -386,7 +576,18 @@ function NoteTab() {
 function ADLTab() {
   const [subTab, setSubTab] = useState("Care Plans");
   const [showCarePlanModal, setShowCarePlanModal] = useState(false);
+  const [carePlanMode, setCarePlanMode] = useState<'create' | 'edit'>('create'); // State to track mode
   const [showReportModal, setShowReportModal] = useState(false);
+
+  const handleOpenCreate = () => {
+    setCarePlanMode('create');
+    setShowCarePlanModal(true);
+  };
+
+  const handleOpenEdit = () => {
+    setCarePlanMode('edit');
+    setShowCarePlanModal(true);
+  };
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -413,7 +614,7 @@ function ADLTab() {
 
           {/* Action Button Changes based on Sub Tab */}
           {subTab === "Care Plans" ? (
-             <button onClick={() => setShowCarePlanModal(true)} className="bg-[#0074D9] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors">
+             <button onClick={handleOpenCreate} className="bg-[#0074D9] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors">
                 Add Care Plan
              </button>
           ) : (
@@ -429,7 +630,7 @@ function ADLTab() {
           <div className="space-y-6 animate-fade-in">
              <ADLSection 
                 title="Toilet/Elimination" 
-                onEdit={() => setShowCarePlanModal(true)} 
+                onEdit={handleOpenEdit} 
                 items={[
                    { name: "Assist with Commode", desc: "To support individuals who are unable to walk to the toilet due to illness..." },
                    { name: "Assist with Bed Pans", desc: "To help individuals who are bedridden or have limited mobility..." }
@@ -437,7 +638,7 @@ function ADLTab() {
              />
              <ADLSection 
                 title="Personal Care" 
-                onEdit={() => setShowCarePlanModal(true)} 
+                onEdit={handleOpenEdit} 
                 items={[
                    { name: "Assist with Bathing", desc: "To maintain cleanliness, promote comfort, prevent infections..." },
                    { name: "Assist with Dressing", desc: "To support individuals who cannot dress themselves due to age..." }
@@ -445,7 +646,7 @@ function ADLTab() {
              />
              <ADLSection 
                 title="Ambulating" 
-                onEdit={() => setShowCarePlanModal(true)} 
+                onEdit={handleOpenEdit} 
                 items={[
                    { name: "Assist with Wheelchair", desc: "To safely support individuals who rely on a wheelchair..." },
                    { name: "Assist with Walking", desc: "To support individuals with limited mobility in walking safely..." }
@@ -453,7 +654,7 @@ function ADLTab() {
              />
              <ADLSection 
                 title="Nutrition" 
-                onEdit={() => setShowCarePlanModal(true)} 
+                onEdit={handleOpenEdit} 
                 items={[
                    { name: "Meal Prepare", desc: "To safely support individuals who rely on a wheelchair..." },
                    { name: "Prepare Breakfast", desc: "To support individuals with limited mobility in walking..." }
@@ -510,7 +711,7 @@ function ADLTab() {
        )}
 
        {/* Modals */}
-       {showCarePlanModal && <CarePlanModal onClose={() => setShowCarePlanModal(false)} />}
+       {showCarePlanModal && <CarePlanModal mode={carePlanMode} onClose={() => setShowCarePlanModal(false)} />}
        {showReportModal && <ReportModal onClose={() => setShowReportModal(false)} />}
 
     </div>
@@ -518,56 +719,131 @@ function ADLTab() {
 }
 
 // =========================================================================
-// 2. MODAL COMPONENTS (New ADL Modals)
+// CARE PLAN MODAL (Matches image_cb0ddd.png & image_cb0a74.png)
 // =========================================================================
+function CarePlanModal({ mode, onClose }: { mode: 'create' | 'edit', onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
 
-function CarePlanModal({ onClose }: { onClose: () => void }) {
+  const isCreate = mode === 'create';
+
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
-       <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col animate-scale-up relative">
+       <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up relative">
+          
+          {/* Header */}
           <div className="flex justify-between items-center p-6 border-b border-gray-100">
-             <h2 className="text-xl font-bold text-gray-800">Care Plan</h2>
+             <h2 className="text-xl font-bold text-gray-800">{isCreate ? "Create a New Care Plan" : "Care Plan"}</h2>
              <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
           </div>
-          <div className="p-6 space-y-5">
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Service Provided</label>
-                <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-brand">
-                   <option>Assist with Commode</option>
-                </select>
-             </div>
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Repeats on</label>
-                <div className="flex gap-2 flex-wrap">
-                   {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-                      <button key={day} className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${day === 'Sunday' || day === 'Monday' || day === 'Tuesday' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}>
-                         {day}
-                      </button>
-                   ))}
+
+          <div className="p-6 overflow-y-auto custom-scrollbar">
+             <div className="space-y-5">
+                
+                {/* Extra fields for Create Mode (Service Provider, Goal) */}
+                {isCreate && (
+                   <>
+                      <div className="space-y-1.5">
+                         <label className="text-sm font-medium text-gray-700">Service Provider</label>
+                         <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                            <option>Select</option>
+                              <option>Assist with Commode</option>  
+                              <option>Assist with Bed Pans</option>
+                              <option>Assist with Bathing</option>
+                              <option>Assist with Dressing</option>
+                         </select>
+                      </div>
+                      <div className="space-y-1.5">
+                         <label className="text-sm font-medium text-gray-700">Primary Goal</label>
+                         <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                            <option>Select</option>
+                            <option>Toileting</option>
+                            <option>Personal Care</option>
+                            <option>Ambulation</option>
+                         </select>
+                      </div>
+                   </>
+                )}
+
+                {/* Service Provided */}
+                <div className="space-y-1.5">
+                   <label className="text-sm font-medium text-gray-700">Service Provided</label>
+                   <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-800">
+                      <option>{isCreate ? "Select" : "Assist with Commode"}</option>
+                   </select>
                 </div>
-             </div>
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Start Date</label>
-                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-brand" defaultValue="2024-02-02" />
-             </div>
-             <div className="flex items-center gap-2">
-                <input type="checkbox" id="ongoing" className="w-4 h-4 text-blue-600 rounded border-gray-300" defaultChecked />
-                <label htmlFor="ongoing" className="text-sm text-gray-700 font-medium">Continue & ongoing</label>
-             </div>
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">End Date</label>
-                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-brand" defaultValue="2024-04-12" />
+
+                {isCreate && <h4 className="text-xs font-bold text-gray-800 pt-2">Time by which goal Should be achieved</h4>}
+
+                {/* Start Date */}
+                <div className="space-y-1.5">
+                   <label className="text-sm font-medium text-gray-700">Start Date</label>
+                   {/* FIXED: Changed to type="date" and removed manual icon */}
+                   <input 
+                      type="date" 
+                      className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" 
+                      defaultValue={isCreate ? "" : "2024-02-02"} 
+                   />
+                </div>
+
+                {/* Ongoing Checkbox */}
+                <div className="flex items-center gap-2">
+                   <input type="checkbox" id="ongoing" className="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand" defaultChecked={!isCreate} />
+                   <label htmlFor="ongoing" className="text-sm text-gray-700 font-medium">Continue & ongoing</label>
+                </div>
+
+                {/* End Date */}
+                <div className="space-y-1.5">
+                   <label className="text-sm font-medium text-gray-700">End Date</label>
+                   <input 
+                      type="date" 
+                      className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" 
+                      defaultValue={isCreate ? "" : "2024-12-04"} 
+                   />
+                </div>
+
+                {/* Repeats On (Moved below End Date for Edit mode per image, or kept consistent) */}
+                <div className="space-y-1.5">
+                   <label className="text-sm font-medium text-gray-700">Repeats on</label>
+                   <div className="flex gap-2 flex-wrap">
+                      {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => {
+                         // Mock selection logic: Select Mon-Fri by default or based on edit
+                         const isSelected = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(day);
+                         return (
+                            <button 
+                               key={day} 
+                               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                                  isSelected 
+                                     ? 'bg-green-50 text-green-700 border-green-200' 
+                                     : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+                               }`}
+                            >
+                               {day}
+                            </button>
+                         )
+                      })}
+                   </div>
+                </div>
+
+                {/* Add More Button (Only visible in Create Mode usually, or if list is editable) */}
+                {isCreate && (
+                   <button className="bg-blue-50 text-[#0074D9] px-4 py-2 rounded-lg text-xs font-medium hover:bg-blue-100 transition-colors">
+                      Add More
+                   </button>
+                )}
+
              </div>
           </div>
+
           <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
              <button onClick={onClose} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-white">Cancel</button>
-             <button onClick={onClose} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-900/10">Save</button>
+             <button onClick={onClose} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-900/10 hover:bg-[#0062b8]">Save</button>
           </div>
        </div>
     </div>, document.body
   );
 }
-
 function ReportModal({ onClose }: { onClose: () => void }) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
@@ -583,7 +859,8 @@ function ReportModal({ onClose }: { onClose: () => void }) {
              </div>
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Start Date</label>
-                <input type="text" placeholder="dd / mm / yyyy" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-brand" />
+                {/* FIXED: Changed to type="date" */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-brand" />
              </div>
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Transferring</label>
@@ -682,8 +959,8 @@ function MedicationTab() {
                          <td className="p-4 text-right">
                             <div className="flex justify-end gap-2">
                                <button 
-                                 onClick={() => handleNameClick(item)}
-                                 className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-colors"
+                                  onClick={() => handleNameClick(item)}
+                                  className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-colors"
                                >
                                   <i className="fa-regular fa-eye text-xs"></i>
                                </button>
@@ -837,10 +1114,8 @@ function AddMedicationModal({ onClose }: { onClose: () => void }) {
 
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Start Date</label>
-                <div className="relative">
-                   <input type="text" placeholder="dd / mm / yyyy" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                   <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                </div>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
              </div>
           </div>
 
@@ -860,7 +1135,280 @@ function AddMedicationModal({ onClose }: { onClose: () => void }) {
 }
 
 
-function BillingTab() { return <div className="text-center py-10 text-gray-400">Billing Info</div>; }
+// =========================================================================
+// 4. BILLING TAB
+// =========================================================================
+function BillingTab() {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+
+  // Mock Data
+  const billingRecords = [
+    { id: "INV-2024-001", date: "01 April, 2025", payer: "Amica Mutual Insurance", service: "Personal Care", amount: "$450.00", status: "Paid" },
+    { id: "INV-2024-002", date: "15 April, 2025", payer: "Private Pay", service: "Transportation", amount: "$120.00", status: "Pending" },
+    { id: "INV-2024-003", date: "22 April, 2025", payer: "Medicaid", service: "Respite Care", amount: "$300.00", status: "Overdue" },
+    { id: "INV-2024-004", date: "29 April, 2025", payer: "Amica Mutual Insurance", service: "Personal Care", amount: "$450.00", status: "Paid" },
+  ];
+
+  const handleViewClick = (invoice: any) => {
+    setSelectedInvoice(invoice);
+    setShowDetailModal(true);
+  };
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       
+       {/* --- Top Stats Section --- */}
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
+             <div>
+                <p className="text-xs text-blue-500 font-medium uppercase mb-1">Total Billed</p>
+                <h3 className="text-2xl font-bold text-blue-700">$1,320.00</h3>
+             </div>
+             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-500 shadow-sm">
+                <i className="fa-solid fa-file-invoice-dollar"></i>
+             </div>
+          </div>
+          <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center justify-between">
+             <div>
+                <p className="text-xs text-green-500 font-medium uppercase mb-1">Received</p>
+                <h3 className="text-2xl font-bold text-green-700">$900.00</h3>
+             </div>
+             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-500 shadow-sm">
+                <i className="fa-solid fa-check"></i>
+             </div>
+          </div>
+          <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl flex items-center justify-between">
+             <div>
+                <p className="text-xs text-orange-500 font-medium uppercase mb-1">Pending / Due</p>
+                <h3 className="text-2xl font-bold text-orange-700">$420.00</h3>
+             </div>
+             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-orange-500 shadow-sm">
+                <i className="fa-regular fa-clock"></i>
+             </div>
+          </div>
+       </div>
+
+       {/* --- Header & Actions --- */}
+       <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4">
+          <h3 className="text-lg font-bold text-gray-800">Billing History</h3>
+          <div className="flex gap-3 w-full md:w-auto">
+             <div className="relative flex-1 md:w-64">
+                <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                <input type="text" placeholder="Search Invoice..." className="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-brand" />
+             </div>
+             <button 
+                onClick={() => setShowAddModal(true)}
+                className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors shadow-sm whitespace-nowrap"
+             >
+                Generate Invoice
+             </button>
+          </div>
+       </div>
+
+       {/* --- Table --- */}
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+             <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+                   <tr>
+                      <th className="p-4">Invoice ID</th>
+                      <th className="p-4">Date</th>
+                      <th className="p-4">Payer</th>
+                      <th className="p-4">Service</th>
+                      <th className="p-4">Amount</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4 text-right">Action</th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                   {billingRecords.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50/50 transition-colors">
+                         <td className="p-4 font-medium text-gray-800">{item.id}</td>
+                         <td className="p-4 text-gray-600">{item.date}</td>
+                         <td className="p-4 text-gray-600">{item.payer}</td>
+                         <td className="p-4 text-gray-600">{item.service}</td>
+                         <td className="p-4 font-bold text-gray-800">{item.amount}</td>
+                         <td className="p-4">
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium border ${
+                               item.status === 'Paid' ? 'bg-green-50 text-green-600 border-green-100' : 
+                               item.status === 'Pending' ? 'bg-blue-50 text-blue-600 border-blue-100' : 
+                               'bg-red-50 text-red-600 border-red-100'
+                            }`}>
+                               {item.status}
+                            </span>
+                         </td>
+                         <td className="p-4 text-right">
+                            <div className="flex justify-end gap-2">
+                               <button onClick={() => handleViewClick(item)} className="text-blue-500 bg-blue-50 w-8 h-8 rounded-full hover:bg-blue-100 flex items-center justify-center transition-colors"><i className="fa-regular fa-eye text-xs"></i></button>
+                               <button className="text-gray-500 bg-gray-50 w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center transition-colors"><i className="fa-solid fa-download text-xs"></i></button>
+                            </div>
+                         </td>
+                      </tr>
+                   ))}
+                </tbody>
+             </table>
+          </div>
+          <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+             <span>Showing 1 to 4 of 4 Results</span>
+             <div className="flex gap-2"><button className="hover:text-brand">Previous</button><button className="text-brand font-medium">Next</button></div>
+          </div>
+       </div>
+
+       {/* --- MODALS --- */}
+       {showAddModal && <AddBillingModal onClose={() => setShowAddModal(false)} />}
+       {showDetailModal && selectedInvoice && <BillingDetailModal invoice={selectedInvoice} onClose={() => setShowDetailModal(false)} />}
+
+    </div>
+  );
+}
+
+// --- ADD BILLING MODAL ---
+function AddBillingModal({ onClose }: { onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
+          
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+             <h2 className="text-xl font-bold text-gray-800">Generate Invoice</h2>
+             <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
+          </div>
+
+          <div className="p-6 space-y-5">
+             {/* Payer Selection */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Payer</label>
+                <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                   <option>Select Payer</option>
+                   <option>Amica Mutual Insurance</option>
+                   <option>Medicaid</option>
+                   <option>Private Pay</option>
+                </select>
+             </div>
+
+             {/* Service Selection */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Service Type</label>
+                <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                   <option>Select Service</option>
+                   <option>Personal Care</option>
+                   <option>Transportation</option>
+                   <option>Respite Care</option>
+                </select>
+             </div>
+
+             {/* Date Picker */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Invoice Date</label>
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+             </div>
+
+             {/* Amount */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Amount ($)</label>
+                <input type="number" placeholder="0.00" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+             </div>
+
+             {/* Notes */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Notes</label>
+                <textarea placeholder="Enter invoice notes..." className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm h-20 resize-none focus:outline-none focus:border-brand"></textarea>
+             </div>
+          </div>
+
+          <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
+             <button onClick={onClose} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-white transition-colors">Cancel</button>
+             <button onClick={onClose} className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-8 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-900/10 transition-colors">Create Invoice</button>
+          </div>
+       </div>
+    </div>, document.body
+  );
+}
+
+// --- BILLING DETAIL MODAL ---
+function BillingDetailModal({ invoice, onClose }: { invoice: any, onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
+          
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+             <h2 className="text-xl font-bold text-gray-800">Invoice Details</h2>
+             <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
+          </div>
+
+          <div className="p-8 space-y-6 bg-gray-50/30">
+             
+             {/* Header */}
+             <div className="flex justify-between items-start">
+                <div>
+                   <p className="text-xs text-gray-500 uppercase">Invoice ID</p>
+                   <h3 className="text-lg font-bold text-[#0074D9]">{invoice.id}</h3>
+                </div>
+                <div className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                   invoice.status === 'Paid' ? 'bg-green-100 text-green-700 border-green-200' : 
+                   invoice.status === 'Pending' ? 'bg-blue-100 text-blue-700 border-blue-200' : 
+                   'bg-red-100 text-red-700 border-red-200'
+                }`}>
+                   {invoice.status}
+                </div>
+             </div>
+
+             {/* Details Grid */}
+             <div className="bg-white p-4 rounded-xl border border-gray-200 grid grid-cols-2 gap-y-4 text-sm">
+                <div>
+                   <p className="text-xs text-gray-400">Payer</p>
+                   <p className="font-medium text-gray-800">{invoice.payer}</p>
+                </div>
+                <div>
+                   <p className="text-xs text-gray-400">Invoice Date</p>
+                   <p className="font-medium text-gray-800">{invoice.date}</p>
+                </div>
+                <div>
+                   <p className="text-xs text-gray-400">Service Provided</p>
+                   <p className="font-medium text-gray-800">{invoice.service}</p>
+                </div>
+                <div>
+                   <p className="text-xs text-gray-400">Amount</p>
+                   <p className="font-bold text-gray-800 text-base">{invoice.amount}</p>
+                </div>
+             </div>
+
+             {/* Summary */}
+             <div className="border-t border-dashed border-gray-300 pt-4">
+                <div className="flex justify-between items-center text-sm mb-2">
+                   <span className="text-gray-500">Subtotal</span>
+                   <span className="font-medium text-gray-800">{invoice.amount}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm mb-2">
+                   <span className="text-gray-500">Tax (0%)</span>
+                   <span className="font-medium text-gray-800">$0.00</span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-bold text-gray-800 mt-4 border-t border-gray-200 pt-3">
+                   <span>Total</span>
+                   <span>{invoice.amount}</span>
+                </div>
+             </div>
+          </div>
+
+          <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-white rounded-b-2xl">
+             <button className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+                <i className="fa-solid fa-download"></i> Download
+             </button>
+             <button onClick={onClose} className="px-6 py-2.5 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Close</button>
+          </div>
+       </div>
+    </div>, document.body
+  );
+}
 
 function ScheduleReportTab() {
   const [showVisitSummary, setShowVisitSummary] = useState(false);
@@ -1095,6 +1643,47 @@ function VisitSummaryModal({ report, onApprove, onClose }: { report: any, onAppr
   );
 }
 
+// --- VIEW NOTE MODAL ---
+function ViewNoteModal({ note, onClose }: { note: any, onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative overflow-hidden">
+          
+          <div className="flex justify-between items-start p-6 border-b border-gray-100">
+             <div>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Notes</span>
+                <h2 className="text-xl font-bold text-[#0074D9] mt-1">{note.title}</h2>
+             </div>
+             <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400 hover:text-gray-600 transition-colors"></i></button>
+          </div>
+
+          <div className="p-6 overflow-y-auto max-h-[60vh]">
+             <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
+                {note.desc}
+             </p>
+          </div>
+
+          <div className="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+             <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold text-xs">
+                    {note.author.charAt(0)}
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-xs font-bold text-gray-700">{note.author}</span>
+                    <span className="text-[10px] text-gray-400">{note.role}</span>
+                </div>
+             </div>
+             <span className="text-xs text-gray-400 font-medium">{note.date}</span>
+          </div>
+       </div>
+    </div>, document.body
+  );
+}
+
 // --- B. APPROVAL NOTE MODAL (Matches image_218266.png) ---
 function ApprovalNoteModal({ onClose }: { onClose: () => void }) {
   const [mounted, setMounted] = useState(false);
@@ -1117,15 +1706,28 @@ function ApprovalNoteModal({ onClose }: { onClose: () => void }) {
              </div>
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Approve Date</label>
-                <div className="relative">
-                   <input type="text" placeholder="MM / DD / YYYY" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                   <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                </div>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
              </div>
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Approved Reason</label>
                 <select className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
                    <option>Select</option>
+                     <option>105 - Services
+Provided Outside
+the Home</option>
+                     <option>300 - Phone Line
+Not Reliant</option>
+<option>312 -
+Malfunctioning
+Mobile /
+Application</option>
+                     <option>400 - Phone
+Unavailable</option>
+<option>905 - Attendant or
+Assigned Failed to
+call in</option>
+                     
                 </select>
              </div>
              <div className="space-y-1.5">
@@ -1154,6 +1756,7 @@ function ApprovalNoteModal({ onClose }: { onClose: () => void }) {
     </div>, document.body
   );
 }
+
 
 // --- C. CREATE SCHEDULE MODAL (3-STEP WIZARD) ---
 function CreateScheduleModal({ onClose }: { onClose: () => void }) {
@@ -1187,15 +1790,67 @@ function CreateScheduleModal({ onClose }: { onClose: () => void }) {
              {step === 1 && (
                 <div className="space-y-6 animate-slide-up">
                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Client</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select or Enter</option></select></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Caregiver</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select or Enter</option></select></div>
+                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Client</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500">
+                        <option>Select or Enter</option>
+                        <option>Nina Mcintire</option>
+                        <option>Chen, Yueqiu</option>
+                        <option>John Doe</option>  
+                        </select></div>
+                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Caregiver</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500">
+                        <option>Select or Enter</option>
+                        <option>Michael Jackson</option>
+                        <option>Liam Thompson</option>
+                        <option>Sophia Martinez</option>
+                        </select></div>
                    </div>
+
+                   {/* --- DATE & TIME PICKERS SECTION --- */}
                    <div className="grid grid-cols-3 gap-6">
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Start Date</label><div className="relative"><input type="text" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm"/><i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400"></i></div></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Time</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select Start Time</option></select></div>
-                      <div className="space-y-1"><label className="text-sm font-medium text-gray-700 opacity-0">End</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select End Time</option></select></div>
+                      
+                      {/* Date Picker */}
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Start Date</label>
+                        <input type="date" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand"/>
+                      </div>
+
+                      {/* Start Time Picker */}
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Start Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+
+                      {/* End Time Picker */}
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">End Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+
                    </div>
-                   <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Frequency</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500"><option>Select</option></select></div>
+                   {/* ----------------------------------- */}
+
+                   <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Frequency</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500">
+                     <option>Select</option>
+                     <option>One Time</option>
+                     <option>Daily</option>
+                     <option>Weekly</option>
+                     <option>Bi-Weekly</option>
+                     <option>Monthly</option>
+                     </select></div>
+                   <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Repeat Every</label>
+                        <input type="date" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand"/>
+                   </div>
+                   <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Ends on</label>
+                        <input type="date" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand"/>
+                   </div>
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Notes</label><textarea placeholder="Start typing..." className="w-full border border-gray-200 rounded-lg p-2.5 text-sm h-24 resize-none"></textarea></div>
                 </div>
              )}
@@ -1203,7 +1858,12 @@ function CreateScheduleModal({ onClose }: { onClose: () => void }) {
              {/* STEP 2: Accounting */}
              {step === 2 && (
                 <div className="space-y-6 animate-slide-up">
-                   <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Service Type</label><input type="text" placeholder="Enter or Select" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                   <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Service Type</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-gray-500">
+                     <option>Select</option>
+                     <option>Home Care</option>
+                     <option>Transportation</option>
+                     <option>Meal Delivery</option>
+                     </select></div>
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Bill Rate Hourly</label><div className="flex gap-4"><select className="flex-1 border p-2.5 rounded-lg text-sm"><option>Select</option></select><input type="text" placeholder="Custom" className="flex-1 border p-2.5 rounded-lg text-sm" /></div></div>
                    <div className="space-y-1"><label className="text-sm font-medium text-gray-700">Pay Rate</label><div className="flex gap-4"><select className="flex-1 border p-2.5 rounded-lg text-sm"><option>Select</option></select><input type="text" placeholder="Custom" className="flex-1 border p-2.5 rounded-lg text-sm" /></div></div>
                 </div>
@@ -1339,9 +1999,25 @@ function AddServiceAuthModal({ onClose }: { onClose: () => void }) {
              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Payer</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white"><option>Select</option></select></div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Member ID</label><input className="w-full border p-2.5 rounded-lg text-sm bg-white" placeholder="Enter" /></div>
-                <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Insurance Type Code</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white"><option>Select</option></select></div>
+                <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Insurance Type Code</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white">
+                  <option>Select</option>
+                  <option>Medicare</option>
+                  <option>Medicaid</option>
+                  <option>Private Insurance</option>
+                  <option>Workers compensation</option>
+                  <option>Long-Term-care Insurance </option>
+                  <option>Self-Pay / Uninsured</option>  
+                  <option>Other Commercial PPO/HMO</option>
+                  </select>
+                  </div>
                 
-                <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Claiming Factor</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white"><option>Select</option></select></div>
+                <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Claiming Factor</label>
+                <select className="w-full border p-2.5 rounded-lg text-sm bg-white">
+                  <option>Select</option>
+                  <option>Medicare</option>
+                  <option>Medicaid</option>
+                  <option>Private Insurance</option>
+                  </select></div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Group Id</label><input className="w-full border p-2.5 rounded-lg text-sm bg-white" placeholder="Enter #" /></div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Service Auth #</label><input className="w-full border p-2.5 rounded-lg text-sm bg-white" placeholder="Enter #" /></div>
 
@@ -1365,7 +2041,10 @@ function AddServiceAuthModal({ onClose }: { onClose: () => void }) {
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">POS</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white"><option>Select</option></select></div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Service Rate</label><input className="w-full border p-2.5 rounded-lg text-sm bg-white" placeholder="Enter" /></div>
 
-                <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Dates</label><input type="date" className="w-full border p-2.5 rounded-lg text-sm bg-white" /></div>
+                <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-gray-500">Dates</label>
+                    <input type="date" className="w-full border p-2.5 rounded-lg text-sm bg-white" />
+                </div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Units</label><input className="w-full border p-2.5 rounded-lg text-sm bg-white" placeholder="Enter #" /></div>
                 <div className="space-y-1.5"><label className="text-xs font-medium text-gray-500">Frequency</label><select className="w-full border p-2.5 rounded-lg text-sm bg-white"><option>Select</option></select></div>
              </div>
@@ -1687,7 +2366,7 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* Body */}
-       <div className="p-8 overflow-y-auto flex-1">
+        <div className="p-8 overflow-y-auto flex-1">
              
              {/* STEP 1: BASIC INFORMATION (Matching Image 12fe3e.png) */}
              {step === 1 && (
@@ -1712,10 +2391,8 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Start Date</label>
-                         <div className="relative">
-                            <input type="text" placeholder="dd / mm / yyyy" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                            <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                         </div>
+                         {/* FIXED: Changed to type="date" and removed manual icon */}
+                         <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
                       </div>
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Time</label>
@@ -1748,10 +2425,8 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Repeat Every</label>
-                         <div className="relative">
-                            <input type="text" placeholder="dd / mm / yyyy" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                            <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                         </div>
+                         {/* FIXED: Changed to type="date" and removed manual icon */}
+                         <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
                       </div>
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Repeats on</label>
@@ -1769,10 +2444,8 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Ends on</label>
-                         <div className="relative">
-                            <input type="text" placeholder="dd / mm / yyyy" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                            <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                         </div>
+                         {/* FIXED: Changed to type="date" and removed manual icon */}
+                         <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
                       </div>
                       <div className="space-y-1.5">
                          <label className="text-sm font-medium text-gray-700">Occurrence Times</label>
@@ -1833,7 +2506,7 @@ function CreateVisitModal({ onClose }: { onClose: () => void }) {
 
           </div>
 
-         <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
+          <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
              {step === 1 && (
                 <>
                    <button onClick={onClose} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-white">Cancel</button>
@@ -1864,14 +2537,20 @@ function InfoItem({ label, value }: { label: string, value: string }) {
   );
 }
 
-function NoteCard({ title, date, author, desc }: any) {
+function NoteCard({ title, date, author, role, desc, img }: any) {
     return (
-        <div className="border border-gray-100 p-5 rounded-xl bg-white shadow-sm">
+        <div className="border border-blue-100 p-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-all h-full flex flex-col border-l-4 border-l-[#0074D9]">
             <h4 className="font-bold text-[#0074D9] text-sm mb-2">{title}</h4>
-            <p className="text-xs text-gray-500 mb-4 line-clamp-3">{desc}</p>
-            <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-                <div className="flex items-center gap-2"><img src="https://i.pravatar.cc/150?img=3" className="w-6 h-6 rounded-full" /><div className="text-[10px]"><div className="font-bold text-gray-700">{author}</div></div></div>
-                <span className="text-[10px] text-gray-400">{date}</span>
+            <p className="text-xs text-gray-500 mb-4 line-clamp-4 flex-1 leading-relaxed">{desc}</p>
+            <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-50">
+                <div className="flex items-center gap-2">
+                    <img src={`https://i.pravatar.cc/150?img=${img}`} className="w-8 h-8 rounded-full object-cover" alt={author} />
+                    <div className="flex flex-col">
+                        <span className="text-[11px] font-bold text-gray-800 leading-tight">{author}</span>
+                        <span className="text-[9px] text-gray-400">{role}</span>
+                    </div>
+                </div>
+                <span className="text-[10px] text-gray-400 font-medium">{date}</span>
             </div>
         </div>
     )
@@ -1886,9 +2565,19 @@ function CalendarCell({ date, isCurrentMonth, children }: any) {
   )
 }
 
-function EventCard({ color, time, staff }: { color: string, time: string, staff: string }) {
+function EventCard({ color, time, staff, onClick }: { color: string, time: string, staff: string, onClick?: () => void }) {
   const bg = color === 'yellow' ? 'bg-yellow-500' : color === 'green' ? 'bg-green-500' : 'bg-blue-500';
-  return <div className={`${bg} text-white p-1 rounded text-[10px] mb-1`}>{time}<br/>{staff}</div>
+  return (
+    <div 
+      onClick={(e) => {
+        e.stopPropagation(); // Prevent bubbling if the cell itself has a click
+        if (onClick) onClick();
+      }} 
+      className={`${bg} text-white p-1 rounded text-[10px] mb-1 cursor-pointer hover:opacity-90 transition-opacity shadow-sm`}
+    >
+      {time}<br/>{staff}
+    </div>
+  )
 }
 
 function ADLSection({ title, items, onEdit }: { title: string, items: {name:string, desc:string}[], onEdit: () => void }) {
@@ -2027,8 +2716,10 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
                 <label className="text-sm font-medium text-gray-700">Document Type</label>
                 <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
                    <option>Select</option>
-                   <option>License</option>
-                   <option>Certificate</option>
+                   <option>Physician's Order</option>
+                   <option>Client Consent Form</option>
+                   <option>Insurance Card</option>
+                  
                 </select>
              </div>
 
@@ -2039,18 +2730,14 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
 
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Issued Date</label>
-                <div className="relative">
-                   <input type="text" placeholder="MM / DD / YYYY" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                   <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                </div>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
              </div>
 
              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-gray-700">Expiry Date</label>
-                <div className="relative">
-                   <input type="text" placeholder="MM / DD / YYYY" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-                   <i className="fa-regular fa-calendar absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
-                </div>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
              </div>
 
              {/* Upload Area */}

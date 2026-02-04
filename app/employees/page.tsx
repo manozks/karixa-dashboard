@@ -29,21 +29,52 @@ export default function EmployeePage() {
            <div className="text-sm text-gray-500">Dashboard / Employee</div>
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-           <div className="relative w-full md:w-64">
-              <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#0074D9]" />
-           </div>
-           <div className="flex gap-2">
-              <button className="px-4 py-2 text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100">Active <i className="fa-solid fa-chevron-down ml-1 text-xs"></i></button>
-              <button 
+        {/* --- Controls / Filter Bar --- */}
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+          
+          {/* Left: Search & Filters */}
+          <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+            {/* Search */}
+            <div className="relative">
+               <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+               <input 
+                 type="text" 
+                 placeholder="Search..." 
+                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand w-64"
+               />
+            </div>
+
+            {/* Dropdowns */}
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Status</option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+            
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Coordinate</option>
+              <option>John Doe</option>
+              <option>Jane Smith</option>
+            </select>
+
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Type</option>
+              <option>Caregiver</option>
+              <option>Staff</option> 
+            </select>
+
+            <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
+              | Clear Filter
+            </button>
+          </div>
+
+          {/* Right: Add Button */}
+ <button 
                 onClick={() => setShowAddModal(true)}
                 className="px-5 py-2 text-sm font-medium text-white bg-[#0074D9] rounded-lg hover:bg-[#0062b8] transition-colors shadow-sm"
               >
                 Add Employee
               </button>
-           </div>
         </div>
 
         {/* Table */}
@@ -160,8 +191,12 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Last Name*</label><input type="text" placeholder="Enter Last Name" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Gender*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option></select></div>
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Date of Birth*</label><input type="text" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Gender*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option>
+                      <option>Male</option>
+                      <option>Female</option>
+                      <option>Other</option>
+                      </select></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Date of Birth*</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
                    <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Phone Number</label><input type="text" placeholder="+1 (555) 000-0000" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
@@ -185,18 +220,48 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
              ) : (
                 /* STEP 2: INTERNAL USE ONLY (Matching image_1e9a5d.png) */
                 <div className="animate-slide-up space-y-6">
-                   <h3 className="font-bold text-gray-800 text-sm">Cosmos Care Use Only</h3>
+                   <h3 className="font-bold text-gray-800 text-sm">Internal Use Only</h3>
                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Status*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white"><option>Active</option></select></div>
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Coordinator*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white"><option>Select</option></select></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Status*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white">
+                        <option>Active</option>
+                        <option>Inactive</option>
+                        <option>Pending</option>
+                        </select></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Coordinator*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white">
+                        <option>Select</option>
+                        <option>John Doe</option>
+                        <option>Jane Smith</option>
+                        </select></div>
                    </div>
                    <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Region Code</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
-                   <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Assessment Start Day</label><input type="text" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Preferred Hours for Service</label><div className="flex gap-2"><select className="w-full border rounded-lg p-2.5 text-sm text-gray-500"><option>Select Start Time</option></select><select className="w-full border rounded-lg p-2.5 text-sm text-gray-500"><option>Select End Time</option></select></div></div>
+                   <div className="grid grid-cols-3 gap-6">
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Assessment Start Day</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                       {/* Start Time Picker */}
+       <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Start Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+
+      {/* End Time Picker */}
+      <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">End Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">User Type*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option></select></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">User Type*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500">
+                        <option>Select</option>
+                        <option>Caregiver</option>
+                        <option>Administrative Staff</option>
+                        <option>Supervisor</option>
+                        </select></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Referred By</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
                 </div>

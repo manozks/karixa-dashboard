@@ -29,10 +29,41 @@ export default function CaregiverPage() {
 
         {/* Controls */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-           <div className="relative w-full md:w-64">
-              <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-              <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#0074D9]" />
-           </div>
+           {/* Left: Search & Filters */}
+          <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+            {/* Search */}
+            <div className="relative">
+               <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+               <input 
+                 type="text" 
+                 placeholder="Search..." 
+                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand w-64"
+               />
+            </div>
+
+            {/* Dropdowns */}
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Status</option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+            
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Coordinate</option>
+              <option>John Doe</option>
+              <option>Jane Smith</option>
+            </select>
+
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Type</option>
+              <option>Caregiver</option>
+              <option>Staff</option> 
+            </select>
+
+            <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
+              | Clear Filter
+            </button>
+          </div>
            <div className="flex gap-2">
               <button 
                 onClick={() => setShowAddModal(true)}
@@ -121,6 +152,9 @@ export default function CaregiverPage() {
 // =========================================================================
 // ADD CAREGIVER MODAL (3-Step Wizard)
 // =========================================================================
+// =========================================================================
+// ADD CAREGIVER MODAL (3-Step Wizard)
+// =========================================================================
 function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
@@ -132,8 +166,18 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
        <div className="bg-white rounded-2xl w-full max-w-6xl shadow-2xl flex flex-col max-h-[95vh] animate-slide-up relative">
           
           {/* Header */}
-          <div className="p-6 border-b border-gray-100">
-             <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 mb-2"><i className="fa-solid fa-chevron-left text-xs"></i> Back</button>
+          <div className="p-6 border-b border-gray-100 relative">
+             {/* --- CLOSE ICON ADDED HERE --- */}
+             <button 
+                onClick={onClose} 
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+             >
+                <i className="fa-solid fa-xmark text-xl"></i>
+             </button>
+
+             <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 mb-2">
+                <i className="fa-solid fa-chevron-left text-xs"></i> Back
+             </button>
              <h2 className="text-2xl font-bold text-gray-800">Add New Care Giver</h2>
              <p className="text-sm text-gray-500">Fill in the caregiver's personal details to begin managing their care within the Karixa Agency Portal.</p>
           </div>
@@ -152,7 +196,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
           {/* Form Content */}
           <div className="p-8 overflow-y-auto flex-1">
              {step === 1 && (
-                /* STEP 1: BASIC INFO (image_3911d1.png) */
+                /* STEP 1: BASIC INFO  */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Basic Information</h3>
                    <div className="grid grid-cols-2 gap-6">
@@ -160,8 +204,11 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       <InputGroup label="Last Name*" placeholder="Enter Last Name" />
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <SelectGroup label="Gender*" />
-                      <InputGroup label="Date of Birth*" placeholder="dd / mm / yyyy" icon="calendar" />
+                      <SelectGroup 
+      label="Gender*" 
+      options={["Male", "Female", "Other"]} 
+   />
+                      <InputGroup label="Date of Birth*" type="date" /> 
                    </div>
                    <div className="grid grid-cols-2 gap-6">
                       <InputGroup label="Phone Number" placeholder="+61 000000000" />
@@ -189,7 +236,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              )}
 
              {step === 2 && (
-                /* STEP 2: PROFESSIONAL DETAIL (image_3912a7.png) */
+                /* STEP 2: PROFESSIONAL DETAIL */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Professional Details</h3>
                    <div className="grid grid-cols-2 gap-6">
@@ -197,14 +244,15 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       <InputGroup label="Caregiver ID" placeholder="CG-00023" />
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <SelectGroup label="Qualification" />
+                      <SelectGroup label="Qualification"
+                      options={["Certified Nursing Assistant (CNA)", "Registered Nurse (RN)", "Licensed Practical Nurse (LPN)","Physical Therapist (PT)","Occupational Therapist (OT)","Speech-Language Pathologist (SLP)","Personal Care Assistant (PCA)"]}/>
                       <InputGroup label="Years of Experience*" placeholder="Enter" />
                    </div>
                    <InputGroup label="Hourly Charge" placeholder="Enter" />
 
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
                    <div className="grid grid-cols-2 gap-6">
-                      <InputGroup label="Availability Start Date" placeholder="dd / mm / yyyy" icon="calendar" />
+                      <InputGroup label="Availability Start Date" type="date" />
                       <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
                    </div>
                    <div>
@@ -227,7 +275,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              )}
 
              {step === 3 && (
-                /* STEP 3: DOCUMENTS (image_39160a.png) */
+                /* STEP 3: DOCUMENTS */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Document & Certification</h3>
                    <div className="grid grid-cols-2 gap-6">
@@ -271,23 +319,38 @@ function StepIndicator({ num, label, sub, current }: any) {
    )
 }
 
-function InputGroup({ label, placeholder, icon }: any) {
+// UPDATED: Added type prop
+function InputGroup({ label, placeholder, icon, type = "text" }: any) {
    return (
       <div className="space-y-1">
          <label className="text-xs font-medium text-gray-700">{label}</label>
          <div className="relative">
-            <input type="text" placeholder={placeholder} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-brand" />
-            {icon === 'calendar' && <i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400"></i>}
+            <input 
+               type={type} 
+               placeholder={placeholder} 
+               className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-brand" 
+            />
+            {/* Only show custom icon if NOT a date type, to avoid double icons */}
+            {icon === 'calendar' && type !== 'date' && (
+               <i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400 pointer-events-none"></i>
+            )}
          </div>
       </div>
    )
 }
 
-function SelectGroup({ label }: any) {
+function SelectGroup({ label, options }: { label: string, options?: string[] }) {
    return (
       <div className="space-y-1">
          <label className="text-xs font-medium text-gray-700">{label}</label>
-         <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500 outline-none focus:border-brand"><option>Select</option></select>
+         <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500 outline-none focus:border-brand">
+            <option value="">Select</option>
+            {options?.map((opt, index) => (
+               <option key={index} value={opt}>
+                  {opt}
+               </option>
+            ))}
+         </select>
       </div>
    )
 }

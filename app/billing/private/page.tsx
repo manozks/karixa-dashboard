@@ -108,7 +108,7 @@ function GenerateBillModal({ onClose, onGenerate }: { onClose: () => void, onGen
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold text-gray-800">Generate Bill</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 space-y-4">
              <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Patient</label><select className="w-full border rounded-lg p-2.5 text-sm bg-white text-gray-500 outline-none focus:border-brand"><option>Select</option></select></div>
-             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Service Dates</label><div className="relative"><input className="w-full border rounded-lg p-2.5 text-sm outline-none focus:border-brand" placeholder="DD / MM / YYYY - DD / MM / YYYY" /><i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400"></i></div></div>
+             <div className="space-y-1"><label className="text-xs font-medium text-gray-500">Service Dates</label><div className="relative"><input type="date" className="w-full border rounded-lg p-2.5 text-sm outline-none focus:border-brand" placeholder="DD / MM / YYYY - DD / MM / YYYY" /></div></div>
           </div>
           <div className="p-6 border-t flex justify-end"><button onClick={onGenerate} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-lg">Generate</button></div>
        </div>
