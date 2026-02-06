@@ -92,9 +92,9 @@ export default function ClientsPage() {
               <option>Coordinate</option>
             </select>
 
-            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+            {/* <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
               <option>Schedule</option>
-            </select>
+            </select> */}
 
             <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
               | Clear Filter
