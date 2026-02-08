@@ -10,11 +10,11 @@ export default function CaregiverPage() {
 
   // Mock Data based on image_390b0e.png
   const caregivers = [
-    { id: "CG-00012", name: "Olivia Thompson", role: "Support Worker", phone: "(202) 999-6969", zone: "Melbourne East", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 1 },
-    { id: "CG-00018", name: "Jack Williams", role: "Registered Nurse", phone: "(202) 999-6969", zone: "Brisbane North", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 2 },
-    { id: "CG-00014", name: "Amelia Robinson", role: "Personal Care Assistant", phone: "(202) 999-6969", zone: "Sydney West", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 3 },
-    { id: "CG-00020", name: "Liam Harris", role: "Enrolled Nurse", phone: "(202) 999-6969", zone: "Adelaide South", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 4 },
-    { id: "CG-00024", name: "Charlotte White", role: "Allied Health Assistant", phone: "(202) 999-6969", zone: "Perth Central", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 5 },
+    { id: "CG-00012", name: "Olivia Thompson", role: "HHA", phone: "(202) 999-6969", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 1 },
+    { id: "CG-00018", name: "Jack Williams", role: "CNA", phone: "(202) 999-6969", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 2 },
+    { id: "CG-00014", name: "Amelia Robinson", role: "PCA", phone: "(202) 999-6969", zone: "Marietta , Southeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 3 },
+    { id: "CG-00020", name: "Liam Harris", role: "HHA", phone: "(202) 999-6969", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 4 },
+    { id: "CG-00024", name: "Charlotte White", role: "CNA", phone: "(202) 999-6969", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 5 },
   ];
 
   return (
@@ -49,15 +49,16 @@ export default function CaregiverPage() {
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Coordinate</option>
+              <option>Coordinator</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
             </select>
 
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
               <option>Type</option>
-              <option>Caregiver</option>
-              <option>Staff</option> 
+              <option>(PCA)</option>
+              <option>(CNA)</option> 
+              <option>(HHA)</option>
             </select>
 
             <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
@@ -178,8 +179,8 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 mb-2">
                 <i className="fa-solid fa-chevron-left text-xs"></i> Back
              </button>
-             <h2 className="text-2xl font-bold text-gray-800">Add New Care Giver</h2>
-             <p className="text-sm text-gray-500">Fill in the caregiver's personal details to begin managing their care within the Karixa Agency Portal.</p>
+             <h2 className="text-2xl font-bold text-gray-800">Add New CareGiver</h2>
+             <p className="text-sm text-gray-500">Fill in the caregiver's personal details to begin managing their care within the Agency Portal.</p>
           </div>
 
           {/* Stepper */}
@@ -211,7 +212,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       <InputGroup label="Date of Birth*" type="date" /> 
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <InputGroup label="Phone Number" placeholder="+61 000000000" />
+                      <InputGroup label="Phone Number" placeholder="+1 000000000" />
                       <InputGroup label="Email" placeholder="Enter email address" />
                    </div>
                    <div className="grid grid-cols-2 gap-6">
@@ -240,15 +241,16 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Professional Details</h3>
                    <div className="grid grid-cols-2 gap-6">
-                      <SelectGroup label="Role" />
+                    <SelectGroup label="Caregiver Type"
+                      options={["Personal Care Assistant (PCA)",  "Certified Nursing Assistant (CNA)","Home Health Aide (HHA)"]}/>
                       <InputGroup label="Caregiver ID" placeholder="CG-00023" />
                    </div>
                    <div className="grid grid-cols-2 gap-6">
-                      <SelectGroup label="Qualification"
-                      options={["Certified Nursing Assistant (CNA)", "Registered Nurse (RN)", "Licensed Practical Nurse (LPN)","Physical Therapist (PT)","Occupational Therapist (OT)","Speech-Language Pathologist (SLP)","Personal Care Assistant (PCA)"]}/>
+                     
                       <InputGroup label="Years of Experience*" placeholder="Enter" />
+                       <InputGroup label="Hourly Charge" placeholder="Enter" />
                    </div>
-                   <InputGroup label="Hourly Charge" placeholder="Enter" />
+                  
 
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
                    <div className="grid grid-cols-2 gap-6">
