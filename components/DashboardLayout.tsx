@@ -311,8 +311,8 @@ export default function DashboardLayout({
             <div className="p-4 bg-gray-50 border-b border-gray-100 flex items-center gap-3">
               <img src="/images/manoj.jpg" alt="User" className="w-10 h-10 rounded-full border border-gray-200 object-cover" />
               <div className="overflow-hidden">
-                <h4 className="text-sm font-bold text-gray-800 truncate">Rajesh Maharjan</h4>
-                <p className="text-xs text-gray-500 truncate">rajesh@karixa.com</p>
+                <h4 className="text-sm font-bold text-gray-800 truncate">Manoj Sah</h4>
+                <p className="text-xs text-gray-500 truncate">manoj@karixa.com</p>
               </div>
             </div>
 
