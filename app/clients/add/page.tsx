@@ -60,7 +60,7 @@ export default function AddClientPage() {
            </Link>
            <h1 className="text-2xl font-bold text-gray-800">Add New Client</h1>
            <p className="text-sm text-gray-500 mt-1 max-w-4xl leading-relaxed">
-             Fill in the client's personal details to begin managing their care within the Karixa Agency Portal. Once added, you'll be able to assign caregivers, schedule visits, and track their service history easily.
+             Fill in the client's personal details to begin managing their care within the Agency Portal. Once added, you'll be able to assign caregivers, schedule visits, and track their service history easily.
            </p>
         </div>
 
@@ -146,23 +146,28 @@ export default function AddClientPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <DateInput label="Service Start Date" placeholder="dd/mm/yyyy" />
                 <div className="flex gap-4">
-                   <div className="flex-1">
-                      <label className="text-sm font-medium text-gray-600 mb-1.5 block">Preferred Hours for Service</label>
-                      <select className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-400">
-                        <option>Select Start Time</option>
-                      </select>
-                   </div>
-                   <div className="flex-1">
-                      <label className="text-sm font-medium text-gray-600 mb-1.5 block">&nbsp;</label>
-                      <select className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-400">
-                        <option>Select End Time</option>
-                      </select>
-                   </div>
+                  {/* Start Time Picker */}
+       <div className="flex-1">
+                        <label className="text-sm font-medium text-gray-700">Start Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full border bg-gray-50 border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           {/* Decorative Icon (Optional: depends on browser native support, added for style consistency) */}
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
+     {/* End Time Picker */}
+      <div className="flex-1">
+                        <label className="text-sm font-medium text-gray-700">End Time</label>
+                        <div className="relative">
+                           <input type="time" className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:border-brand" />
+                           <i className="fa-regular fa-clock absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none bg-white pl-2"></i>
+                        </div>
+                      </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <InputField label="Medicaid / Medicare number" placeholder="Enter" />
+                <InputField label="Medicaid" placeholder="Enter" />
                 <InputField label="Referred By" placeholder="Enter" />
               </div>
             </div>

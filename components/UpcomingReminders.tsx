@@ -6,7 +6,7 @@ export interface ReminderItem {
   day: string;       // e.g., "1 Apr"
   weekday: string;   // e.g., "Friday"
   title: string;     // e.g., "Liam Brown Daycare with Chloe"
-  location: string;  // e.g., "Melbourne"
+  location: string;  // e.g., "New York City"
   time: string;      // e.g., "9 AM - 5 PM"
   highlight?: boolean; // If true, give it a blue background
 }

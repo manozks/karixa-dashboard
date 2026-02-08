@@ -39,7 +39,7 @@ export default function ScheduleTable({ data }: ScheduleTableProps) {
           <thead className="bg-gray-50 text-gray-500">
             <tr>
               <th className="px-4 py-3 font-medium rounded-l-lg">Client Name</th>
-              <th className="px-4 py-3 font-medium">Care Giver</th>
+              <th className="px-4 py-3 font-medium">CareGiver</th>
               <th className="px-4 py-3 font-medium">Check In</th>
               <th className="px-4 py-3 font-medium rounded-r-lg">Check Out</th>
               <th className="px-1 py-3"></th>

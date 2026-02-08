@@ -350,8 +350,8 @@ export default function DashboardLayout({
             {!isCollapsed && (
               <>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-medium truncate">Rajesh Maharjan</p>
-                  <p className="text-xs text-blue-200 truncate">rajesh@karixa.com</p>
+                  <p className="text-sm font-medium truncate">Manoj Sah</p>
+                  <p className="text-xs text-blue-200 truncate">manoj@karixa.com</p>
                 </div>
                 <i className={`fa-solid fa-chevron-down text-blue-200 text-xs transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}></i>
               </>
