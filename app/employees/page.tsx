@@ -52,7 +52,7 @@ export default function EmployeePage() {
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Coordinate</option>
+              <option>Coordinator</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
             </select>
@@ -162,7 +162,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                 <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
              </div>
              <h2 className="text-2xl font-bold text-gray-800 mt-2">Add New Employee</h2>
-             <p className="text-sm text-gray-500">Fill in the employee's personal details to begin managing their care within the Karixa Agency Portal.</p>
+             <p className="text-sm text-gray-500">Fill in the employee's personal details to begin managing their care within the Agency Portal.</p>
           </div>
 
           {/* Stepper */}
@@ -235,7 +235,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                    </div>
                    <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Region Code</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    <div className="grid grid-cols-3 gap-6">
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Assessment Start Day</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Service Start Date</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                        {/* Start Time Picker */}
        <div className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">Start Time</label>
