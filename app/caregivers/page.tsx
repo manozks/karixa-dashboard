@@ -84,7 +84,7 @@ export default function CaregiverPage() {
                        <th className="p-4">SNO</th>
                        <th className="p-4">Name</th>
                        <th className="p-4">ID Number</th>
-                       <th className="p-4">Role</th>
+                       <th className="p-4">Type</th>
                        <th className="p-4">Phone</th>
                        <th className="p-4">Assigned Client</th>
                        <th className="p-4">Assigned Zone</th>

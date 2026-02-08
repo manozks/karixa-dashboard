@@ -13,7 +13,7 @@ export default function ClientProfilePage() {
 
   const tabs = [
     "General Info", "Scheduled", "Caregivers", "Billing", "Note", 
-    "ADL", "Incidents", "Medication", "Schedule Report", 
+    "ADLs", "Incidents", "Schedule Report", 
     "Service Authentication", "Trackable Document"
   ];
 
@@ -118,9 +118,9 @@ function renderTabContent(tab: string) {
     case "Caregivers": return <CaregiversTab />;
     case "Billing": return <BillingTab />;
     case "Note": return <NoteTab />;
-    case "ADL": return <ADLTab />;
+    case "ADLs": return <ADLTab />;
     case "Incidents": return <IncidentsTab />;
-    case "Medication": return <MedicationTab />;
+   /*  case "Medication": return <MedicationTab />; */
     case "Schedule Report": return <ScheduleReportTab />;
     case "Service Authentication": return <ServiceAuthTab />;
     case "Trackable Document": return <TrackableDocumentTab />;
@@ -184,7 +184,7 @@ function GeneralInfoTab() {
           </div>
            <div className="mt-2"></div>
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-             <InfoItem label="Assessment Start Date" value="31 Dec, 2024" />
+             <InfoItem label="Service Start Date" value="31 Dec, 2024" />
              <InfoItem label="Preferred hours For Service" value="9 AM - 5 PM" />
              <InfoItem label="Medicaid, Number" value="A234567" />
              <InfoItem label="Referred By" value="N/A" />

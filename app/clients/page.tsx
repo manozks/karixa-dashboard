@@ -24,16 +24,16 @@ interface Client {
 
 // --- Mock Data ---
 const clientsData: Client[] = [
-  { id: '1', name: 'Nina Mcintire', avatar: 'https://i.pravatar.cc/150?img=1', shiftStart: '8:30 AM', shiftEnd: '7:00 PM', caregiver: { name: 'Dr. Emily Carter', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=5' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '2', name: 'Jack Williams', avatar: 'https://i.pravatar.cc/150?img=11', shiftStart: '10:00 AM', shiftEnd: '5:30 PM', caregiver: { name: 'Dr. Sophia Wilson', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=9' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '3', name: 'Amelia Robinson', avatar: 'https://i.pravatar.cc/150?img=24', shiftStart: '8:15 AM', shiftEnd: '7:45 PM', caregiver: { name: 'Dr. Daniel Brown', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=13' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '4', name: 'Liam Harris', avatar: 'https://i.pravatar.cc/150?img=33', shiftStart: '7:45 AM', shiftEnd: '6:15 PM', caregiver: { name: 'Dr. Michael Thompson', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=12' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '5', name: 'Charlotte White', avatar: 'https://i.pravatar.cc/150?img=44', shiftStart: '11:00 AM', shiftEnd: '4:45 PM', caregiver: { name: 'Dr. Olivia Martinez', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=20' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '6', name: 'Noah Mitchell', avatar: 'https://i.pravatar.cc/150?img=51', shiftStart: '9:00 AM', shiftEnd: '6:00 PM', caregiver: { name: 'Dr. Jessica Lee', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=30' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '7', name: 'Zoe Anderson', avatar: 'https://i.pravatar.cc/150?img=52', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Dr. Sarah Patel', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=35' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '8', name: 'Benjamin Taylor', avatar: 'https://i.pravatar.cc/150?img=53', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Dr. David Kim', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=59' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '9', name: 'Isla Wright', avatar: 'https://i.pravatar.cc/150?img=54', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Dr. Brian Chen', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=60' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
-  { id: '10', name: 'Ethan Martin', avatar: 'https://i.pravatar.cc/150?img=55', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Dr. James Anderson', role: 'Doctor', avatar: 'https://i.pravatar.cc/150?img=68' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '1', name: 'Nina Mcintire', avatar: 'https://i.pravatar.cc/150?img=1', shiftStart: '8:30 AM', shiftEnd: '7:00 PM', caregiver: { name: 'Emily Carter', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=5' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '2', name: 'Jack Williams', avatar: 'https://i.pravatar.cc/150?img=11', shiftStart: '10:00 AM', shiftEnd: '5:30 PM', caregiver: { name: 'Sophia Wilson', role: 'Certified Nursing Assistant (CNA)', avatar: 'https://i.pravatar.cc/150?img=9' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '3', name: 'Amelia Robinson', avatar: 'https://i.pravatar.cc/150?img=24', shiftStart: '8:15 AM', shiftEnd: '7:45 PM', caregiver: { name: 'Daniel Brown', role: 'Home Health Aide (HHA)', avatar: 'https://i.pravatar.cc/150?img=13' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '4', name: 'Liam Harris', avatar: 'https://i.pravatar.cc/150?img=33', shiftStart: '7:45 AM', shiftEnd: '6:15 PM', caregiver: { name: 'Michael Thompson', role:'Personal Care Assistant (PCA)' , avatar:'https://i.pravatar.cc/150?img=12'}, checkIn:'09.32 AM' , checkOut:'  5.32 PM'},
+  { id:'5' , name:'Charlotte White' , avatar:'https://i.pravatar.cc/150?img=44' , shiftStart:'11.32 AM' , shiftEnd:'4.48 PM' , caregiver:{name:'Olivia Martinez' , role:'Certified Nursing Assistant (CNA)' , avatar:'https://i.pravatar.cc/150?img=20'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id:'6' , name:'Noah Mitchell' , avatar:'https://i.pravatar.cc/150?img=51' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Jessica Lee' , role:'Personal Care Assistant (PCA)' , avatar:'https://i.pravatar.cc/150?img=30'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id:'7' , name:'Zoe Anderson' , avatar:'https://i.pravatar.cc/150?img=52' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Sarah Patel' , role:'Home Health Aide (HHA)' , avatar:'https://i.pravatar.cc/150?img=35'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id: '8', name: 'Benjamin Taylor', avatar: 'https://i.pravatar.cc/150?img=53', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'David Kim', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=59' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '9', name: 'Isla Wright', avatar: 'https://i.pravatar.cc/150?img=54', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Brian Chen', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=60' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
+  { id: '10', name: 'Ethan Martin', avatar: 'https://i.pravatar.cc/150?img=55', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'James Anderson', role:'Personal Care Assistant (PCA)', avatar:'https://i.pravatar.cc/150?img=68'}, checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
 ];
 
 export default function ClientsPage() {
@@ -89,7 +89,7 @@ export default function ClientsPage() {
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Coordinate</option>
+              <option>Coordinator</option>
             </select>
 
             {/* <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
