@@ -13,7 +13,7 @@ export default function PhoneInput({ label, className = "", ...props }: PhoneInp
       <div className="relative flex items-center">
         {/* Prefix Span - Fixed +61 as shown in image */}
         <span className="absolute left-4 text-gray-500 text-sm pointer-events-none">
-          +61
+          +1
         </span>
 
         <input
