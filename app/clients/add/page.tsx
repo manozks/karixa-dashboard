@@ -144,7 +144,7 @@ export default function AddClientPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <DateInput label="Assessment Start Day" placeholder="dd/mm/yyyy" />
+                <DateInput label="Service Start Date" placeholder="dd/mm/yyyy" />
                 <div className="flex gap-4">
                    <div className="flex-1">
                       <label className="text-sm font-medium text-gray-600 mb-1.5 block">Preferred Hours for Service</label>

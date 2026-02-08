@@ -147,7 +147,7 @@ function GeneralInfoTab() {
              <InfoItem label="Language Spoken" value="English" />
              <InfoItem label="Street Address" value="1509 Oakview Dr." />
              <InfoItem label="City" value="McLean" />
-             <InfoItem label="State" value="VA (Virginia)" />
+             <InfoItem label="State" value="Ohio" />
              <InfoItem label="Zip Code" value="22101" />
           </div>
        </div>
@@ -460,7 +460,7 @@ function NoteTab() {
       date: "24 Feb, 2025",
       author: "Anjali Prasad",
       role: "Caregiver",
-      desc: "Notes regarding the patient's experiences with chronic pain management strategies and their effectiveness over the past week.",
+      desc: "Notes regarding the Client's experiences with chronic pain management strategies and their effectiveness over the past week.",
       img: 12
     },
     {
@@ -478,7 +478,7 @@ function NoteTab() {
       date: "26 Feb, 2025",
       author: "Sarah Lee",
       role: "Caregiver",
-      desc: "A comprehensive note evaluating the nutritional needs and dietary intake of the patient to optimize healing and recovery.",
+      desc: "A comprehensive note evaluating the nutritional needs and dietary intake of the client to optimize healing and recovery.",
       img: 5
     },
     {
@@ -487,7 +487,7 @@ function NoteTab() {
       date: "27 Feb, 2025",
       author: "Emily Chen",
       role: "Caregiver",
-      desc: "Psychological assessment notes regarding the patient's mental well-being and coping strategies implemented during the visit.",
+      desc: "Psychological assessment notes regarding the Client's mental well-being and coping strategies implemented during the visit.",
       img: 9
     },
     {
@@ -496,7 +496,7 @@ function NoteTab() {
         date: "28 Feb, 2025",
         author: "David Smith",
         role: "Caregiver",
-        desc: "Review and documentation of prescribed medications, dosages, and patient adherence to ensure optimal therapeutic outcomes.",
+        desc: "Review and documentation of prescribed medications, dosages, and client adherence to ensure optimal therapeutic outcomes.",
         img: 7
     },
     {
@@ -505,7 +505,7 @@ function NoteTab() {
         date: "1 Mar, 2025",
         author: "Laura Davis",
         role: "Caregiver",
-        desc: "Insights into the patient's physical therapy sessions, progress, and areas needing additional focus for recovery.",
+        desc: "Insights into the Client's physical therapy sessions, progress, and areas needing additional focus for recovery.",
         img: 2
     },
     {
@@ -514,7 +514,7 @@ function NoteTab() {
         date: "2 Mar, 2025",
         author: "James Wilson",
         role: "Caregiver",
-        desc: "Summary notes from the follow-up appointment detailing the patient's status, concerns addressed, and next steps.",
+        desc: "Summary notes from the follow-up appointment detailing the Client's status, concerns addressed, and next steps.",
         img: 11
     },
     {
@@ -523,7 +523,7 @@ function NoteTab() {
         date: "3 Mar, 2025",
         author: "Nisha Patel",
         role: "Caregiver",
-        desc: "Notes outlining the discharge process, including recommendations for at-home care, follow-up appointments, and patient education.",
+        desc: "Notes outlining the discharge process, including recommendations for at-home care, follow-up appointments, and client education.",
         img: 15
     }
   ];
@@ -1025,16 +1025,16 @@ function MedicationDetailModal({ medication, onClose }: { medication: any, onClo
 
           {/* Body */}
           <div className="p-6">
-             {/* Patient Info Card */}
+             {/* client Info Card */}
              <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
                 <div className="flex items-center gap-2 mb-2">
                    <h3 className="font-bold text-gray-800 text-lg">Nina Mcintire</h3>
                    <span className="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded font-bold uppercase">Client</span>
                 </div>
                 <div className="text-xs text-gray-500 space-y-1">
-                   <p>Patient Name : <span className="text-gray-700 font-medium">Medical History Form</span></p>
+                   <p>client Name : <span className="text-gray-700 font-medium">Medical History Form</span></p>
                    <p>Phone : <span className="text-gray-700 font-medium">(703) 981-7142</span></p>
-                   <p>Patient ID : <span className="text-gray-700 font-medium">PI-100001</span></p>
+                   <p>client ID : <span className="text-gray-700 font-medium">PI-100001</span></p>
                 </div>
              </div>
 
@@ -2148,9 +2148,9 @@ function IncidentsTab() {
 
   // Mock Data
   const incidents = [
-    { id: 1, date: "01 April, 2025 | Saturday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Fall", location: "Bathroom", status: "Approved", description: "Patient slipped on a wet floor while attempting to use the bathroom. No severe injury noted, mild bruising on the elbow.", action: "First aid administered. Doctor informed. Wet floor cleaned immediately to prevent further accidents." },
-    { id: 2, date: "03 April, 2025 | Monday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Medication Error", location: "Bathroom", status: "Approved", description: "Missed morning dose due to patient refusal.", action: "Administered dose late and logged the refusal." },
-    { id: 3, date: "04 April, 2025 | Tuesday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Behavioral Issue", location: "Garden", status: "Approved", description: "Patient became agitated during the walk.", action: "Calmed patient down with conversation and returned to room." },
+    { id: 1, date: "01 April, 2025 | Saturday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Fall", location: "Bathroom", status: "Approved", description: "client slipped on a wet floor while attempting to use the bathroom. No severe injury noted, mild bruising on the elbow.", action: "First aid administered. Doctor informed. Wet floor cleaned immediately to prevent further accidents." },
+    { id: 2, date: "03 April, 2025 | Monday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Medication Error", location: "Bathroom", status: "Approved", description: "Missed morning dose due to client refusal.", action: "Administered dose late and logged the refusal." },
+    { id: 3, date: "04 April, 2025 | Tuesday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Behavioral Issue", location: "Garden", status: "Approved", description: "client became agitated during the walk.", action: "Calmed client down with conversation and returned to room." },
     { id: 4, date: "05 April, 2025 | Wednesday", time: "09:00 AM", caregiver: "Dr. Olivia Thompson", type: "Fall", location: "Room", status: "Pending", description: "Tripped over rug.", action: "Pending review." },
   ];
 
@@ -2297,8 +2297,8 @@ function IncidentDetailModal({ incident, onDecline, onClose }: { incident: any, 
              <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 mb-6">
                  <h3 className="text-lg font-bold text-gray-800 mb-4">{incident.clientName || 'Nina Mcintire'}</h3>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                    <div className="flex justify-between"><span className="text-gray-500">Patient Name:</span> <span className="font-medium text-gray-800">Nina Mcintire</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">Patient ID:</span> <span className="font-medium text-gray-800">PI-100001</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500">client Name:</span> <span className="font-medium text-gray-800">Nina Mcintire</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500">client ID:</span> <span className="font-medium text-gray-800">PI-100001</span></div>
                     <div className="flex justify-between"><span className="text-gray-500">Caregiver Involved:</span> <span className="font-medium text-gray-800">{incident.caregiver}</span></div>
                     <div className="flex justify-between"><span className="text-gray-500">Date of Incident:</span> <span className="font-medium text-gray-800">April 26, 2025</span></div>
                     <div className="flex justify-between"><span className="text-gray-500">Incident Time:</span> <span className="font-medium text-gray-800">10:30 AM</span></div>
