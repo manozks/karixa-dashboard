@@ -59,7 +59,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
 
               <div><span className="block text-xs text-gray-400 mb-1">Street Address</span><span className="font-medium text-gray-800">1509 Oakview Dr.</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">City</span><span className="font-medium text-gray-800">McLean</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">State</span><span className="font-medium text-gray-800">VA (Virginia)</span></div>
+              <div><span className="block text-xs text-gray-400 mb-1">State</span><span className="font-medium text-gray-800">Ohio</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Zip Code</span><span className="font-medium text-gray-800">22101</span></div>
            </div>
         </div>
@@ -134,7 +134,7 @@ function CreateContactModal({ onClose }: { onClose: () => void }) {
           <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Create Contact</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 overflow-y-auto space-y-4">
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">First Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Last Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Telephone</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Mobile</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="+61 000000000" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Telephone</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Mobile</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="+1 000000000" /></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Relationship</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Contact Type</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div><div><label className="text-xs text-gray-500">Status</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Street Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">City</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
