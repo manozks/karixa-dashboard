@@ -46,15 +46,15 @@ export default function CaregiverProfilePage({ params }: { params: { id: string 
            </div>
 
            {/* Info Grid */}
-           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm border-t border-gray-100 pt-6">
+           <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-8 text-sm border-t border-gray-100 pt-6">
               <div><span className="block text-xs text-gray-400 mb-1">Caregiver ID</span><span className="font-medium text-gray-800">CG-20012</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Role</span><span className="font-medium text-gray-800">Registered Nurse</span></div>
-              <div className="col-span-2">
+              <div><span className="block text-xs text-gray-400 mb-1">Type</span><span className="font-medium text-gray-800">Personal Care Assistant (PCA)</span></div>
+           {/*    <div className="col-span-2">
                   <span className="block text-xs text-gray-400 mb-1">Qualification</span>
                   <div className="flex gap-2">
                       {['First Aid', 'Cert III', 'Cert IV', '+3'].map(q => <span key={q} className="bg-gray-100 px-2 py-0.5 rounded text-xs font-medium text-gray-600">{q}</span>)}
                   </div>
-              </div>
+              </div> */}
               
               <div><span className="block text-xs text-gray-400 mb-1">Mobile</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Emergency No.</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
