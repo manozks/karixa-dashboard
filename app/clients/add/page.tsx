@@ -75,18 +75,26 @@ export default function AddClientPage() {
             <div className="animate-fade-in">
               <h3 className="font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2">Basic Information</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                <SelectInput label="Title*" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
                 <InputField label="First Name*" placeholder="Enter First name" />
+                <InputField label="Middle Name" placeholder="Enter Middle name" />
                 <InputField label="Last Name*" placeholder="Enter Last name" />
-                
+                <SelectInput label="Degree/Certification" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <SelectInput label="Gender*" options={["Male", "Female", "Other"]} />
                 <DateInput label="Date of Birth*" placeholder="dd/mm/yyyy" />
-
+                
+                
                 <PhoneInput label="Phone Number" />
                 <InputField label="Email" placeholder="Enter email address" type="email" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
                 <InputField label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-                <SelectInput label="Primary Language" options={["English", "Spanish", "French"]} />
+                <SelectInput label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                 <SelectInput label="Secondary Language" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
 
                 <InputField label="Street Address 1" placeholder="Enter" />
                 <InputField label="City" placeholder="Enter" />
@@ -135,7 +143,7 @@ export default function AddClientPage() {
               <h3 className="font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2">Internal Use Only</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <SelectInput label="Status*" options={["Active", "Other", "Inactive"]} />
+                <SelectInput label="Status*" options={["Active", "Inactive", "Other"]} />
                 <SelectInput label="Supervisor*" options={["John Doe", "Jane Smith"]} />
               </div>
 

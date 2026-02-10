@@ -187,11 +187,14 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                 /* STEP 1: BASIC INFORMATION (Matching image_1e4752.png) */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Basic Information</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Title</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>None</option><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Miss</option><option>Mx.</option><option>Dr.</option></select></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">First Name*</label><input type="text" placeholder="Enter First Name" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                         <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Middle Name*</label><input type="text" placeholder="Enter Middle Name" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Last Name*</label><input type="text" placeholder="Enter Last Name" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
+                        <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Degree/Certification</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>None</option><option>Jr.</option><option>Sr.</option><option>II</option><option>III</option><option>RN</option><option>LPN</option><option>CNA</option></select></div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Gender*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option>
                       <option>Male</option>
                       <option>Female</option>
@@ -199,21 +202,51 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                       </select></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Date of Birth*</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Phone Number</label><input type="text" placeholder="+1 (555) 000-0000" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Email</label><input type="email" placeholder="Enter email" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">SSN</label><input type="text" placeholder="Enter SSN" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Primary Language</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500"><option>Select</option></select></div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Primary Language</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500">
+                        <option>Select</option>
+                        <option>English</option>
+                        <option>Mandarin</option>
+                        <option>Hindi</option>
+                        <option>Spanish</option>
+                        <option>French</option>
+                        <option>Modern Standard Arabic</option>
+                        <option>Portuguese</option>
+                        <option>Russian</option>
+                        <option>Japanese</option>
+                        <option>Bengali</option>
+                        <option>Urdu</option>
+                        <option>German</option>
+                        <option>Italian</option>
+                        <option>Nigerian Pidgin</option>                        
+                        </select>
+                        </div>
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Secondary Language</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500">
+                        <option>Select</option>
+                        <option>American indian</option>
+                        <option>Asian</option>
+                        <option>Asian American</option>
+                        <option>African American or Black</option>
+                        <option>Hispanic or Latino</option>
+                        <option>White or Caucasian</option>
+                        <option>European. American</option>
+                        <option>Multiracial</option>
+                        <option>Native Hawaiian or Pacific Islander</option>
+                        <option>Unknown</option>                                               
+                        </select></div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Address 1</label><input type="text" placeholder="Enter Address" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">City</label><input type="text" placeholder="Enter City" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
                    
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Emergency Contact Number</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Full Name*</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Relationship*</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                    </div>
@@ -222,7 +255,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                 /* STEP 2: INTERNAL USE ONLY (Matching image_1e9a5d.png) */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Internal Use Only</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Status*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white">
                         <option>Active</option>
                         <option>Inactive</option>
@@ -235,7 +268,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                         </select></div>
                    </div>
                    <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Region Code</label><input type="text" placeholder="Enter" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
-                   <div className="grid grid-cols-3 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Service Start Date</label><input type="date" placeholder="dd / mm / yyyy" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm" /></div>
                        {/* Start Time Picker */}
        <div className="space-y-1">
@@ -256,7 +289,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                         </div>
                       </div>
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-1"><label className="text-xs font-medium text-gray-700">User Type*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500">
                         <option>Select</option>
                         <option>Caregiver</option>

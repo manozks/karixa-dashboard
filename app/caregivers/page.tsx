@@ -30,14 +30,14 @@ export default function CaregiverPage() {
         {/* Controls */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
            {/* Left: Search & Filters */}
-          <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {/* Search */}
             <div className="relative">
                <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                <input 
                  type="text" 
                  placeholder="Search..." 
-                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand w-64"
+                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand w-40"
                />
             </div>
 
@@ -46,7 +46,7 @@ export default function CaregiverPage() {
               <option>Status</option>
               <option>Active</option>
               <option>Inactive</option>
-              <option>Pending</option>
+              <option>Other</option>
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
@@ -60,6 +60,12 @@ export default function CaregiverPage() {
               <option>(PCA)</option>
               <option>(CNA)</option> 
               <option>(HHA)</option>
+            </select>
+            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
+              <option>Skills</option>
+              <option>Personal Care</option>
+               <option>Mobility Assistance</option>
+
             </select>
 
             <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
@@ -180,7 +186,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 mb-2">
                 <i className="fa-solid fa-chevron-left text-xs"></i> Back
              </button>
-             <h2 className="text-2xl font-bold text-gray-800">Add New CareGiver</h2>
+             <h2 className="text-2xl font-bold text-gray-800">Add New Caregiver</h2>
              <p className="text-sm text-gray-500">Fill in the caregiver's personal details to begin managing their care within the Agency Portal.</p>
           </div>
 
@@ -201,36 +207,53 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                 /* STEP 1: BASIC INFO  */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Basic Information</h3>
-                   <div className="grid grid-cols-2 gap-6">
-                      <InputGroup label="First Name*" placeholder="Enter First Name" />
-                      <InputGroup label="Last Name*" placeholder="Enter Last Name" />
-                   </div>
-                   <div className="grid grid-cols-2 gap-6">
-                      <SelectGroup 
-      label="Gender*" 
-      options={["Male", "Female", "Other"]} 
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+  {/* Prefix Dropdown */}
+  <SelectGroup 
+    label="Title" 
+    options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} 
+  />
+
+  <InputGroup label="First Name*" placeholder="Enter First Name" />
+  
+  <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
+  
+  <InputGroup label="Last Name*" placeholder="Enter Last Name" />
+
+  {/* Suffix Dropdown */}
+  <SelectGroup 
+    label="Degree/Certification" 
+    options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} 
+  />
+</div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <SelectGroup  label="Gender*" options={["Male", "Female", "Other"]} 
    />
                       <InputGroup label="Date of Birth*" type="date" /> 
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <InputGroup label="Phone Number" placeholder="+1 000000000" />
                       <InputGroup label="Email" placeholder="Enter email address" />
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-                      <SelectGroup label="Primary Language" />
+                      <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]}
+
+ />
+                        <SelectGroup label="Secondary Language" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <InputGroup label="Street Address" placeholder="Enter" />
                       <InputGroup label="City" placeholder="Enter" />
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <InputGroup label="State*" placeholder="Enter" />
                       <InputGroup label="Zip Code*" placeholder="Enter" />
                    </div>
                    
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Emergency Contact Number</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <InputGroup label="Full Name*" placeholder="Enter" />
                       <InputGroup label="Relation*" placeholder="Enter" />
                    </div>
@@ -241,12 +264,12 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                 /* STEP 2: PROFESSIONAL DETAIL */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Professional Details</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectGroup label="Caregiver Type"
                       options={["Personal Care Assistant (PCA)",  "Certified Nursing Assistant (CNA)","Home Health Aide (HHA)"]}/>
                       <InputGroup label="Caregiver ID" placeholder="CG-00023" />
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      
                       <InputGroup label="Years of Experience*" placeholder="Enter" />
                        <InputGroup label="Hourly Charge" placeholder="Enter" />
@@ -254,7 +277,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                   
 
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <InputGroup label="Availability Start Date" type="date" />
                       <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
                    </div>
@@ -281,11 +304,11 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                 /* STEP 3: DOCUMENTS */
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Document & Certification</h3>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <UploadBox label="Upload CV" />
                       <UploadBox label="Police Check" />
                    </div>
-                   <div className="grid grid-cols-2 gap-6">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <UploadBox label="First Aid Certificate" />
                       <UploadBox label="COVID-19 Vaccination" />
                    </div>
