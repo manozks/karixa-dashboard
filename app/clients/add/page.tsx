@@ -135,8 +135,8 @@ export default function AddClientPage() {
               <h3 className="font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2">Internal Use Only</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <SelectInput label="Status*" options={["Active", "Pending", "Inactive"]} />
-                <SelectInput label="Coordinator*" options={["John Doe", "Jane Smith"]} />
+                <SelectInput label="Status*" options={["Active", "Other", "Inactive"]} />
+                <SelectInput label="Supervisor*" options={["John Doe", "Jane Smith"]} />
               </div>
 
               <div className="mb-6">

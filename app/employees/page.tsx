@@ -49,10 +49,11 @@ export default function EmployeePage() {
               <option>Status</option>
               <option>Active</option>
               <option>Inactive</option>
+               <option>Other</option>
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Coordinator</option>
+              <option>Supervisor</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
             </select>
@@ -227,7 +228,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                         <option>Inactive</option>
                         <option>Pending</option>
                         </select></div>
-                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Coordinator*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white">
+                      <div className="space-y-1"><label className="text-xs font-medium text-gray-700">Supervisor*</label><select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white">
                         <option>Select</option>
                         <option>John Doe</option>
                         <option>Jane Smith</option>

@@ -46,10 +46,11 @@ export default function CaregiverPage() {
               <option>Status</option>
               <option>Active</option>
               <option>Inactive</option>
+              <option>Pending</option>
             </select>
             
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Coordinator</option>
+              <option>Supervisor</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
             </select>

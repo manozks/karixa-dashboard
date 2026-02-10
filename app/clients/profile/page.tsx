@@ -178,7 +178,7 @@ function GeneralInfoTab() {
        <div>
           <h3 className="font-bold text-gray-800 mb-4 text-sm">Internal Use Only</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-             <InfoItem label="Coordinator" value="Son Micle" />
+             <InfoItem label="Supervisor" value="Son Micle" />
              <InfoItem label="Insurance Provider  Status" value="Active" />
              <InfoItem label="Region Code" value="VA - 7149" />              
           </div>
