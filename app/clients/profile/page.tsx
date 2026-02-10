@@ -14,7 +14,7 @@ export default function ClientProfilePage() {
   const tabs = [
     "General Info", "Scheduled", "Caregivers", "Billing", "Note", 
     "ADLs", "Incidents", "Schedule Report", 
-    "Service Authentication", "Trackable Document"
+    "Service Authentication", "Trackable Document", "Contacts Address"
   ];
 
   return (
@@ -124,6 +124,7 @@ function renderTabContent(tab: string) {
     case "Schedule Report": return <ScheduleReportTab />;
     case "Service Authentication": return <ServiceAuthTab />;
     case "Trackable Document": return <TrackableDocumentTab />;
+    case "Contacts Address": return <ContactsTab />;
     default: return <div className="text-gray-400 text-center py-20">Content for {tab} is coming soon...</div>;
   }
 }
@@ -2766,6 +2767,68 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
              </button>
           </div>
 
+       </div>
+    </div>, document.body
+  );
+}
+
+// =========================================================================
+// 1. CONTACTS TAB & MODAL
+// =========================================================================
+function ContactsTab() {
+  const [showModal, setShowModal] = useState(false);
+  const contacts = [
+    { type: "Emergency Contact", phone: "5412452358", mobile: "(703)981-7142", name: "Tim Drake", relation: "Son", status: "Active" },
+    { type: "Emergency Contact", phone: "5412452358", mobile: "(703)981-7142", name: "Tim Drake", relation: "Son", status: "Active" },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex justify-between items-center">
+          <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+          <button onClick={() => setShowModal(true)} className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Add Contact</button>
+       </div>
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4 w-10"><input type="checkbox" /></th><th className="p-4">Contact Type</th><th className="p-4">Telephone</th><th className="p-4">Mobile</th><th className="p-4">Full Name</th><th className="p-4">Address</th><th className="p-4">Status</th><th className="p-4"></th></tr></thead>
+             <tbody className="divide-y divide-gray-50">{contacts.map((c, i) => (<tr key={i} className="hover:bg-gray-50"><td className="p-4"><input type="checkbox" /></td><td className="p-4">{c.type}</td><td className="p-4">{c.phone}</td><td className="p-4">{c.mobile}</td><td className="p-4 font-medium">{c.name}</td><td className="p-4">N/A</td><td className="p-4"><span className="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs">{c.status}</span></td><td className="p-4 text-right"><button className="text-gray-400 mr-2"><i className="fa-solid fa-pen"></i></button><button className="text-red-400"><i className="fa-regular fa-trash-can"></i></button></td></tr>))}</tbody>
+          </table>
+       </div>
+       {showModal && <CreateContactModal onClose={() => setShowModal(false)} />}
+    </div>
+  );
+}
+
+function CreateContactModal({ onClose }: { onClose: () => void }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Create Contact Address</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="p-6 overflow-y-auto space-y-4">
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">First Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Last Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Telephone</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Mobile</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="+1 000000000" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Relationship</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Parent</option>
+               <option>Sibling</option>
+               <option>Child</option>
+               <option>Relative</option>
+               <option>Friend</option>
+               </select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Contact Type</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Emergency Contact</option>
+               <option>Primary Contact</option>
+               <option>Secondary Contact</option>  
+               </select></div><div><label className="text-xs text-gray-500">Status</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+                  <option>Select</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                  <option>Others</option>
+                  </select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Street Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">City</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">State*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Zip Code*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+          </div>
+          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm">Save</button></div>
        </div>
     </div>, document.body
   );

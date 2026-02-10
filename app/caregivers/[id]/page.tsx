@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function CaregiverProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("General Info");
 
-  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Notes"];
+  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Notes", "Certificates & Documents", "Contacts Address"];
 
   return (
     <DashboardLayout>
@@ -95,6 +95,8 @@ function renderTabContent(tab: string) {
     case "Clients": return <ClientsTab />; 
     case "Attendance": return <AttendanceTab />; 
     case "Notes": return <NotesTab />;
+    case "Certificates & Documents": return <CertificatesTab />;
+    case "Contacts Address": return <ContactsTab />;
     default: return <div className="text-center py-20 text-gray-400">Content for {tab} is coming soon...</div>;
   }
 }
@@ -718,6 +720,243 @@ function CreateNoteModal({ onClose }: { onClose: () => void }) {
              <div className="space-y-1"><label className="text-xs text-gray-500">Notes</label><textarea className="w-full border rounded-lg p-2.5 text-sm h-32 outline-none focus:border-brand resize-none" placeholder="Start typing..."></textarea></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm font-medium hover:bg-gray-50">Cancel</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Create</button></div>
+       </div>
+    </div>, document.body
+  );
+}
+
+// =========================================================================
+// 1. TRACKABLE DOCUMENT TAB (New Implementation)
+// =========================================================================
+function CertificatesTab() {
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Mock Data 
+  const documents = [
+    { id: "01XBY4", type: "Driving License", mode: "Trackable", created: "22 April, 2025 | 5:28:20 PM", expiry: "22 July, 2025 | 5:28:20 PM", remark: "This is Driving License Document", status: "Active" },
+    { id: "01XBY4", type: "CPR Certificate", mode: "Untrackable", created: "22 April, 2025 | 5:28:20 PM", expiry: "22 July, 2025 | 5:28:20 PM", remark: "This is CPR Medical Document", status: "Expired" },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       
+       {/* Header */}
+       <div className="flex justify-between items-center">
+          <h3 className="text-lg font-bold text-gray-800">Certificates & Documents</h3>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors shadow-sm"
+          >
+            Add Certificates/Documents
+          </button>
+       </div>
+
+       {/* Table */}
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+             <table className="w-full text-left text-xs whitespace-nowrap">
+                <thead className="bg-gray-50 text-gray-500 uppercase font-semibold">
+                   <tr>
+                      <th className="p-4">Document Number</th>
+                      <th className="p-4">Document Type</th>
+                      <th className="p-4">Document Mode</th>
+                      <th className="p-4">Created On</th>
+                      <th className="p-4">Expiry Date</th>
+                      <th className="p-4">Remark</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4 text-right"></th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                   {documents.map((doc, index) => (
+                      <tr key={index} className="hover:bg-gray-50/50 transition-colors">
+                         <td className="p-4 text-gray-600">{doc.id}</td>
+                         <td className="p-4 font-medium text-gray-800">{doc.type}</td>
+                         <td className="p-4">
+                            <span className={`px-2 py-1 rounded text-[10px] font-medium ${doc.mode === 'Trackable' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                               {doc.mode}
+                            </span>
+                         </td>
+                         <td className="p-4 text-gray-600">{doc.created}</td>
+                         <td className="p-4 text-gray-600">{doc.expiry}</td>
+                         <td className="p-4 text-gray-600 max-w-[200px] truncate">{doc.remark}</td>
+                         <td className="p-4">
+                            <span className={`px-2 py-1 rounded-full text-[10px] font-medium border ${doc.status === 'Active' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                               {doc.status}
+                            </span>
+                         </td>
+                         <td className="p-4 text-right">
+                            <button className="text-[#0074D9] hover:text-blue-700 font-medium flex items-center justify-end gap-2">
+                               <i className="fa-solid fa-download"></i> Download
+                            </button>
+                         </td>
+                      </tr>
+                   ))}
+                </tbody>
+             </table>
+          </div>
+          <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+             <span>Showing 1 to 10 of 1000 Results</span>
+             <div className="flex gap-2"><button className="hover:text-brand">Previous</button><button className="text-brand font-medium">Next</button></div>
+          </div>
+       </div>
+
+       {/* --- MODAL --- */}
+       {showAddModal && <AddDocumentModal onClose={() => setShowAddModal(false)} />}
+
+    </div>
+  );
+}
+
+// =========================================================================
+// 2. MODAL COMPONENTS
+// =========================================================================
+
+// --- A. ADD DOCUMENT MODAL ---
+function AddDocumentModal({ onClose }: { onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center p-6 border-b border-gray-100">
+             <h2 className="text-xl font-bold text-gray-800">Certificates & Documents</h2>
+             <button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button>
+          </div>
+
+          {/* Body */}
+          <div className="p-6 space-y-5">
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Document Type</label>
+                <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                   <option>Select</option>
+                   <option>State ID</option>
+                   <option>Driver’s License</option>
+                   <option>PASSPORT</option>
+                   <option>Military ID</option>
+                   <option>USCIS ID</option>
+                   <option>ODA-Approved Core Training </option>
+                   <option>CPR/First Aid Certified (Exp: 04-04-2027)</option>
+                   <option>Alzheimer's/Dementia Training - Ohio Curriculum</option>
+                   <option>Incident Reporting Training</option>
+                   <option>HIPAA/Confidentiality Training</option>
+                   <option>Abuse/Neglect Prevention Training</option>
+                   <option>Infection Control/Universal Precautions</option>
+                   <option>Choke Prevention & Food Safety</option>
+
+                  
+                </select>
+             </div>
+
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Remark</label>
+                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+             </div>
+
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Issued Date</label>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+             </div>
+
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Expiry Date</label>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+             </div>
+
+             {/* Upload Area */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Upload File</label>
+                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+                   <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
+                   <p className="text-xs text-gray-600 text-center">Drag and drop or click to upload file</p>
+                   <p className="text-[10px] text-gray-400 mt-1">Supported file type: pdf, word, png</p>
+                </div>
+             </div>
+
+             <div className="flex items-center gap-2">
+                <input type="checkbox" className="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand" />
+                <label className="text-sm text-gray-700">Is the document Trackable? Check if Yes</label>
+             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-white rounded-b-2xl">
+             <button onClick={onClose} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-gray-50 transition-colors">
+                Cancel
+             </button>
+             <button onClick={onClose} className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-8 py-2.5 rounded-lg text-sm font-medium shadow-lg shadow-blue-900/10 transition-colors">
+                Save
+             </button>
+          </div>
+
+       </div>
+    </div>, document.body
+  );
+}
+
+// =========================================================================
+// 1. CONTACTS TAB & MODAL
+// =========================================================================
+function ContactsTab() {
+  const [showModal, setShowModal] = useState(false);
+  const contacts = [
+    { type: "Emergency Contact", phone: "5412452358", mobile: "(703)981-7142", name: "Tim Drake", relation: "Son", status: "Active" },
+    { type: "Emergency Contact", phone: "5412452358", mobile: "(703)981-7142", name: "Tim Drake", relation: "Son", status: "Active" },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex justify-between items-center">
+          <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+          <button onClick={() => setShowModal(true)} className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Add Contact</button>
+       </div>
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4 w-10"><input type="checkbox" /></th><th className="p-4">Contact Type</th><th className="p-4">Telephone</th><th className="p-4">Mobile</th><th className="p-4">Full Name</th><th className="p-4">Address</th><th className="p-4">Status</th><th className="p-4"></th></tr></thead>
+             <tbody className="divide-y divide-gray-50">{contacts.map((c, i) => (<tr key={i} className="hover:bg-gray-50"><td className="p-4"><input type="checkbox" /></td><td className="p-4">{c.type}</td><td className="p-4">{c.phone}</td><td className="p-4">{c.mobile}</td><td className="p-4 font-medium">{c.name}</td><td className="p-4">N/A</td><td className="p-4"><span className="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs">{c.status}</span></td><td className="p-4 text-right"><button className="text-gray-400 mr-2"><i className="fa-solid fa-pen"></i></button><button className="text-red-400"><i className="fa-regular fa-trash-can"></i></button></td></tr>))}</tbody>
+          </table>
+       </div>
+       {showModal && <CreateContactModal onClose={() => setShowModal(false)} />}
+    </div>
+  );
+}
+
+function CreateContactModal({ onClose }: { onClose: () => void }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Create Contact Address</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="p-6 overflow-y-auto space-y-4">
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">First Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Last Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Telephone</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Mobile</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="+1 000000000" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Relationship</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Parent</option>
+               <option>Sibling</option>
+               <option>Child</option>
+               <option>Relative</option>
+               <option>Friend</option>
+               </select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Contact Type</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Emergency Contact</option>
+               <option>Primary Contact</option>
+               <option>Secondary Contact</option>  
+               </select></div><div><label className="text-xs text-gray-500">Status</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+                  <option>Select</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                  <option>Others</option>
+                  </select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Street Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">City</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">State*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Zip Code*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
+          </div>
+          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm">Save</button></div>
        </div>
     </div>, document.body
   );

@@ -6,10 +6,10 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
-  const [activeTab, setActiveTab] = useState("Contacts");
+  const [activeTab, setActiveTab] = useState("Contacts Address");
 
   const tabs = [
-    "Contacts", "Documents", "Payroll", "Complains", 
+    "Contacts Address", "Documents", "Payroll", "Complains", 
     "Performance", "Trackable Licenses", "Employment History", "Reference"
   ];
 
@@ -91,7 +91,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
 
 function renderTabContent(tab: string) {
   switch (tab) {
-    case "Contacts": return <ContactsTab />;
+    case "Contacts Address": return <ContactsTab />;
     case "Documents": return <DocumentsTab />;
     case "Complains": return <ComplainsTab />;
     case "Trackable Licenses": return <TrackableLicensesTab />;
@@ -131,12 +131,29 @@ function CreateContactModal({ onClose }: { onClose: () => void }) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
        <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl flex flex-col max-h-[90vh] animate-slide-up">
-          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Create Contact</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Create Contact Address</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
           <div className="p-6 overflow-y-auto space-y-4">
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">First Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Last Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Telephone</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Mobile</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="+1 000000000" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Relationship</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Contact Type</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div><div><label className="text-xs text-gray-500">Status</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500"><option>Select</option></select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Relationship</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Parent</option>
+               <option>Sibling</option>
+               <option>Child</option>
+               <option>Relative</option>
+               <option>Friend</option>
+               </select></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Contact Type</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+               <option>Select</option>
+               <option>Emergency Contact</option>
+               <option>Primary Contact</option>
+               <option>Secondary Contact</option>  
+               </select></div><div><label className="text-xs text-gray-500">Status</label><select className="w-full border rounded-lg p-2 text-sm text-gray-500">
+                  <option>Select</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                  <option>Others</option>
+                  </select></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Street Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">City</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">State*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Zip Code*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
           </div>
