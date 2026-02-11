@@ -7,21 +7,33 @@ import Link from "next/link";
 
 export default function CaregiverPage() {
   const [showAddModal, setShowAddModal] = useState(false);
+  
+  // SMS Modal State
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [selectedCaregiver, setSelectedCaregiver] = useState<{name: string, phone: string} | null>(null);
 
-  // Mock Data
+  // Email Modal State (NEW)
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [selectedEmailCaregiver, setSelectedEmailCaregiver] = useState<{name: string, email: string} | null>(null);
+
+  // Mock Data (Added 'email' field for the modal)
   const caregivers = [
-    { id: "CG-00012", name: "Olivia Thompson", role: "HHA", phone: "(202) 999-6969", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 1 },
-    { id: "CG-00018", name: "Jack Williams", role: "CNA", phone: "(202) 999-6969", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 2 },
-    { id: "CG-00014", name: "Amelia Robinson", role: "PCA", phone: "(202) 999-6969", zone: "Marietta , Southeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 3 },
-    { id: "CG-00020", name: "Liam Harris", role: "HHA", phone: "(202) 999-6969", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 4 },
-    { id: "CG-00024", name: "Charlotte White", role: "CNA", phone: "(202) 999-6969", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 5 },
+    { id: "CG-00012", name: "Olivia Thompson", role: "HHA", phone: "(202) 999-6969", email: "olivia.t@karixa.com", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 1 },
+    { id: "CG-00018", name: "Jack Williams", role: "CNA", phone: "(202) 999-6969", email: "jack.w@karixa.com", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 2 },
+    { id: "CG-00014", name: "Amelia Robinson", role: "PCA", phone: "(202) 999-6969", email: "amelia.r@karixa.com", zone: "Marietta , Southeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 3 },
+    { id: "CG-00020", name: "Liam Harris", role: "HHA", phone: "(202) 999-6969", email: "liam.h@karixa.com", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 4 },
+    { id: "CG-00024", name: "Charlotte White", role: "CNA", phone: "(202) 999-6969", email: "charlotte.w@karixa.com", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 5 },
   ];
 
   const handlePhoneClick = (cg: any) => {
     setSelectedCaregiver({ name: cg.name, phone: cg.phone });
     setShowSmsModal(true);
+  };
+
+  // Handle Email Icon Click
+  const handleEmailClick = (cg: any) => {
+    setSelectedEmailCaregiver({ name: cg.name, email: cg.email });
+    setShowEmailModal(true);
   };
 
   return (
@@ -68,7 +80,7 @@ export default function CaregiverPage() {
            </div>
         </div>
 
-        {/* Table Container - FIXED: overflow-visible allows popup to show */}
+        {/* Table */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-visible">
            <div className="overflow-visible"> 
               <table className="w-full text-left text-sm">
@@ -123,14 +135,11 @@ export default function CaregiverPage() {
                                       href="/clients/profile" 
                                       className="relative group/client cursor-pointer hover:z-50"
                                    >
-                                      {/* Small Thumbnail */}
                                       <img 
                                          src={`https://i.pravatar.cc/150?img=${client.img}`} 
                                          className="w-6 h-6 rounded-full border border-white object-cover shadow-sm transition-transform group-hover/client:scale-110" 
                                          alt={client.name} 
                                       />
-
-                                      {/* Big Hover Popup - Positioned absolutely to appear ON TOP */}
                                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex flex-col items-center hidden group-hover/client:flex z-50 animate-fade-in origin-bottom">
                                          <img 
                                             src={`https://i.pravatar.cc/150?img=${client.img}`} 
@@ -139,8 +148,6 @@ export default function CaregiverPage() {
                                          />
                                          <span className="text-sm font-bold text-gray-800 text-center leading-tight mb-2">{client.name}</span>
                                          <span className="text-[10px] text-[#0074D9] font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100">View Profile</span>
-                                         
-                                         {/* Arrow */}
                                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
                                       </div>
                                    </Link>
@@ -149,12 +156,34 @@ export default function CaregiverPage() {
                           </td>
 
                           <td className="p-4 text-gray-600">{cg.zone}</td>
-                          <td className="p-4 text-gray-600 text-xs">{cg.nextShift}</td>
+                          
+                          {/* --- UPDATED: NEXT SHIFT LINK --- */}
+                          <td className="p-4">
+                             <Link 
+                                href={`/caregivers/${cg.id}`} // Links to profile (schedule section)
+                                className="text-gray-600 text-xs hover:text-[#0074D9] hover:underline"
+                             >
+                                {cg.nextShift}
+                             </Link>
+                          </td>
+                          {/* -------------------------------- */}
+
                           <td className="p-4"><span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">{cg.status}</span></td>
+                          
+                          {/* Actions */}
                           <td className="p-4 text-right">
                              <div className="flex justify-end gap-2">
                                 <button className="w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i className="fa-regular fa-eye text-xs"></i></button>
-                                <button onClick={() => handlePhoneClick(cg)} className="w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors"><i className="fa-regular fa-envelope text-xs"></i></button>
+                                
+                                {/* --- UPDATED: EMAIL ICON --- */}
+                                <button 
+                                   onClick={() => handleEmailClick(cg)}
+                                   className="w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors"
+                                >
+                                   <i className="fa-regular fa-envelope text-xs"></i>
+                                </button>
+                                {/* --------------------------- */}
+
                                 <button className="w-7 h-7 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center"><i className="fa-regular fa-calendar text-xs"></i></button>
                                 <button className="w-7 h-7 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i className="fa-solid fa-dollar-sign text-xs"></i></button>
                                 <button className="w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center"><i className="fa-regular fa-trash-can text-xs"></i></button>
@@ -173,6 +202,8 @@ export default function CaregiverPage() {
 
         {/* --- Modals --- */}
         {showAddModal && <AddCaregiverModal onClose={() => setShowAddModal(false)} />}
+        
+        {/* SMS Modal */}
         {showSmsModal && selectedCaregiver && (
            <SmsModal 
               recipient={selectedCaregiver} 
@@ -180,8 +211,73 @@ export default function CaregiverPage() {
            />
         )}
 
+        {/* NEW: Email Modal */}
+        {showEmailModal && selectedEmailCaregiver && (
+           <EmailModal 
+              recipient={selectedEmailCaregiver} 
+              onClose={() => setShowEmailModal(false)} 
+           />
+        )}
+
       </div>
     </DashboardLayout>
+  );
+}
+
+// =========================================================================
+// NEW: EMAIL MODAL
+// =========================================================================
+function EmailModal({ recipient, onClose }: { recipient: { name: string, email: string }, onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
+          
+          {/* Header */}
+          <div className="flex justify-between items-center p-5 border-b border-gray-100">
+             <div>
+                <h2 className="text-lg font-bold text-gray-800">Send Email</h2>
+                <p className="text-xs text-gray-500">To: <span className="font-semibold text-gray-700">{recipient.name}</span> ({recipient.email})</p>
+             </div>
+             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 transition-colors"><i className="fa-solid fa-xmark"></i></button>
+          </div>
+
+          {/* Body */}
+          <div className="p-6 space-y-4">
+             <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Subject</label>
+                <input 
+                   type="text" 
+                   className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]"
+                   placeholder="Enter subject..."
+                />
+             </div>
+             <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">Message</label>
+                <textarea 
+                   className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9] placeholder:text-gray-300"
+                   placeholder="Type your email content here..."
+                ></textarea>
+             </div>
+             <div className="flex items-center gap-2">
+                <input type="checkbox" id="cc-myself" className="rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9]" />
+                <label htmlFor="cc-myself" className="text-xs text-gray-500">Send me a copy</label>
+             </div>
+          </div>
+
+          {/* Footer */}
+          <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
+             <button onClick={onClose} className="px-5 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-white transition-colors">Cancel</button>
+             <button onClick={() => { console.log("Email Sent"); onClose(); }} className="px-5 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors flex items-center gap-2">
+                <i className="fa-regular fa-paper-plane"></i> Send Email
+             </button>
+          </div>
+
+       </div>
+    </div>, document.body
   );
 }
 
@@ -214,7 +310,7 @@ function SmsModal({ recipient, onClose }: { recipient: { name: string, phone: st
 }
 
 // =========================================================================
-// ADD CAREGIVER MODAL (3-Step Wizard) - NO CHANGES
+// ADD CAREGIVER MODAL (Kept same as before)
 // =========================================================================
 function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
