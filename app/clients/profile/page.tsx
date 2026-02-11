@@ -12,8 +12,8 @@ export default function ClientProfilePage() {
   const [activeTab, setActiveTab] = useState("General Info");
 
   const tabs = [
-    "General Info", "Scheduled", "Caregivers", "Billing", "Note", 
-    "ADLs", "Incidents", "Schedule Report", 
+    "General Info", "Scheduled", "Caregivers", "Billing", "Service Notes", 
+    "Service Plan(ADLs)", "Incidents", "Schedule Report", 
     "Service Authentication", "Trackable Document", "Contacts Address"
   ];
 
@@ -117,10 +117,10 @@ function renderTabContent(tab: string) {
     case "Scheduled": return <ScheduledTab />;
     case "Caregivers": return <CaregiversTab />;
     case "Billing": return <BillingTab />;
-    case "Note": return <NoteTab />;
-    case "ADLs": return <ADLTab />;
+    case "Service Notes": return <NoteTab />;
+    case "Service Plan(ADLs)": return <ADLTab />;
     case "Incidents": return <IncidentsTab />;
-   /*  case "Medication": return <MedicationTab />; */
+   /*case "Medication": return <MedicationTab />; */
     case "Schedule Report": return <ScheduleReportTab />;
     case "Service Authentication": return <ServiceAuthTab />;
     case "Trackable Document": return <TrackableDocumentTab />;
