@@ -136,36 +136,47 @@ export default function CaregiverPage() {
                           </td>
 
                           {/* ASSIGNED CLIENT HOVER */}
-                          <td className="p-4 overflow-visible">
-                             <div className="flex -space-x-2 items-center relative">
-                                {[
-                                   { name: "Jane Doe", img: 10 },
-                                   { name: "John Smith", img: 11 }
-                                ].map((client, idx) => (
-                                   <Link 
-                                      key={idx} 
-                                      href="/clients/profile" 
-                                      className="relative group/client cursor-pointer hover:z-50"
-                                   >
-                                      <img 
-                                         src={`https://i.pravatar.cc/150?img=${client.img}`} 
-                                         className="w-6 h-6 rounded-full border border-white object-cover shadow-sm transition-transform group-hover/client:scale-110" 
-                                         alt={client.name} 
-                                      />
-                                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex flex-col items-center hidden group-hover/client:flex z-50 animate-fade-in origin-bottom">
-                                         <img 
-                                            src={`https://i.pravatar.cc/150?img=${client.img}`} 
-                                            className="w-16 h-16 rounded-full object-cover border-4 border-gray-100 mb-2 shadow-sm" 
-                                            alt={client.name} 
-                                         />
-                                         <span className="text-sm font-bold text-gray-800 text-center leading-tight mb-2">{client.name}</span>
-                                         <span className="text-[10px] text-[#0074D9] font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100">View Profile</span>
-                                         <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
-                                      </div>
-                                   </Link>
-                                ))}
-                             </div>
-                          </td>
+<td className="p-4 overflow-visible">
+   <div className="flex -space-x-2 items-center relative">
+      {[
+         { name: "Jane Doe", img: 10 },
+         { name: "John Smith", img: 11 }
+      ].map((client, idx) => (
+         <Link 
+            key={idx} 
+            href="/clients/profile" 
+            className="relative group/client cursor-pointer hover:z-50"
+         >
+            {/* Small Thumbnail */}
+            <img 
+               src={`https://i.pravatar.cc/150?img=${client.img}`} 
+               className="w-6 h-6 rounded-full border border-white object-cover shadow-sm transition-transform group-hover/client:scale-110" 
+               alt={client.name} 
+            />
+
+            {/* Big Hover Popup */}
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex flex-col items-center hidden group-hover/client:flex z-50 animate-fade-in origin-bottom">
+               
+               {/* Invisible Bridge: Fills the gap between image and popup so hover isn't lost */}
+               <div className="absolute -bottom-3 left-0 w-full h-3 bg-transparent"></div>
+
+               <img 
+                  src={`https://i.pravatar.cc/150?img=${client.img}`} 
+                  className="w-16 h-16 rounded-full object-cover border-4 border-gray-100 mb-2 shadow-sm" 
+                  alt={client.name} 
+               />
+               <span className="text-sm font-bold text-gray-800 text-center leading-tight mb-2">{client.name}</span>
+               <span className="text-[10px] text-[#0074D9] font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors">
+                  View Profile
+               </span>
+               
+               {/* Decorative Arrow */}
+               <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
+            </div>
+         </Link>
+      ))}
+   </div>
+</td>
 
                           <td className="p-4 text-gray-600">{cg.zone}</td>
                           
