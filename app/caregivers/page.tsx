@@ -85,7 +85,7 @@ export default function CaregiverPage() {
 <option>Wound Care Certified (LPNs & RNs only)</option>             
             </select>
 
-            <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">| Clear Filter</button>
+         
           </div>
            <div className="flex gap-2">
               <button onClick={() => setShowAddModal(true)} className="px-5 py-2 text-sm font-medium text-white bg-[#0074D9] rounded-lg hover:bg-[#0062b8] transition-colors shadow-sm">Add Caregiver</button>
