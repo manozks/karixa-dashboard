@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function CaregiverProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("General Info");
 
-  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Service Notes", "Certificates & Documents", "Contacts Address"];
+  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Service Notes", "Certificates & Documents", "Contacts Address", "Reference"];
 
   return (
     <DashboardLayout>
@@ -97,6 +97,7 @@ function renderTabContent(tab: string) {
     case "Service Notes": return <NotesTab />;
     case "Certificates & Documents": return <CertificatesTab />;
     case "Contacts Address": return <ContactsTab />;
+     case "Reference": return <ReferenceTab />;
     default: return <div className="text-center py-20 text-gray-400">Content for {tab} is coming soon...</div>;
   }
 }
@@ -111,9 +112,17 @@ function GeneralInfoTab() {
        <div>
           <h3 className="font-bold text-gray-800 mb-4 text-sm">Basic Information</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <InfoItem label="Salutation" value="Ms." />
              <InfoItem label="Name" value="Nina Mcintire" />
-             <InfoItem label="DOB" value="24 Oct, 1933" />
+             <InfoItem label="DOB" value="24 Oct, 1933" />             
              <InfoItem label="Gender" value="Female" />
+             <InfoItem label="Skills" value="Catheter Care" />
+             <InfoItem label="Qualification" value="Certificate III in Individual Support" />
+             <InfoItem label="Years of Experience" value="5 Years" />
+             <InfoItem label="Hourly Charge" value="$32 / per hour" />
+             <InfoItem label="Caregiver Type" value="Full Time" />
+             <InfoItem label="Hire Date" value="12 Jan, 2020" />
+             <InfoItem label="Role Type" value="Caregiver" />
              <InfoItem label="Social Security Number (SSN)" value="(***) ***-7142" />
              <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Email Address" value="nina@gmail.com" />
@@ -820,7 +829,7 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
-       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
+       <div className="bg-white rounded-2xl max-w-3xl shadow-2xl flex flex-col animate-scale-up relative">
           
           {/* Header */}
           <div className="flex justify-between items-center p-6 border-b border-gray-100">
@@ -829,9 +838,12 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* Body */}
-          <div className="p-6 space-y-5">
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Document Type</label>
+          
+          <div className="p-6 overflow-y-auto space-y-4">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div><label className="text-sm font-medium text-gray-700">Document Name</label>
+                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+               <div><label className="text-sm font-medium text-gray-700">Document Type</label>
                 <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
                    <option>Select</option>
                    <option>State ID</option>
@@ -847,27 +859,23 @@ function AddDocumentModal({ onClose }: { onClose: () => void }) {
                    <option>Abuse/Neglect Prevention Training</option>
                    <option>Infection Control/Universal Precautions</option>
                    <option>Choke Prevention & Food Safety</option>
-
-                  
-                </select>
+                </select></div>
              </div>
-
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Remark</label>
-                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
-             </div>
-
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Issued Date</label>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div> <label className="text-sm font-medium text-gray-700">Remark</label>
+                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+               <div>  <label className="text-sm font-medium text-gray-700">Issued Date</label>
                 {/* FIXED: Changed to type="date" and removed manual icon */}
-                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
              </div>
-
-             <div className="space-y-1.5">
-                <label className="text-sm font-medium text-gray-700">Expiry Date</label>
+              <div className="grid grid-cols-1 md:grid-cols-1gap-4">
+               <div> <label className="text-sm font-medium text-gray-700">Expiry Date</label>
                 {/* FIXED: Changed to type="date" and removed manual icon */}
-                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" />
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+              
              </div>
+            
+
 
              {/* Upload Area */}
              <div className="space-y-1.5">
@@ -957,6 +965,94 @@ function CreateContactModal({ onClose }: { onClose: () => void }) {
              <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">State*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div><div><label className="text-xs text-gray-500">Zip Code*</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm">Save</button></div>
+       </div>
+    </div>, document.body
+  );
+}
+
+// =========================================================================
+// 3. REFERENCE TAB
+// =========================================================================
+function ReferenceTab() {
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedRef, setSelectedRef] = useState<any>(null);
+
+  const references = [
+    { name: "Maria Hills", contact: "(323)432-2321", status: "Completed", date: "2024-11-15", notes: "Adams Family" },
+    { name: "John Kerry", contact: "(323)432-2321", status: "Completed", date: "2024-11-15", notes: "Adams Family" },
+    { name: "Tim Vasko", contact: "(323)432-2321", status: "Pending", date: "2024-11-15", notes: "Adams Family" },
+    { name: "James", contact: "(323)432-2321", status: "Unresponsive", date: "2024-11-15", notes: "Adams Family" },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex justify-between items-center">
+          <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+          <button onClick={() => setShowAddModal(true)} className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Add reference</button>
+       </div>
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4">Name</th><th className="p-4">Contact & Type</th><th className="p-4">Status</th><th className="p-4">Date Contacted</th><th className="p-4">Notes summary</th><th className="p-4"></th></tr></thead>
+             <tbody className="divide-y divide-gray-50">{references.map((r, i) => (<tr key={i} className="hover:bg-gray-50">
+               <td className="p-4">{r.name}</td>
+               <td className="p-4">{r.contact}</td>
+               <td className="p-4"><span className={`px-2 py-1 rounded text-xs border ${r.status === 'Completed' ? 'bg-green-50 text-green-700 border-green-200' : r.status === 'Pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-red-50 text-red-700 border-red-200'}`}>{r.status}</span></td>
+               <td className="p-4">{r.date}</td><td className="p-4">{r.notes}</td><td className="p-4 text-right"><button onClick={() => { setSelectedRef(r); setShowEditModal(true); }} className="text-gray-400 hover:text-gray-600"><i className="fa-solid fa-pen"></i></button></td></tr>))}</tbody>
+          </table>
+       </div>
+       {showAddModal && <AddReferenceModal onClose={() => setShowAddModal(false)} />}
+       {showEditModal && <ReferenceDetailsModal reference={selectedRef} onClose={() => setShowEditModal(false)} />}
+    </div>
+  );
+}
+
+function AddReferenceModal({ onClose }: { onClose: () => void }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-3xl shadow-2xl flex flex-col animate-scale-up">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Reference</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Select Type</option>
+               <option>Professional</option>
+               <option>Personal</option>
+               </select></div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Jane Doe" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Relationship to Employee</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Former Manager" /></div><div><label className="text-xs text-gray-500">Company/Organization Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Professional" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Phone Number</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="(785) 123 2321" /></div><div><label className="text-xs text-gray-500">Email Address</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. email@example.com" /></div></div>
+             <h3 className="font-bold text-sm text-gray-800 pt-2">Admin Vetting Details (Internal Use)</h3>
+             <div className="grid grid-cols-3 gap-4"><div><label className="text-xs text-gray-500">Years Known</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. 3" /></div><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Pending</option>
+               <option>Complete</option>
+               <option>Not Verified</option>
+               </select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
+             <div><label className="text-xs text-gray-500">Reference Notes</label><textarea className="w-full border rounded-lg p-2 text-sm h-24" placeholder="Start typing..."></textarea></div>
+             <button className="text-[#0074D9] text-sm font-medium border border-[#0074D9] rounded-lg px-4 py-2 w-full flex items-center justify-center gap-2"><i className="fa-solid fa-plus"></i> Add Another Reference</button>
+          </div>
+          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Back</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Save</button></div>
+       </div>
+    </div>, document.body
+  );
+}
+
+function ReferenceDetailsModal({ reference, onClose }: { reference: any, onClose: () => void }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Reference Details</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="p-6 space-y-4">
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Reference Type</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Professional</option>
+               <option>Personal</option>
+               </select>
+               </div><div><label className="text-xs text-gray-500">Full Name</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Jane Doe" /></div></div>
+             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Verification Status</label><select className="w-full border rounded-lg p-2 text-sm">
+               <option>Complete</option>
+               <option>Not Verified</option>
+               <option>Pending</option>
+               </select></div><div><label className="text-xs text-gray-500">Date Contacted</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div></div>
+             <div><label className="text-xs text-gray-500">Reference Notes</label><textarea className="w-full border rounded-lg p-2 text-sm h-24" placeholder="Start typing..."></textarea></div>
+          </div>
+          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Back</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Update</button></div>
        </div>
     </div>, document.body
   );

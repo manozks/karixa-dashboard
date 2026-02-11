@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
+import MultiSelectSkills from "@/components/MultiSelect";
+import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 
 export default function CaregiverPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -69,21 +71,7 @@ export default function CaregiverPage() {
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
               <option>Type</option><option>(PCA)</option><option>(CNA)</option><option>(HHA)</option>
             </select>
-            <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Skills</option>
-               <option>DODD Medication Category 1</option>
-<option>DODD Medication Category 2</option>
-<option>DODD Medication Category 3</option>
-<option>Vagus Nerve Stimulator (VNS) Certified</option>
-<option>Hoyer Lift</option>
-<option>Gait Belt Transfers</option>
-<option>Catheter Care</option>
-<option>Licensed Driver</option>
-<option>Severe Behavior Experience</option>
-<option>Seizure Experience</option>
-<option>Dementia Care Experience</option>
-<option>Wound Care Certified (LPNs & RNs only)</option>             
-            </select>
+            <MultiSelectSkills />
 
          
           </div>
@@ -333,13 +321,46 @@ function SmsModal({ recipient, onClose }: { recipient: { name: string, phone: st
 }
 
 // =========================================================================
-// ADD CAREGIVER MODAL (Updated Step 2 & 3)
+// ADD CAREGIVER MODAL (Updated Step 1 for Multiple Phone & Email)
 // =========================================================================
 function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
+  
+  // State for Multiple Phone Numbers
+  const [phones, setPhones] = useState([
+    { type: "Cell Phone", number: "", note: "" }
+  ]);
+
+  // State for Multiple Emails
+  const [emails, setEmails] = useState([
+    { type: "Work", address: "", note: "" }
+  ]);
+
   useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
   if (!mounted) return null;
+
+  // --- Phone Handlers ---
+  const addPhone = () => setPhones([...phones, { type: "Cell Phone", number: "", note: "" }]);
+  const removePhone = (index: number) => setPhones(phones.filter((_, i) => i !== index));
+  const updatePhone = (index: number, field: string, value: string) => {
+    const updated = [...phones];
+    // @ts-ignore
+    updated[index][field] = value;
+    setPhones(updated);
+  };
+
+  // --- Email Handlers ---
+  const addEmail = () => setEmails([...emails, { type: "Work", address: "", note: "" }]);
+  const removeEmail = (index: number) => setEmails(emails.filter((_, i) => i !== index));
+  const updateEmail = (index: number, field: string, value: string) => {
+    const updated = [...emails];
+    // @ts-ignore
+    updated[index][field] = value;
+    setEmails(updated);
+  };
+
+
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
@@ -369,31 +390,158 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              {step === 1 && (
                 <div className="animate-slide-up space-y-6">
                    <h3 className="font-bold text-gray-800 text-sm">Basic Information</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <SelectGroup label="Title" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
                       <InputGroup label="First Name*" placeholder="Enter First Name" />
                       <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
                       <InputGroup label="Last Name*" placeholder="Enter Last Name" />
-                      <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+                     
                    </div>
-                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <SelectGroup label="Gender*" options={["Male", "Female", "Other"]} />
+                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                     <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+                      <MultiSelectDropdown 
+  label="Skills" 
+  options={[
+    "DODD Medication Category 1",
+    "DODD Medication Category 2",
+    "DODD Medication Category 3",
+    "Vagus Nerve Stimulator (VNS) Certified",
+    "Hoyer Lift",
+    "Gait Belt Transfers",
+    "Catheter Care",
+    "Licensed Driver",
+    "Severe Behavior Experience",
+    "Seizure Experience",
+    "Dementia Care Experience",
+    "Wound Care Certified (LPNs & RNs only)"
+  ]} 
+/>
+ <SelectGroup label="Gender*" options={["Male", "Female", "Other"]} />
                       <InputGroup label="Date of Birth*" type="date" /> 
-                      <InputGroup label="Phone Number" placeholder="+1 000000000" />
-                      <InputGroup label="Email" placeholder="Enter email address" />
                    </div>
+                  
                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                       <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-                      <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                      <SelectGroup label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                      <SelectGroup label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+                      <MultiSelectDropdown label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                      <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                      <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <InputGroup label="Street Address" placeholder="Enter" />
-                      <InputGroup label="City" placeholder="Enter" />
-                      <InputGroup label="State*" placeholder="Enter" />
-                      <InputGroup label="Zip Code*" placeholder="Enter" />
+                      <InputGroup label="Address Line1" placeholder="Enter" />
+                        <InputGroup label="Address Line2" placeholder="Enter" />
+                        <InputGroup label="Zip/Postal Code*" placeholder="Enter" />
+                        <SelectGroup label="City" options={["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]} />
+                        <SelectGroup label="State/Province" options={["Los Angeles County", "Cook County", "Harris County", "Maricopa County", "San Diego County", "Orange County", "Miami-Dade County", "Dallas County", "Kings County", "Riverside County"]} />
+                        <SelectGroup label="Country" options={["United States", "India", "China", "United Kingdom", "Germany", "France", "Brazil", "Canada", "Australia", "Italy"]} />
+                        
+                        <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
+                    
+                      
                    </div>
+
+                   
+               {/* --- DYNAMIC PHONE NUMBERS SECTION --- */}
+                   <div>
+                      <div className="flex justify-between items-center mb-2">
+                          <h3 className="font-bold text-gray-800 text-sm">Phone Numbers</h3>
+                          <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
+                      </div>
+                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                          {phones.map((phone, index) => (
+                            <div key={index} className="grid grid-cols-12 gap-4 items-end animate-fade-in border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                               <div className="col-span-2">
+                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Phone Type</label>
+                                  <select 
+                                    value={phone.type}
+                                    onChange={(e) => updatePhone(index, 'type', e.target.value)}
+                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
+                                  >
+                                    <option>Cell Phone</option><option>Home Phone</option><option>Work Phone</option><option>Other</option>
+                                  </select>
+                               </div>
+                               <div className="col-span-3">
+                                  <InputGroup 
+                                    label="Number" 
+                                    placeholder="+1 (555) 000-0000" 
+                                    value={phone.number}
+                                    onChange={(e: any) => updatePhone(index, 'number', e.target.value)}
+                                  />
+                               </div>
+                               <div className="col-span-5">
+                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Note <span className="text-[10px] font-normal text-gray-400">(Max 100 chars)</span></label>
+                                  <input 
+                                    type="text" 
+                                    maxLength={100}
+                                    placeholder="Add a note..."
+                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
+                                    value={phone.note}
+                                    onChange={(e) => updatePhone(index, 'note', e.target.value)}
+                                  />
+                               </div>
+                               <div className="col-span-2">
+                                 
+                                 
+                                  {phones.length > 1 && (
+                                    <button onClick={() => removePhone(index)} className="w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100" title="Delete"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                                  )}
+                               </div>
+                            </div>
+                          ))}
+                      </div>
+                   </div>
+
+                   {/* --- DYNAMIC EMAIL ADDRESSES SECTION --- */}
+                   <div>
+                      <div className="flex justify-between items-center mb-2">
+                          <h3 className="font-bold text-gray-800 text-sm">Email Addresses</h3>
+                          <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
+                      </div>
+                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                          {emails.map((email, index) => (
+                            <div key={index} className="grid grid-cols-12 gap-4 items-end animate-fade-in border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                               <div className="col-span-2">
+                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Email Type</label>
+                                  <select 
+                                    value={email.type}
+                                    onChange={(e) => updateEmail(index, 'type', e.target.value)}
+                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
+                                  >
+                                    <option>Work</option><option>Home</option><option>Personal</option><option>Other</option>
+                                  </select>
+                               </div>
+                               <div className="col-span-3">
+                                  <InputGroup 
+                                    label="Email Address" 
+                                    placeholder="example@mail.com" 
+                                    value={email.address}
+                                    onChange={(e: any) => updateEmail(index, 'address', e.target.value)}
+                                  />
+                               </div>
+                               <div className="col-span-5">
+                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Note <span className="text-[10px] font-normal text-gray-400">(Max 100 chars)</span></label>
+                                  <input 
+                                    type="text" 
+                                    maxLength={100}
+                                    placeholder="Add a note..."
+                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
+                                    value={email.note}
+                                    onChange={(e) => updateEmail(index, 'note', e.target.value)}
+                                  />
+                               </div>
+                               <div className="col-span-2 ">
+                                  
+                                 
+                                  {emails.length > 1 && (
+                                    <button onClick={() => removeEmail(index)} className="w-9 h-9 flex items-center justify-center  bg-red-50 text-red-500 rounded hover:bg-red-100" title="Delete"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                                  )}
+                               </div>
+                            </div>
+                          ))}
+                      </div>
+                   </div>
+                   {/* -------------------------------------- */}
+
+
                 </div>
              )}
 
@@ -409,7 +557,10 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       <SelectGroup label="Qualification" options={["Certificate III", "Certificate IV", "Diploma", "Bachelor"]} />
                       <InputGroup label="Years of Experience*" placeholder="Enter" />
                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">                     
                    <InputGroup label="Hourly Charge" placeholder="Enter" />
+                   <InputGroup label="Hire Date" placeholder="Enter Hire Date" type="date" />
+                   </div>
 
                    <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
