@@ -70,7 +70,19 @@ export default function CaregiverPage() {
               <option>Type</option><option>(PCA)</option><option>(CNA)</option><option>(HHA)</option>
             </select>
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Skills</option><option>Personal Care</option><option>Mobility Assistance</option>
+              <option>Skills</option>
+               <option>DODD Medication Category 1</option>
+<option>DODD Medication Category 2</option>
+<option>DODD Medication Category 3</option>
+<option>Vagus Nerve Stimulator (VNS) Certified</option>
+<option>Hoyer Lift</option>
+<option>Gait Belt Transfers</option>
+<option>Catheter Care</option>
+<option>Licensed Driver</option>
+<option>Severe Behavior Experience</option>
+<option>Seizure Experience</option>
+<option>Dementia Care Experience</option>
+<option>Wound Care Certified (LPNs & RNs only)</option>             
             </select>
 
             <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">| Clear Filter</button>
@@ -310,7 +322,7 @@ function SmsModal({ recipient, onClose }: { recipient: { name: string, phone: st
 }
 
 // =========================================================================
-// ADD CAREGIVER MODAL (Kept same as before)
+// ADD CAREGIVER MODAL (Updated Step 2 & 3)
 // =========================================================================
 function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
@@ -321,12 +333,16 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
        <div className="bg-white rounded-2xl w-full max-w-6xl shadow-2xl flex flex-col max-h-[95vh] animate-slide-up relative">
+          
+          {/* Header */}
           <div className="p-6 border-b border-gray-100 relative">
              <button onClick={onClose} className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"><i className="fa-solid fa-xmark text-xl"></i></button>
              <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 mb-2"><i className="fa-solid fa-chevron-left text-xs"></i> Back</button>
              <h2 className="text-2xl font-bold text-gray-800">Add New Caregiver</h2>
              <p className="text-sm text-gray-500">Fill in the caregiver's personal details to begin managing their care within the Agency Portal.</p>
           </div>
+
+          {/* Stepper */}
           <div className="bg-blue-50/50 py-6 border-b border-gray-100 flex justify-center">
              <div className="flex items-center gap-4">
                 <StepIndicator num={1} label="Basic Information" sub="Provide information about client" current={step} />
@@ -336,6 +352,8 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                 <StepIndicator num={3} label="Documents & Certifications" sub="Provide detail document of caregiver" current={step} />
              </div>
           </div>
+
+          {/* Form Content */}
           <div className="p-8 overflow-y-auto flex-1">
              {step === 1 && (
                 <div className="animate-slide-up space-y-6">
@@ -355,9 +373,9 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                       <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-                      <SelectGroup label="Primary Language" options={["English", "Spanish"]} />
-                      <SelectGroup label="Secondary Language" options={["English", "Spanish"]} />
-                      <SelectGroup label="Race" options={["Asian", "Black", "White"]} />
+                      <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                      <SelectGroup label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                      <SelectGroup label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                       <InputGroup label="Street Address" placeholder="Enter" />
@@ -367,12 +385,72 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                    </div>
                 </div>
              )}
-             {step === 2 && <div className="text-center text-gray-400 py-10">Professional Details Form Placeholder</div>}
-             {step === 3 && <div className="text-center text-gray-400 py-10">Documents Form Placeholder</div>}
+
+             {step === 2 && (
+                /* STEP 2: PROFESSIONAL DETAIL */
+                <div className="animate-slide-up space-y-6">
+                   <h3 className="font-bold text-gray-800 text-sm">Professional Details</h3>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <SelectGroup label="Caregiver Type" options={["Personal Care Assistant (PCA)", "Certified Nursing Assistant (CNA)", "Home Health Aide (HHA)"]} />
+                      <InputGroup label="Caregiver ID" placeholder="CG-00023" />
+                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <SelectGroup label="Qualification" options={["Certificate III", "Certificate IV", "Diploma", "Bachelor"]} />
+                      <InputGroup label="Years of Experience*" placeholder="Enter" />
+                   </div>
+                   <InputGroup label="Hourly Charge" placeholder="Enter" />
+
+                   <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <InputGroup label="Availability Start Date" type="date" />
+                      <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
+                   </div>
+                   
+                   {/* Days Available */}
+                   <div>
+                      <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
+                      <div className="flex gap-2 flex-wrap">
+                         {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(d => (
+                            <button key={d} className="px-3 py-1 border rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">{d}</button>
+                         ))}
+                      </div>
+                   </div>
+
+                   {/* Preferred Shift */}
+                   <div>
+                      <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
+                      <div className="flex gap-6">
+                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning</label>
+                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening</label>
+                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night</label>
+                      </div>
+                   </div>
+                </div>
+             )}
+
+             {step === 3 && (
+                /* STEP 3: DOCUMENTS */
+                <div className="animate-slide-up space-y-6">
+                   <h3 className="font-bold text-gray-800 text-sm">Document & Certification</h3>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <UploadBox label="Upload CV" />
+                      <UploadBox label="Police Check" />
+                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <UploadBox label="First Aid Certificate" />
+                      <UploadBox label="COVID-19 Vaccination" />
+                   </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <UploadBox label="Drivers License" />
+                      <UploadBox label="Other Certifications" />
+                   </div>
+                </div>
+             )}
           </div>
+
           <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
-             {step > 1 && <button onClick={() => setStep(step - 1)} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-white">Back</button>}
-             {step < 3 ? <button onClick={() => setStep(step + 1)} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-lg">Next</button> : <button onClick={() => { console.log("Saved"); onClose(); }} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-lg">Save</button>}
+             {step > 1 && <button onClick={() => setStep(step - 1)} className="px-6 py-2.5 border border-gray-200 rounded-lg text-gray-600 text-sm font-medium hover:bg-white transition-colors">Back</button>}
+             {step < 3 ? <button onClick={() => setStep(step + 1)} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-lg transition-colors">Next</button> : <button onClick={() => { console.log("Saved"); onClose(); }} className="bg-[#0074D9] text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-lg transition-colors">Save</button>}
           </div>
        </div>
     </div>, document.body
