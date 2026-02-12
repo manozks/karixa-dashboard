@@ -134,7 +134,7 @@ export default function CaregiverPage() {
       ].map((client, idx) => (
          <Link 
             key={idx} 
-            href="/clients/profile" 
+            href={`/caregivers/${cg.id}`} 
             className="relative group/client cursor-pointer hover:z-50"
          >
             {/* Small Thumbnail */}
