@@ -38,6 +38,8 @@ export default function CaregiverPage() {
     setShowEmailModal(true);
   };
 
+  
+
   return (
     <DashboardLayout>
       <div className="p-0 space-y-6">
@@ -327,39 +329,36 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
   
-  // State for Multiple Phone Numbers
-  const [phones, setPhones] = useState([
-    { type: "Cell Phone", number: "", note: "" }
-  ]);
+  // 1. Phone Numbers State
+  const [phones, setPhones] = useState([{ type: "Cell Phone", number: "", note: "" }]);
+  
+  // 2. Email Addresses State
+  const [emails, setEmails] = useState([{ type: "Work", address: "", note: "" }]);
 
-  // State for Multiple Emails
-  const [emails, setEmails] = useState([
-    { type: "Work", address: "", note: "" }
+  // 3. Emergency Contacts State (NEW)
+  const [emergencyContacts, setEmergencyContacts] = useState([
+    { name: "", relation: "", phone: "", email: "", address: "" }
   ]);
 
   useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
   if (!mounted) return null;
 
-  // --- Phone Handlers ---
+  // --- Handlers ---
   const addPhone = () => setPhones([...phones, { type: "Cell Phone", number: "", note: "" }]);
   const removePhone = (index: number) => setPhones(phones.filter((_, i) => i !== index));
-  const updatePhone = (index: number, field: string, value: string) => {
-    const updated = [...phones];
-    // @ts-ignore
-    updated[index][field] = value;
-    setPhones(updated);
-  };
-
-  // --- Email Handlers ---
+  
   const addEmail = () => setEmails([...emails, { type: "Work", address: "", note: "" }]);
   const removeEmail = (index: number) => setEmails(emails.filter((_, i) => i !== index));
-  const updateEmail = (index: number, field: string, value: string) => {
-    const updated = [...emails];
+
+  // Emergency Contact Handlers
+  const addEmergencyContact = () => setEmergencyContacts([...emergencyContacts, { name: "", relation: "", phone: "", email: "", address: "" }]);
+  const removeEmergencyContact = (index: number) => setEmergencyContacts(emergencyContacts.filter((_, i) => i !== index));
+  const updateEmergencyContact = (index: number, field: string, value: string) => {
+    const updated = [...emergencyContacts];
     // @ts-ignore
     updated[index][field] = value;
-    setEmails(updated);
+    setEmergencyContacts(updated);
   };
-
 
 
   return createPortal(
@@ -388,205 +387,256 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
           {/* Form Content */}
           <div className="p-8 overflow-y-auto flex-1">
              {step === 1 && (
-                <div className="animate-slide-up space-y-6">
-                   <h3 className="font-bold text-gray-800 text-sm">Basic Information</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <SelectGroup label="Title" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
-                      <InputGroup label="First Name*" placeholder="Enter First Name" />
-                      <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
-                      <InputGroup label="Last Name*" placeholder="Enter Last Name" />
-                     
-                   </div>
-                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                     <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
-                      <MultiSelectDropdown 
-  label="Skills" 
-  options={[
-    "DODD Medication Category 1",
-    "DODD Medication Category 2",
-    "DODD Medication Category 3",
-    "Vagus Nerve Stimulator (VNS) Certified",
-    "Hoyer Lift",
-    "Gait Belt Transfers",
-    "Catheter Care",
-    "Licensed Driver",
-    "Severe Behavior Experience",
-    "Seizure Experience",
-    "Dementia Care Experience",
-    "Wound Care Certified (LPNs & RNs only)"
-  ]} 
-/>
- <SelectGroup label="Gender*" options={["Male", "Female", "Other"]} />
-                      <InputGroup label="Date of Birth*" type="date" /> 
-                   </div>
-                  
-                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-                      <MultiSelectDropdown label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+               <div className="animate-slide-up space-y-4">
+      
+      {/* 1. BASIC INFORMATION (Open by default) */}
+      <Accordion title="Basic Information" defaultOpen={true}>
+         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <SelectGroup label="Title" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
+            <InputGroup label="First Name*" placeholder="Enter First Name" />
+            <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
+            <InputGroup label="Last Name*" placeholder="Enter Last Name" />
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+            <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+            
+            {/* Using your custom MultiSelect component here */}
+         
+            
+            <SelectGroup label="Gender*" options={["Male", "Female", "Other"]} />
+            <InputGroup label="Date of Birth*" type="date" /> 
+            <InputGroup label="State ID" placeholder="Enter" />
+             <InputGroup label="Driver’s License" placeholder="Enter" />
+             <InputGroup label="PASSPORT" placeholder="Enter" />
+             <InputGroup label="Military ID" placeholder="Enter" />
+             <InputGroup label="USCIS ID" placeholder="Enter" />
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
+            <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
+             <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+
                       <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+
                       <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
-                   </div>
-                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                      <InputGroup label="Address Line1" placeholder="Enter" />
-                        <InputGroup label="Address Line2" placeholder="Enter" />
-                        <InputGroup label="Zip/Postal Code*" placeholder="Enter" />
-                        <SelectGroup label="City" options={["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]} />
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <InputGroup label="Address Line1" placeholder="Enter" />
+            <InputGroup label="Address Line2" placeholder="Enter" />
+            <InputGroup label="Zip/Postal Code*" placeholder="Enter" />
+           <SelectGroup label="City" options={["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]} />
+
                         <SelectGroup label="State/Province" options={["Los Angeles County", "Cook County", "Harris County", "Maricopa County", "San Diego County", "Orange County", "Miami-Dade County", "Dallas County", "Kings County", "Riverside County"]} />
+
                         <SelectGroup label="Country" options={["United States", "India", "China", "United Kingdom", "Germany", "France", "Brazil", "Canada", "Australia", "Italy"]} />
-                        
-                        <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
-                    
-                      
-                   </div>
+            <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
+            
+         </div>
+      </Accordion>
 
-                   
-               {/* --- DYNAMIC PHONE NUMBERS SECTION --- */}
-                   <div>
-                      <div className="flex justify-between items-center mb-2">
-                          <h3 className="font-bold text-gray-800 text-sm">Phone Numbers</h3>
-                          <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
+      {/* 2. PHONE NUMBERS (Collapsed by default) */}
+      <Accordion title="Phone Numbers">
+         <div className="flex justify-end mb-2">
+            <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
+         </div>
+         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            {phones.map((phone, index) => (
+               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                  <div className="col-span-2">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
+                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
+                        <option>Cell</option><option>Home</option><option>Work</option>
+                     </select>
+                  </div>
+                  <div className="col-span-3">
+                     <InputGroup label="Number" placeholder="+1 (555) 000-0000" />
+                  </div>
+                  <div className="col-span-5">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
+                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
+                  </div>
+                  <div className="col-span-2 flex justify-end gap-2 pb-1">
+                     {phones.length > 1 && (
+                        <button onClick={() => removePhone(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                     )}
+                  </div>
+               </div>
+            ))}
+         </div>
+      </Accordion>
+
+      {/* 3. EMAIL ADDRESSES (Collapsed by default) */}
+      <Accordion title="Email Addresses">
+         <div className="flex justify-end mb-2">
+            <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
+         </div>
+         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            {emails.map((email, index) => (
+               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                  <div className="col-span-2">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
+                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
+                        <option>Work</option><option>Personal</option>
+                     </select>
+                  </div>
+                  <div className="col-span-3">
+                     <InputGroup label="Email" placeholder="example@mail.com" />
+                  </div>
+                  <div className="col-span-5">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
+                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
+                  </div>
+                  <div className="col-span-2 flex justify-end gap-2 pb-1">
+                     {emails.length > 1 && (
+                        <button onClick={() => removeEmail(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                     )}
+                  </div>
+               </div>
+            ))}
+         </div>
+      </Accordion>
+
+      {/* 4. EMERGENCY CONTACTS (NEW SECTION) */}
+                   <Accordion title="Emergency Contacts">
+                      <div className="flex justify-end mb-2">
+                         <button onClick={addEmergencyContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button>
                       </div>
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-                          {phones.map((phone, index) => (
-                            <div key={index} className="grid grid-cols-12 gap-4 items-end animate-fade-in border-b border-gray-200 last:border-0 pb-3 last:pb-0">
-                               <div className="col-span-2">
-                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Phone Type</label>
-                                  <select 
-                                    value={phone.type}
-                                    onChange={(e) => updatePhone(index, 'type', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
+                      <div className="space-y-4">
+                         {emergencyContacts.map((contact, index) => (
+                            <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
+                               {emergencyContacts.length > 1 && (
+                                  <button 
+                                    onClick={() => removeEmergencyContact(index)} 
+                                    className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
+                                    title="Remove Contact"
                                   >
-                                    <option>Cell Phone</option><option>Home Phone</option><option>Work Phone</option><option>Other</option>
-                                  </select>
-                               </div>
-                               <div className="col-span-3">
+                                     <i className="fa-regular fa-trash-can"></i>
+                                  </button>
+                               )}
+                               
+                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                   <InputGroup 
-                                    label="Number" 
+                                    label="Full Name*" 
+                                    placeholder="Enter full name" 
+                                    value={contact.name}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'name', e.target.value)}
+                                  />
+                                  <InputGroup 
+                                    label="Relationship*" 
+                                    placeholder="e.g. Spouse, Parent" 
+                                    value={contact.relation}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'relation', e.target.value)}
+                                  />
+                               </div>
+                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                  <InputGroup 
+                                    label="Phone Number*" 
                                     placeholder="+1 (555) 000-0000" 
-                                    value={phone.number}
-                                    onChange={(e: any) => updatePhone(index, 'number', e.target.value)}
+                                    value={contact.phone}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'phone', e.target.value)}
                                   />
-                               </div>
-                               <div className="col-span-5">
-                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Note <span className="text-[10px] font-normal text-gray-400">(Max 100 chars)</span></label>
-                                  <input 
-                                    type="text" 
-                                    maxLength={100}
-                                    placeholder="Add a note..."
-                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
-                                    value={phone.note}
-                                    onChange={(e) => updatePhone(index, 'note', e.target.value)}
-                                  />
-                               </div>
-                               <div className="col-span-2">
-                                 
-                                 
-                                  {phones.length > 1 && (
-                                    <button onClick={() => removePhone(index)} className="w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100" title="Delete"><i className="fa-regular fa-trash-can text-xs"></i></button>
-                                  )}
-                               </div>
-                            </div>
-                          ))}
-                      </div>
-                   </div>
-
-                   {/* --- DYNAMIC EMAIL ADDRESSES SECTION --- */}
-                   <div>
-                      <div className="flex justify-between items-center mb-2">
-                          <h3 className="font-bold text-gray-800 text-sm">Email Addresses</h3>
-                          <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
-                      </div>
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-                          {emails.map((email, index) => (
-                            <div key={index} className="grid grid-cols-12 gap-4 items-end animate-fade-in border-b border-gray-200 last:border-0 pb-3 last:pb-0">
-                               <div className="col-span-2">
-                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Email Type</label>
-                                  <select 
-                                    value={email.type}
-                                    onChange={(e) => updateEmail(index, 'type', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
-                                  >
-                                    <option>Work</option><option>Home</option><option>Personal</option><option>Other</option>
-                                  </select>
-                               </div>
-                               <div className="col-span-3">
                                   <InputGroup 
-                                    label="Email Address" 
+                                    label="Email Address*" 
                                     placeholder="example@mail.com" 
-                                    value={email.address}
-                                    onChange={(e: any) => updateEmail(index, 'address', e.target.value)}
+                                    value={contact.email}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'email', e.target.value)}
                                   />
                                </div>
-                               <div className="col-span-5">
-                                  <label className="text-xs font-medium text-gray-500 mb-1 block">Note <span className="text-[10px] font-normal text-gray-400">(Max 100 chars)</span></label>
-                                  <input 
-                                    type="text" 
-                                    maxLength={100}
-                                    placeholder="Add a note..."
-                                    className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none"
-                                    value={email.note}
-                                    onChange={(e) => updateEmail(index, 'note', e.target.value)}
+                               <div>
+                                  <InputGroup 
+                                    label="Physical Address (Optional)" 
+                                    placeholder="Enter street address, city, state, zip" 
+                                    value={contact.address}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'address', e.target.value)}
                                   />
-                               </div>
-                               <div className="col-span-2 ">
-                                  
-                                 
-                                  {emails.length > 1 && (
-                                    <button onClick={() => removeEmail(index)} className="w-9 h-9 flex items-center justify-center  bg-red-50 text-red-500 rounded hover:bg-red-100" title="Delete"><i className="fa-regular fa-trash-can text-xs"></i></button>
-                                  )}
                                </div>
                             </div>
-                          ))}
+                         ))}
                       </div>
-                   </div>
-                   {/* -------------------------------------- */}
+                   </Accordion>
 
-
-                </div>
+   </div>
              )}
 
              {step === 2 && (
-                /* STEP 2: PROFESSIONAL DETAIL */
-                <div className="animate-slide-up space-y-6">
-                   <h3 className="font-bold text-gray-800 text-sm">Professional Details</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <SelectGroup label="Caregiver Type" options={["Personal Care Assistant (PCA)", "Certified Nursing Assistant (CNA)", "Home Health Aide (HHA)"]} />
-                      <InputGroup label="Caregiver ID" placeholder="CG-00023" />
-                   </div>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <SelectGroup label="Qualification" options={["Certificate III", "Certificate IV", "Diploma", "Bachelor"]} />
-                      <InputGroup label="Years of Experience*" placeholder="Enter" />
-                   </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">                     
-                   <InputGroup label="Hourly Charge" placeholder="Enter" />
-                   <InputGroup label="Hire Date" placeholder="Enter Hire Date" type="date" />
-                   </div>
-
-                   <h3 className="font-bold text-gray-800 text-sm pt-4">Availability & Assignment</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <InputGroup label="Availability Start Date" type="date" />
-                      <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
-                   </div>
+              /* STEP 2: PROFESSIONAL DETAIL */
+                <div className="animate-slide-up space-y-4">
                    
-                   {/* Days Available */}
-                   <div>
-                      <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
-                      <div className="flex gap-2 flex-wrap">
-                         {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(d => (
-                            <button key={d} className="px-3 py-1 border rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">{d}</button>
-                         ))}
+                   {/* 1. PROFESSIONAL DETAILS (Open Default) */}
+                   <Accordion title="Professional Details" defaultOpen={true}>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                         <MultiSelectDropdown 
+                            label="Caregiver Type" 
+                            options={["DSP (Direct Service Professional)", "STNA (State Tested Nursing Assistant)", "LPN (Licensed Practical Nurse)", "RN ( Registered Nurse)", "SW (Social Worker)", "PT (Physical Therapist)", "OT (Occupational Therapist)", "SLP (Speech-Language Pathology)", "CM (Case Manager)"]} 
+                         />
+                         <InputGroup label="Caregiver ID" placeholder="CG-00023" />
+                         <MultiSelectDropdown 
+                            label="Skills" 
+                            options={[
+                               "DODD Medication Category 1", "DODD Medication Category 2", "DODD Medication Category 3",
+                               "Vagus Nerve Stimulator (VNS) Certified", "Hoyer Lift", "Gait Belt Transfers", "Catheter Care",
+                               "Licensed Driver", "Severe Behavior Experience", "Seizure Experience", "Dementia Care Experience",
+                               "Wound Care Certified (LPNs & RNs only)"
+                            ]} 
+                         />
                       </div>
-                   </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+                         <SelectGroup label="Qualification" options={["Certificate III", "Certificate IV", "Diploma", "Bachelor"]} />
+                         <InputGroup label="Years of Experience*" placeholder="Enter" />
+                         <SelectGroup label="Pay Rate" options={["Hourly Rate ( calculated hourly)", "Daily Rate (a pay rate calculated daily regardless of hours worked)", "Salary (For salary, the hourly rate is multiplied by a standard number of weekly or bi-weekly hours)"]} />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <InputGroup label="HIRE DATE" placeholder="Enter official hire date" type="date" />
+                      </div>
+                   </Accordion>
 
-                   {/* Preferred Shift */}
-                   <div>
-                      <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
-                      <div className="flex gap-6">
-                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning</label>
-                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening</label>
-                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night</label>
+                   {/* 2. AVAILABILITY & ASSIGNMENT */}
+                   <Accordion title="Availability & Assignment">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                         <InputGroup label="Availability Start Date" type="date" />
+                         <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
                       </div>
-                   </div>
+                      
+                      <div className="mb-6">
+                         <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
+                         <div className="flex gap-2 flex-wrap">
+                            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(d => (
+                               <button key={d} className="px-3 py-1 border rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">{d}</button>
+                            ))}
+                         </div>
+                      </div>
+
+                      <div>
+                         <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
+                         <div className="flex gap-6">
+                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning</label>
+                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening</label>
+                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night</label>
+                         </div>
+                      </div>
+                   </Accordion>
+
+                   {/* 3. REFERRAL SOURCE (New Section) */}
+                   <Accordion title="Referral Source">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <SelectGroup label="Referred By" options={["Another Agency", "Temporary Staffing Agency", "Employee Referral", "Online Ad", "Other"]} />
+                         <InputGroup label="Referral Date" type="date" />
+                         <InputGroup label="Notes" placeholder="Start Writing..." />
+                      </div>
+                   </Accordion>
+
+                   {/* 4. NOTES (New Section) */}
+                   <Accordion title="Notes">
+                      <div className="space-y-1">
+                         <label className="text-xs font-medium text-gray-700">Additional Notes</label>
+                         <textarea 
+                            maxLength={8000}
+                            className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9] placeholder:text-gray-400"
+                            placeholder="Type any necessary notes here..."
+                         ></textarea>
+                         <p className="text-[10px] text-gray-400 text-right">Max 8000 characters</p>
+                      </div>
+                   </Accordion>
+
                 </div>
              )}
 
@@ -663,4 +713,25 @@ function UploadBox({ label }: any) {
          </div>
       </div>
    )
+}
+
+
+function Accordion({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white mb-4 shadow-sm">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+      >
+        <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
+        <i className={`fa-solid fa-chevron-down text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
+      </button>
+      
+      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100 p-6' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
+        {children}
+      </div>
+    </div>
+  );
 }

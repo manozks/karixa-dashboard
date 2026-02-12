@@ -36,11 +36,12 @@ export default function CaregiverProfilePage({ params }: { params: { id: string 
               </div>
               <div className="flex gap-3">
                  <Link 
-                    href="/clients/add" 
-                    className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center"
-                 >
-                    <i className="fa-solid fa-download mr-1"></i> Edit Profile
-                 </Link>
+  href={`/caregivers//edit`} 
+  className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center transition-colors"
+>
+  {/* Changed from fa-download to fa-pen */}
+  <i className="fa-solid fa-pen mr-2 text-xs"></i> Edit Profile
+</Link>
                  <button className="px-4 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Message</button>
               </div>
            </div>
@@ -124,6 +125,11 @@ function GeneralInfoTab() {
              <InfoItem label="Hire Date" value="12 Jan, 2020" />
              <InfoItem label="Role Type" value="Caregiver" />
              <InfoItem label="Social Security Number (SSN)" value="(***) ***-7142" />
+             <InfoItem label="State ID" value="D-123-456-7890" />
+             <InfoItem label="Driver’s License" value="D-123-456-7890" />
+             <InfoItem label="PASSPORT" value="D-123-456-7890" />
+             <InfoItem label="Military ID" value="D-123-456-7890" />
+             <InfoItem label="USCIS ID" value="D-123-456-7890" />
              <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Email Address" value="nina@gmail.com" />
              <InfoItem label="Language Spoken" value="English" />
