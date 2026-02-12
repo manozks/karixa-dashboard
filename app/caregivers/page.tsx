@@ -9,6 +9,9 @@ import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 
 export default function CaregiverPage() {
   const [showAddModal, setShowAddModal] = useState(false);
+
+    // --- NEW: Sorting State ---
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   
   // SMS Modal State
   const [showSmsModal, setShowSmsModal] = useState(false);
@@ -28,6 +31,33 @@ export default function CaregiverPage() {
     { id: "CG-00020", name: "Liam Harris", role: "HHA", phone: "(202) 999-6969", email: "liam.h@karixa.com", zone: "Cleveland, Northeast Ohio", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 4 },
     { id: "CG-00024", name: "Charlotte White", role: "CNA", phone: "(202) 999-6969", email: "charlotte.w@karixa.com", zone: "Columbus Area", nextShift: "22 April, 2025 | 8:00 AM", status: "Active", img: 5 },
   ];
+
+   // --- Sorting Logic ---
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedCaregivers = [...caregivers].sort((a: any, b: any) => {
+    if (!sortConfig) return 0;
+    const { key, direction } = sortConfig;
+    
+    // Handle nested or special sorts if needed, otherwise string compare
+    if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+    if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Updated Helper: Removed 'ml-1' as flex gap handles it now
+  const getSortIcon = (key: string) => {
+    if (sortConfig?.key !== key) return <i className="fa-solid fa-sort text-gray-300"></i>;
+    return sortConfig.direction === 'asc' 
+      ? <i className="fa-solid fa-sort-up text-[#0074D9]"></i> 
+      : <i className="fa-solid fa-sort-down text-[#0074D9]"></i>;
+  };
 
   const handlePhoneClick = (cg: any) => {
     setSelectedCaregiver({ name: cg.name, phone: cg.phone });
@@ -85,23 +115,39 @@ export default function CaregiverPage() {
         {/* Table */}
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-visible">
            <div className="overflow-visible"> 
-              <table className="w-full text-left text-sm">
-                 <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+               <table className="w-full text-left text-sm">
+                 <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-100">
                     <tr>
-                       <th className="p-4">SNO</th>
-                       <th className="p-4">Name</th>
-                       <th className="p-4">ID Number</th>
-                       <th className="p-4">Type</th>
-                       <th className="p-4">Phone</th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
+                          <div className="flex items-center gap-2">SNO {getSortIcon('id')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
+                          <div className="flex items-center gap-2">Name {getSortIcon('name')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
+                          <div className="flex items-center gap-2">ID Number {getSortIcon('id')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('role')}>
+                          <div className="flex items-center gap-2">Type {getSortIcon('role')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('phone')}>
+                          <div className="flex items-center gap-2">Phone {getSortIcon('phone')}</div>
+                       </th>
                        <th className="p-4">Assigned Client</th>
-                       <th className="p-4">Assigned Zone</th>
-                       <th className="p-4">Next Shift</th>
-                       <th className="p-4">Status</th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('zone')}>
+                          <div className="flex items-center gap-2">Assigned Zone {getSortIcon('zone')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('nextShift')}>
+                          <div className="flex items-center gap-2">Next Shift {getSortIcon('nextShift')}</div>
+                       </th>
+                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('status')}>
+                          <div className="flex items-center gap-2">Status {getSortIcon('status')}</div>
+                       </th>
                        <th className="p-4 text-right"></th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-gray-50">
-                    {caregivers.map((cg, i) => (
+                    {sortedCaregivers.map((cg, i) => (
                        <tr key={cg.id} className="hover:bg-gray-50/50 transition-colors group relative z-0 hover:z-20">
                           <td className="p-4 text-gray-500">{i + 1}</td>
                           <td className="p-4">
@@ -112,96 +158,90 @@ export default function CaregiverPage() {
                           </td>
                           <td className="p-4 text-gray-600">{cg.id}</td>
                           <td className="p-4 text-gray-600">{cg.role}</td>
-                          
-                          {/* Phone Number Link */}
                           <td className="p-4">
-                             <button 
-                                onClick={(e) => { e.stopPropagation(); handlePhoneClick(cg); }}
-                                className="text-gray-600 hover:text-[#0074D9] hover:underline flex items-center gap-2"
-                                title="Send Message"
-                             >
+                             <button onClick={(e) => { e.stopPropagation(); handlePhoneClick(cg); }} className="text-gray-600 hover:text-[#0074D9] hover:underline flex items-center gap-2" title="Send Message">
                                 {cg.phone}
                                 <i className="fa-regular fa-comment-dots text-xs text-[#0074D9] opacity-0 group-hover:opacity-100 transition-opacity"></i>
                              </button>
                           </td>
-
-                          {/* ASSIGNED CLIENT HOVER */}
-<td className="p-4 overflow-visible">
-   <div className="flex -space-x-2 items-center relative">
-      {[
-         { name: "Jane Doe", img: 10 },
-         { name: "John Smith", img: 11 }
-      ].map((client, idx) => (
-         <Link 
-            key={idx} 
-            href={`/caregivers/${cg.id}`} 
-            className="relative group/client cursor-pointer hover:z-50"
-         >
-            {/* Small Thumbnail */}
-            <img 
-               src={`https://i.pravatar.cc/150?img=${client.img}`} 
-               className="w-6 h-6 rounded-full border border-white object-cover shadow-sm transition-transform group-hover/client:scale-110" 
-               alt={client.name} 
-            />
-
-            {/* Big Hover Popup */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex flex-col items-center hidden group-hover/client:flex z-50 animate-fade-in origin-bottom">
-               
-               {/* Invisible Bridge: Fills the gap between image and popup so hover isn't lost */}
-               <div className="absolute -bottom-3 left-0 w-full h-3 bg-transparent"></div>
-
-               <img 
-                  src={`https://i.pravatar.cc/150?img=${client.img}`} 
-                  className="w-16 h-16 rounded-full object-cover border-4 border-gray-100 mb-2 shadow-sm" 
-                  alt={client.name} 
-               />
-               <span className="text-sm font-bold text-gray-800 text-center leading-tight mb-2">{client.name}</span>
-               <span className="text-[10px] text-[#0074D9] font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors">
-                  View Profile
-               </span>
-               
-               {/* Decorative Arrow */}
-               <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
-            </div>
-         </Link>
-      ))}
-   </div>
-</td>
-
-                          <td className="p-4 text-gray-600">{cg.zone}</td>
-                          
-                          {/* --- UPDATED: NEXT SHIFT LINK --- */}
-                          <td className="p-4">
-                             <Link 
-                                href={`/caregivers/${cg.id}`} // Links to profile (schedule section)
-                                className="text-gray-600 text-xs hover:text-[#0074D9] hover:underline"
-                             >
-                                {cg.nextShift}
-                             </Link>
-                          </td>
-                          {/* -------------------------------- */}
-
-                          <td className="p-4"><span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">{cg.status}</span></td>
-                          
-                          {/* Actions */}
-                          <td className="p-4 text-right">
-                             <div className="flex justify-end gap-2">
-                                <button className="w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i className="fa-regular fa-eye text-xs"></i></button>
-                                
-                                {/* --- UPDATED: EMAIL ICON --- */}
-                                <button 
-                                   onClick={() => handleEmailClick(cg)}
-                                   className="w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors"
-                                >
-                                   <i className="fa-regular fa-envelope text-xs"></i>
-                                </button>
-                                {/* --------------------------- */}
-
-                                <button className="w-7 h-7 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center"><i className="fa-regular fa-calendar text-xs"></i></button>
-                                <button className="w-7 h-7 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i className="fa-solid fa-dollar-sign text-xs"></i></button>
-                                <button className="w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                          <td className="p-4 overflow-visible">
+                             <div className="flex -space-x-2 items-center relative">
+                                {[{ name: "Jane Doe", img: 10 }, { name: "John Smith", img: 11 }].map((client, idx) => (
+                                   <Link key={idx} href="/clients/profile" className="relative group/client cursor-pointer hover:z-50">
+                                      <img src={`https://i.pravatar.cc/150?img=${client.img}`} className="w-6 h-6 rounded-full border border-white object-cover shadow-sm transition-transform group-hover/client:scale-110" alt={client.name} />
+                                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex flex-col items-center hidden group-hover/client:flex z-50 animate-fade-in origin-bottom">
+                                         <div className="absolute -bottom-3 left-0 w-full h-3 bg-transparent"></div>
+                                         <img src={`https://i.pravatar.cc/150?img=${client.img}`} className="w-16 h-16 rounded-full object-cover border-4 border-gray-100 mb-2 shadow-sm" alt={client.name} />
+                                         <span className="text-sm font-bold text-gray-800 text-center leading-tight mb-2">{client.name}</span>
+                                         <span className="text-[10px] text-[#0074D9] font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors">View Profile</span>
+                                         <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
+                                      </div>
+                                   </Link>
+                                ))}
                              </div>
                           </td>
+                          <td className="p-4 text-gray-600">{cg.zone}</td>
+                          <td className="p-4"><Link href={`/caregivers/${cg.id}`} className="text-gray-600 text-xs hover:text-[#0074D9] hover:underline">{cg.nextShift}</Link></td>
+                          <td className="p-4"><span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">{cg.status}</span></td>
+                         {/* Actions */}
+<td className="p-4 text-right overflow-visible">
+   <div className="flex justify-end gap-2">
+      
+      {/* 1. View Profile */}
+      <Link href={`/caregivers/${cg.id}`}>
+         {/* 'group/tooltip' isolates the hover to this button only */}
+         <button className="relative group/tooltip w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-100 transition-colors">
+            <i className="fa-regular fa-eye text-xs"></i>
+            {/* Tooltip: 'group-hover/tooltip:block' ensures it only shows when THIS button is hovered */}
+            <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+               Caregiver's Profile
+               {/* Arrow */}
+               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+         </button>
+      </Link>
+
+      {/* 2. Send Email */}
+      <button 
+         onClick={() => handleEmailClick(cg)} 
+         className="relative group/tooltip w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors"
+      >
+         <i className="fa-regular fa-envelope text-xs"></i>
+         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+            Send Email
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+         </div>
+      </button>
+
+      {/* 3. View Schedule */}
+      <button className="relative group/tooltip w-7 h-7 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center hover:bg-yellow-100 transition-colors">
+         <i className="fa-regular fa-calendar text-xs"></i>
+         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+            View Schedule
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+         </div>
+      </button>
+
+      {/* 4. Pay Rates */}
+      <button className="relative group/tooltip w-7 h-7 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 transition-colors">
+         <i className="fa-solid fa-dollar-sign text-xs"></i>
+         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+            View Pay Rates
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+         </div>
+      </button>
+
+      {/* 5. Delete */}
+      <button className="relative group/tooltip w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+         <i className="fa-regular fa-trash-can text-xs"></i>
+         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+            Delete Caregiver
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+         </div>
+      </button>
+
+   </div>
+</td>
                        </tr>
                     ))}
                  </tbody>
