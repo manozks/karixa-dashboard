@@ -14,6 +14,8 @@ export default function CaregiverPage() {
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [selectedCaregiver, setSelectedCaregiver] = useState<{name: string, phone: string} | null>(null);
 
+
+
   // Email Modal State (NEW)
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedEmailCaregiver, setSelectedEmailCaregiver] = useState<{name: string, email: string} | null>(null);
@@ -37,8 +39,6 @@ export default function CaregiverPage() {
     setSelectedEmailCaregiver({ name: cg.name, email: cg.email });
     setShowEmailModal(true);
   };
-
-  
 
   return (
     <DashboardLayout>
@@ -340,6 +340,11 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
     { name: "", relation: "", phone: "", email: "", address: "" }
   ]);
 
+  // NEW: State for Step 3 (Dynamic Documents with Type)
+  const [documents, setDocuments] = useState([
+    { type: "Document", title: "", file: null } 
+  ]);
+
   useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
   if (!mounted) return null;
 
@@ -359,6 +364,18 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
     updated[index][field] = value;
     setEmergencyContacts(updated);
   };
+
+ // NEW: Document Handlers
+  const addDocument = () => setDocuments([...documents, { type: "Document", title: "", file: null }]);
+  const removeDocument = (index: number) => setDocuments(documents.filter((_, i) => i !== index));
+  
+  const updateDocument = (index: number, field: string, value: string) => {
+    const updated = [...documents];
+    // @ts-ignore
+    updated[index][field] = value;
+    setDocuments(updated);
+  };
+
 
 
   return createPortal(
@@ -642,19 +659,93 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
 
              {step === 3 && (
                 /* STEP 3: DOCUMENTS */
-                <div className="animate-slide-up space-y-6">
-                   <h3 className="font-bold text-gray-800 text-sm">Document & Certification</h3>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <UploadBox label="Upload CV" />
-                      <UploadBox label="Police Check" />
+              <div className="animate-slide-up space-y-6">
+                   <div className="flex justify-between items-end mb-4">
+                      <div>
+                         <h3 className="font-bold text-gray-800 text-sm">Documents & Certifications</h3>
+                         <p className="text-xs text-gray-500 mt-1">Upload individual documents or group them into folders.</p>
+                      </div>
+                      <button 
+                        onClick={addDocument} 
+                        className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1 border border-[#0074D9] px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                      >
+                        <i className="fa-solid fa-plus"></i> Add New Item
+                      </button>
                    </div>
+
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <UploadBox label="First Aid Certificate" />
-                      <UploadBox label="COVID-19 Vaccination" />
-                   </div>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <UploadBox label="Drivers License" />
-                      <UploadBox label="Other Certifications" />
+                      {documents.map((doc, index) => (
+                         <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative animate-fade-in group hover:border-[#0074D9] transition-colors">
+                            
+                            {/* Delete Button */}
+                            {documents.length > 1 && (
+                               <button 
+                                  onClick={() => removeDocument(index)}
+                                  className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white shadow-sm z-10"
+                                  title="Remove Item"
+                               >
+                                  <i className="fa-regular fa-trash-can"></i>
+                               </button>
+                            )}
+
+                            <div className="space-y-3">
+                               {/* Row 1: Type & Title */}
+                               <div className="flex gap-3">
+                                  <div className="w-1/3">
+                                     <label className="text-xs font-medium text-gray-700 mb-1 block">Type</label>
+                                     <select 
+                                        className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9] bg-white cursor-pointer"
+                                        value={doc.type}
+                                        onChange={(e) => updateDocument(index, 'type', e.target.value)}
+                                     >
+                                        <option value="Document">Document</option>
+                                        <option value="Folder">Folder</option>
+                                     </select>
+                                  </div>
+                                  <div className="flex-1">
+                                     <label className="text-xs font-medium text-gray-700 mb-1 block">
+                                        {doc.type === 'Folder' ? 'Folder Name' : 'Document Title'}
+                                     </label>
+                                     <input 
+                                        type="text" 
+                                        placeholder={doc.type === 'Folder' ? "e.g. Medical Records" : "e.g. CPR Cert"} 
+                                        className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9] bg-white"
+                                        value={doc.title}
+                                        onChange={(e) => updateDocument(index, 'title', e.target.value)}
+                                     />
+                                  </div>
+                               </div>
+
+                               {/* Row 2: Upload Area (Visual changes based on type) */}
+                               <div className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition-colors h-32 ${doc.type === 'Folder' ? 'border-blue-200 bg-blue-50/30 hover:bg-blue-50' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
+                                  {doc.type === 'Folder' ? (
+                                     <>
+                                        <i className="fa-regular fa-folder-open text-3xl text-[#0074D9] mb-2"></i>
+                                        <p className="text-xs text-[#0074D9] font-medium text-center">Click to upload files to folder</p>
+                                        <p className="text-[10px] text-blue-400 mt-1">Supports multiple files</p>
+                                     </>
+                                  ) : (
+                                     <>
+                                        <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2 opacity-70"></i>
+                                        <p className="text-xs text-gray-600 text-center font-medium">Click to upload document</p>
+                                        <p className="text-[10px] text-gray-400 mt-1">PDF, JPG, PNG (Max 5MB)</p>
+                                     </>
+                                  )}
+                               </div>
+                            </div>
+                         </div>
+                      ))}
+                      
+                      {/* Add Button Placeholder Card */}
+                      <button 
+                        onClick={addDocument}
+                        className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center bg-gray-50/50 hover:bg-gray-50 hover:border-[#0074D9] transition-all min-h-[200px] text-gray-400 hover:text-[#0074D9]"
+                      >
+                         <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2">
+                            <i className="fa-solid fa-plus text-lg"></i>
+                         </div>
+                         <span className="text-sm font-medium">Add New Item</span>
+                      </button>
                    </div>
                 </div>
              )}
