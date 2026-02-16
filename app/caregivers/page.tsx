@@ -10,6 +10,8 @@ import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 export default function CaregiverPage() {
   const [showAddModal, setShowAddModal] = useState(false);
 
+  
+
     // --- NEW: Sorting State ---
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   
@@ -70,6 +72,36 @@ export default function CaregiverPage() {
     setShowEmailModal(true);
   };
 
+  // --- 1. NEW: CHECKBOX STATE ---
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // ... (Keep existing Mock Data & Sorting Logic) ...
+
+  // --- 2. NEW: CHECKBOX HANDLERS ---
+  
+  // Toggle All
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      // Select all visible (sorted) caregivers
+      setSelectedIds(sortedCaregivers.map(cg => cg.id));
+    } else {
+      // Deselect all
+      setSelectedIds([]);
+    }
+  };
+
+  // Toggle Single Row
+  const handleSelectRow = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  // Check if all are selected
+  const isAllSelected = sortedCaregivers.length > 0 && selectedIds.length === sortedCaregivers.length;
+
   return (
     <DashboardLayout>
       <div className="p-0 space-y-6">
@@ -118,37 +150,61 @@ export default function CaregiverPage() {
                <table className="w-full text-left text-sm">
                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-100">
                     <tr>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
+                     {/* --- NEW: MASTER CHECKBOX HEADER --- */}
+                       <th className="p-4 w-10">
+                          <input 
+                             type="checkbox" 
+                             className="w-4 h-4 rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9] cursor-pointer"
+                             checked={isAllSelected}
+                             onChange={handleSelectAll}
+                          />
+                       </th>
+                       {/* ----------------------------------- */}
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
                           <div className="flex items-center gap-2">SNO {getSortIcon('id')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('name')}>
                           <div className="flex items-center gap-2">Name {getSortIcon('name')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
                           <div className="flex items-center gap-2">ID Number {getSortIcon('id')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('role')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('role')}>
                           <div className="flex items-center gap-2">Type {getSortIcon('role')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('phone')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('phone')}>
                           <div className="flex items-center gap-2">Phone {getSortIcon('phone')}</div>
                        </th>
-                       <th className="p-4">Assigned Client</th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('zone')}>
+                       <th className="p-3">Assigned Client</th>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('zone')}>
                           <div className="flex items-center gap-2">Assigned Zone {getSortIcon('zone')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('nextShift')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('nextShift')}>
                           <div className="flex items-center gap-2">Next Shift {getSortIcon('nextShift')}</div>
                        </th>
-                       <th className="p-4 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('status')}>
+                       <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('status')}>
                           <div className="flex items-center gap-2">Status {getSortIcon('status')}</div>
                        </th>
-                       <th className="p-4 text-right"></th>
+                       <th className="p-3 text-right"></th>
                     </tr>
                  </thead>
                  <tbody className="divide-y divide-gray-50">
-                    {sortedCaregivers.map((cg, i) => (
-                       <tr key={cg.id} className="hover:bg-gray-50/50 transition-colors group relative z-0 hover:z-20">
+                   {sortedCaregivers.map((cg, i) => (
+                       <tr 
+                          key={cg.id} 
+                          className={`transition-colors group relative z-0 hover:z-20 ${selectedIds.includes(cg.id) ? 'bg-blue-50/30' : 'hover:bg-gray-50/50'}`}
+                       >
+                          {/* --- NEW: ROW CHECKBOX --- */}
+                          <td className="p-4">
+                             <input 
+                                type="checkbox" 
+                                className="w-4 h-4 rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9] cursor-pointer"
+                                checked={selectedIds.includes(cg.id)}
+                                onChange={() => handleSelectRow(cg.id)}
+                             />
+                          </td>
+                          {/* ------------------------- */}
+
                           <td className="p-4 text-gray-500">{i + 1}</td>
                           <td className="p-4">
                              <Link href={`/caregivers/${cg.id}`} className="flex items-center gap-3 cursor-pointer hover:text-[#0074D9] transition-colors">
@@ -486,6 +542,18 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
 
                         <SelectGroup label="Country" options={["United States", "India", "China", "United Kingdom", "Germany", "France", "Brazil", "Canada", "Australia", "Italy"]} />
             <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
+               <SelectGroup 
+         label="Status" 
+         options={[
+            "Active", 
+            "Inactive (Medical Leave)", 
+            "Inactive (Personal Leave)", 
+            "Inactive (No Shifts)", 
+            "Terminated", 
+            "Resigned", 
+            "On Hold"
+         ]} 
+      />
             
          </div>
       </Accordion>
@@ -621,11 +689,11 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                    {/* 1. PROFESSIONAL DETAILS (Open Default) */}
                    <Accordion title="Professional Details" defaultOpen={true}>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                         <MultiSelectDropdown 
+                         <SelectGroup 
                             label="Caregiver Type" 
                             options={["DSP (Direct Service Professional)", "STNA (State Tested Nursing Assistant)", "LPN (Licensed Practical Nurse)", "RN ( Registered Nurse)", "SW (Social Worker)", "PT (Physical Therapist)", "OT (Occupational Therapist)", "SLP (Speech-Language Pathology)", "CM (Case Manager)"]} 
                          />
-                         <InputGroup label="Caregiver ID" placeholder="CG-00023" />
+                         <InputGroup label="User Name" placeholder="CG-00023" />
                          <MultiSelectDropdown 
                             label="Skills" 
                             options={[
@@ -643,6 +711,20 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                          <InputGroup label="HIRE DATE" placeholder="Enter official hire date" type="date" />
+                         {/* --- EVV ENABLED CHECKBOX --- */}
+            <div className="flex items-center h-full pt-6">
+              
+               <label className="flex items-center gap-2 cursor-pointer group">
+                  <input 
+                     type="checkbox" 
+                     className="w-5 h-5 text-[#0074D9] rounded border-gray-300 focus:ring-[#0074D9] cursor-pointer" 
+                  />
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-[#0074D9] transition-colors">
+                     EVV Enabled
+                  </span>
+               </label>
+            </div>
+            {/* --------------------------- */}
                       </div>
                    </Accordion>
 

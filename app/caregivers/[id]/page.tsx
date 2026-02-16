@@ -120,6 +120,7 @@ function GeneralInfoTab() {
              <InfoItem label="Skills" value="Catheter Care" />
              <InfoItem label="Qualification" value="Certificate III in Individual Support" />
              <InfoItem label="Years of Experience" value="5 Years" />
+             <InfoItem label="User Name" value="John KK" />
              <InfoItem label="Hourly Charge" value="$32 / per hour" />
              <InfoItem label="Caregiver Type" value="Full Time" />
              <InfoItem label="Hire Date" value="12 Jan, 2020" />

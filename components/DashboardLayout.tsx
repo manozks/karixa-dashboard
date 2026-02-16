@@ -222,7 +222,7 @@ export default function DashboardLayout({
             </button>
 
             {/* Submenu */}
-            {!isCollapsed && (
+          {/*   {!isCollapsed && (
               <div className={`bg-transparent transition-all duration-300 overflow-hidden ${isBillingOpen ? "max-h-260" : "max-h-0"}`}>
                 
                 <Link href="/billing" title='Billing' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
@@ -273,12 +273,12 @@ export default function DashboardLayout({
                     <span className="opacity-90">Pay Roll Statement</span>
                   </a>
                 </div>
-            )}
+            )} */}
           </div>
 
           {/* Reports */}
-          <Link href="/reports" title='Reports' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/reports" 
+          <Link href="#/reports" title='Reports' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname === "#" 
                 ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
                 : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
             }`}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import DashboardLayout from "@/components/DashboardLayout"; // Assuming you have this from previous steps
+import DashboardLayout from "@/components/DashboardLayout"; 
 import Link from "next/link"; 
 
 // --- Types ---
@@ -20,24 +20,66 @@ interface Client {
   checkOut: string;
 }
 
-
-
 // --- Mock Data ---
 const clientsData: Client[] = [
   { id: '1', name: 'Nina Mcintire', avatar: 'https://i.pravatar.cc/150?img=1', shiftStart: '8:30 AM', shiftEnd: '7:00 PM', caregiver: { name: 'Emily Carter', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=5' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
   { id: '2', name: 'Jack Williams', avatar: 'https://i.pravatar.cc/150?img=11', shiftStart: '10:00 AM', shiftEnd: '5:30 PM', caregiver: { name: 'Sophia Wilson', role: 'Certified Nursing Assistant (CNA)', avatar: 'https://i.pravatar.cc/150?img=9' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
   { id: '3', name: 'Amelia Robinson', avatar: 'https://i.pravatar.cc/150?img=24', shiftStart: '8:15 AM', shiftEnd: '7:45 PM', caregiver: { name: 'Daniel Brown', role: 'Home Health Aide (HHA)', avatar: 'https://i.pravatar.cc/150?img=13' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
   { id: '4', name: 'Liam Harris', avatar: 'https://i.pravatar.cc/150?img=33', shiftStart: '7:45 AM', shiftEnd: '6:15 PM', caregiver: { name: 'Michael Thompson', role:'Personal Care Assistant (PCA)' , avatar:'https://i.pravatar.cc/150?img=12'}, checkIn:'09.32 AM' , checkOut:'  5.32 PM'},
-  { id:'5' , name:'Charlotte White' , avatar:'https://i.pravatar.cc/150?img=44' , shiftStart:'11.32 AM' , shiftEnd:'4.48 PM' , caregiver:{name:'Olivia Martinez' , role:'Certified Nursing Assistant (CNA)' , avatar:'https://i.pravatar.cc/150?img=20'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
-  { id:'6' , name:'Noah Mitchell' , avatar:'https://i.pravatar.cc/150?img=51' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Jessica Lee' , role:'Personal Care Assistant (PCA)' , avatar:'https://i.pravatar.cc/150?img=30'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
-  { id:'7' , name:'Zoe Anderson' , avatar:'https://i.pravatar.cc/150?img=52' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Sarah Patel' , role:'Home Health Aide (HHA)' , avatar:'https://i.pravatar.cc/150?img=35'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id: '5' , name:'Charlotte White' , avatar:'https://i.pravatar.cc/150?img=44' , shiftStart:'11.32 AM' , shiftEnd:'4.48 PM' , caregiver:{name:'Olivia Martinez' , role:'Certified Nursing Assistant (CNA)' , avatar:'https://i.pravatar.cc/150?img=20'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id: '6' , name:'Noah Mitchell' , avatar:'https://i.pravatar.cc/150?img=51' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Jessica Lee' , role:'Personal Care Assistant (PCA)' , avatar:'https://i.pravatar.cc/150?img=30'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
+  { id: '7' , name:'Zoe Anderson' , avatar:'https://i.pravatar.cc/150?img=52' , shiftStart:'9.32 AM' , shiftEnd:'6.32 PM' , caregiver:{name:'Sarah Patel' , role:'Home Health Aide (HHA)' , avatar:'https://i.pravatar.cc/150?img=35'} , checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
   { id: '8', name: 'Benjamin Taylor', avatar: 'https://i.pravatar.cc/150?img=53', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'David Kim', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=59' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
   { id: '9', name: 'Isla Wright', avatar: 'https://i.pravatar.cc/150?img=54', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'Brian Chen', role: 'Personal Care Assistant (PCA)', avatar: 'https://i.pravatar.cc/150?img=60' }, checkIn: '09:00 AM', checkOut: '05:30 PM' },
   { id: '10', name: 'Ethan Martin', avatar: 'https://i.pravatar.cc/150?img=55', shiftStart: '9:30 AM', shiftEnd: '6:32 PM', caregiver: { name: 'James Anderson', role:'Personal Care Assistant (PCA)', avatar:'https://i.pravatar.cc/150?img=68'}, checkIn:'9.32 AM' , checkOut:'  5.32 PM'},
 ];
 
 export default function ClientsPage() {
+  // --- STATE MOVED INSIDE COMPONENT ---
   const [selectedClients, setSelectedClients] = useState<string[]>([]);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+  // --- LOGIC MOVED INSIDE COMPONENT ---
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Helper to get the correct icon color/direction
+  const getSortIcon = (key: string) => {
+    if (sortConfig?.key !== key) {
+      return <i className="fa-solid fa-sort text-gray-300 text-[10px]"></i>;
+    }
+    return sortConfig.direction === 'asc' 
+      ? <i className="fa-solid fa-sort-up text-[#0074D9] text-[10px]"></i> 
+      : <i className="fa-solid fa-sort-down text-[#0074D9] text-[10px]"></i>;
+  };
+
+  // --- SORTING IMPLEMENTATION ---
+  const sortedClients = [...clientsData].sort((a: any, b: any) => {
+    if (!sortConfig) return 0;
+    const { key, direction } = sortConfig;
+
+    // Handle nested caregiver sorting manually if needed
+    let valA = a[key];
+    let valB = b[key];
+
+    if (key === 'caregiver') {
+        valA = a.caregiver.name;
+        valB = b.caregiver.name;
+    }
+
+    if (valA < valB) {
+      return direction === 'asc' ? -1 : 1;
+    }
+    if (valA > valB) {
+      return direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
 
   // Toggle Checkbox logic
   const toggleSelect = (id: string) => {
@@ -71,7 +113,6 @@ export default function ClientsPage() {
           
           {/* Left: Search & Filters */}
           <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
-            {/* Search */}
             <div className="relative">
                <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                <input 
@@ -81,7 +122,6 @@ export default function ClientsPage() {
                />
             </div>
 
-            {/* Dropdowns */}
             <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
               <option>Status</option>
               <option>Active</option>
@@ -93,22 +133,18 @@ export default function ClientsPage() {
               <option>Supervisor</option>
             </select>
 
-            {/* <select className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none cursor-pointer">
-              <option>Schedule</option>
-            </select> */}
-
             <button className="text-sm text-gray-400 hover:text-gray-600 border-l border-gray-200 pl-4 ml-2">
               | Clear Filter
             </button>
           </div>
 
           {/* Right: Add Button */}
-         <Link 
-  href="/clients/add" 
-  className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors inline-block"
->
-  Add Clients
-</Link>
+          <Link 
+            href="/clients/add" 
+            className="bg-[#0074D9] hover:bg-[#0062b8] text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors inline-block"
+          >
+            Add Clients
+          </Link>
         </div>
 
         {/* --- Table Section --- */}
@@ -125,16 +161,67 @@ export default function ClientsPage() {
                       onChange={toggleSelectAll}
                     />
                   </th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Client Name</th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Schedule Shift</th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Caregiver</th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Check In</th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Check Out</th>
-                  <th className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                  
+                  {/* 1. Client Name */}
+                  <th 
+                      className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
+                      onClick={() => handleSort('name')}
+                  >
+                      <div className="flex items-center gap-2">
+                        Client Name 
+                        {getSortIcon('name')}
+                      </div>
+                  </th>
+
+                  {/* 2. Schedule Shift */}
+                  <th 
+                      className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
+                      onClick={() => handleSort('shiftStart')} // Using shiftStart for sort logic
+                  >
+                      <div className="flex items-center gap-2">
+                        Schedule Shift 
+                        {getSortIcon('shiftStart')}
+                      </div>
+                  </th>
+
+                  {/* 3. Caregiver */}
+                  <th 
+                      className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
+                      onClick={() => handleSort('caregiver')}
+                  >
+                      <div className="flex items-center gap-2">
+                        Caregiver 
+                        {getSortIcon('caregiver')}
+                      </div>
+                  </th>
+
+                  {/* 4. Check In */}
+                  <th 
+                      className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
+                      onClick={() => handleSort('checkIn')}
+                  >
+                      <div className="flex items-center gap-2">
+                        Check In 
+                        {getSortIcon('checkIn')}
+                      </div>
+                  </th>
+
+                  {/* 5. Check Out */}
+                  <th 
+                      className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors select-none"
+                      onClick={() => handleSort('checkOut')}
+                  >
+                      <div className="flex items-center gap-2">
+                        Check Out 
+                        {getSortIcon('checkOut')}
+                      </div>
+                  </th>
+                  <th className="p-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {clientsData.map((client) => (
+                {/* Use sortedClients instead of clientsData */}
+                {sortedClients.map((client) => (
                   <tr key={client.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4">
                       <input 
@@ -146,74 +233,128 @@ export default function ClientsPage() {
                     </td>
                     
                     {/* Client Name */}
-                    {/* Client Name - NOW CLICKABLE */}
-<td className="p-4">
-  <Link 
-    href="/clients/profile" 
-    className="flex items-center gap-3 group cursor-pointer"
-  >
-    <img 
-      src={client.avatar} 
-      alt={client.name} 
-      className="w-9 h-9 rounded-full object-cover group-hover:opacity-80 transition-opacity" 
-    />
-    <span className="text-sm font-medium text-gray-800 group-hover:text-[#0074D9] transition-colors">
-      {client.name}
-    </span>
-  </Link>
-</td>
+                    <td className="p-3">
+                      <Link 
+                        href="/clients/profile" 
+                        className="flex items-center gap-3 group cursor-pointer"
+                      >
+                        <img 
+                          src={client.avatar} 
+                          alt={client.name} 
+                          className="w-9 h-9 rounded-full object-cover group-hover:opacity-80 transition-opacity" 
+                        />
+                        <span className="text-sm font-medium text-gray-800 group-hover:text-[#0074D9] transition-colors">
+                          {client.name}
+                        </span>
+                      </Link>
+                    </td>
 
                     {/* Shift */}
-                    <td className="p-4">
-                      <span className="text-sm text-gray-600">{client.shiftStart} I {client.shiftEnd}</span>
+                    <td className="p-3">
+                      <span className="text-sm text-gray-600">{client.shiftStart} | {client.shiftEnd}</span>
                     </td>
 
-                    {/* Caregiver */}
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        <img src={client.caregiver.avatar} alt={client.caregiver.name} className="w-9 h-9 rounded-full object-cover" />
-                        <div>
-                          <div className="text-sm font-medium text-gray-800">{client.caregiver.name}</div>
-                          <div className="text-xs text-blue-400">{client.caregiver.role}</div>
-                        </div>
-                      </div>
-                    </td>
+             {/* Caregiver Column */}
+<td className="p-4">
+  <div className="flex items-center gap-3">
+    
+    {/* 1. Avatar with Hover Tooltip & Link */}
+    <Link href="/caregivers/profile" className="relative group cursor-pointer">
+      <img 
+        src={client.caregiver.avatar} 
+        alt={client.caregiver.name} 
+        className="w-9 h-9 rounded-full object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" 
+      />
+      
+      {/* Hover Popup (Name) */}
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col items-center w-max z-50 animate-fade-in">
+        <div className="bg-gray-800 text-white text-[10px] rounded px-2 py-1 shadow-lg whitespace-nowrap relative z-10">
+          {client.caregiver.name}
+        </div>
+        {/* Tiny Arrow */}
+        <div className="w-2 h-2 bg-gray-800 transform rotate-45 -mt-1.5"></div>
+      </div>
+    </Link>
+
+    {/* 2. Text Info with Link */}
+    <Link href="/caregivers/profile" className="group">
+      <div className="text-sm font-medium text-gray-800 group-hover:text-[#0074D9] transition-colors">
+        {client.caregiver.name}
+      </div>
+      <div className="text-xs text-blue-400 group-hover:text-blue-600 transition-colors">
+        {client.caregiver.role}
+      </div>
+    </Link>
+
+  </div>
+</td>
 
                     {/* Check In */}
-                    <td className="p-4">
+                    <td className="p-3">
                       <span className="px-2 py-1 bg-gray-50 border border-gray-100 rounded text-xs text-gray-600 font-medium">
                         {client.checkIn}
                       </span>
                     </td>
 
                     {/* Check Out */}
-                    <td className="p-4">
+                    <td className="p-3">
                       <span className="px-2 py-1 bg-gray-50 border border-gray-100 rounded text-xs text-gray-600 font-medium">
                         {client.checkOut}
                       </span>
                     </td>
 
-                    {/* Actions */}
-                    <td className="p-4">
-                      <div className="flex items-center justify-end gap-2">
-                        {/* Eye Button */}
-                        <button className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-colors">
-                          <i className="fa-regular fa-eye text-xs"></i>
-                        </button>
-                        {/* Calendar Button */}
-                        <button className="w-8 h-8 rounded-full bg-yellow-50 text-yellow-500 hover:bg-yellow-100 flex items-center justify-center transition-colors">
-                          <i className="fa-regular fa-calendar text-xs"></i>
-                        </button>
-                        {/* Money Button */}
-                        <button className="w-8 h-8 rounded-full bg-green-50 text-green-500 hover:bg-green-100 flex items-center justify-center transition-colors">
-                          <i className="fa-solid fa-dollar-sign text-xs"></i>
-                        </button>
-                        {/* Trash Button */}
-                        <button className="w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
-                          <i className="fa-regular fa-trash-can text-xs"></i>
-                        </button>
-                      </div>
-                    </td>
+                  {/* Actions */}
+<td className="p-3 text-right overflow-visible">
+  <div className="flex items-center justify-end gap-2">
+    
+    {/* 1. View Profile */}
+    <Link href="/clients/profile">
+      <button className="relative group/tooltip w-8 h-8 rounded-full bg-blue-50 text-blue-500 hover:bg-blue-100 flex items-center justify-center transition-colors">
+        <i className="fa-regular fa-eye text-xs"></i>
+        {/* Tooltip */}
+        <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+         Clients Profile
+          {/* Arrow */}
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+        </div>
+      </button>
+    </Link>
+
+    {/* 2. Schedule */}
+    <button className="relative group/tooltip w-8 h-8 rounded-full bg-yellow-50 text-yellow-500 hover:bg-yellow-100 flex items-center justify-center transition-colors">
+      <i className="fa-regular fa-calendar text-xs"></i>
+      {/* Tooltip */}
+      <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+        View Client Schedule
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+      </div>
+    </button>
+
+    {/* 3. Billing/Rates */}
+    <button className="relative group/tooltip w-8 h-8 rounded-full bg-green-50 text-green-500 hover:bg-green-100 flex items-center justify-center transition-colors">
+      <i className="fa-solid fa-dollar-sign text-xs"></i>
+      {/* Tooltip */}
+      <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+        View Billing & Rates
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+      </div>
+    </button>
+
+{/* 4. Delete */}
+<button className="relative group/tooltip w-8 h-8 rounded-full bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
+  <i className="fa-regular fa-trash-can text-xs"></i>
+  
+  {/* Tooltip */}
+  <div className="absolute bottom-full right-0 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+    Delete Client
+    
+    {/* Arrow (Positioned to point to the button) */}
+    <div className="absolute top-full right-3 border-4 border-transparent border-t-gray-800"></div>
+  </div>
+</button>
+
+  </div>
+</td>
                   </tr>
                 ))}
               </tbody>
