@@ -117,6 +117,7 @@ function GeneralInfoTab() {
              <InfoItem label="Name" value="Nina Mcintire" />
              <InfoItem label="DOB" value="24 Oct, 1933" />             
              <InfoItem label="Gender" value="Female" />
+             <InfoItem label="Marital Status" value="Married" />
              <InfoItem label="Skills" value="Catheter Care" />
              <InfoItem label="Qualification" value="Certificate III in Individual Support" />
              <InfoItem label="Years of Experience" value="5 Years" />

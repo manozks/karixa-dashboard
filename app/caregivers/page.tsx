@@ -512,11 +512,12 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
          </div>
          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+             <SelectGroup label="Marial Status" options={["Single", "Married", "Divorced", "Widowed"]} />
             
             {/* Using your custom MultiSelect component here */}
          
             
-            <SelectGroup label="Gender*" options={["Male", "Female", "Other"]} />
+            <SelectGroup label="Gender*" options={["Male", "Female", "Other", "Prefer Not to Say"]} />
             <InputGroup label="Date of Birth*" type="date" /> 
             <InputGroup label="State ID" placeholder="Enter" />
              <InputGroup label="Driver’s License" placeholder="Enter" />

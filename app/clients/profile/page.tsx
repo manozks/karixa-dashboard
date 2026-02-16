@@ -16,7 +16,12 @@ export default function ClientProfilePage() {
     "Service Plan(ADLs)", "Incidents", "Schedule Report", 
     "Service Authentication", "Trackable Document", "Contacts Address"
   ];
-
+// --- ADD THIS MOCK DATA TO FIX THE ERROR ---
+  const client = {
+    id: "1", // This ID will be used in the link: /clients/1/edit
+    name: "Jane Doe",
+    status: "Active"
+  };
   return (
     <DashboardLayout>
        <div className="flex flex-col min-h-screen h-auto bg-gray-50 space-y-6 pb-20">
@@ -46,7 +51,12 @@ export default function ClientProfilePage() {
                       </div>
                       <div className="flex gap-2">
                          <button className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex items-center justify-center"><i className="fa-solid fa-download"></i></button>
-                         <Link href="/clients/add" className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50">Edit</Link>
+                        <Link 
+  href={`/clients/${client.id}/edit`} 
+  className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors"
+>
+  Edit
+</Link>
                          <button className="px-3 py-1.5 rounded-lg bg-[#0074D9] text-white text-sm font-medium hover:bg-[#0062b8]">Message</button>
                       </div>
                    </div>
@@ -139,12 +149,21 @@ function GeneralInfoTab() {
        <div>
           <h3 className="font-bold text-gray-800 mb-4 text-sm">Basic Information</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+             <InfoItem label="Salutation" value="Ms." />           
              <InfoItem label="Name" value="Nina Mcintire" />
              <InfoItem label="DOB" value="24 Oct, 1953" />
              <InfoItem label="Gender" value="Female" />
+             <InfoItem label="Marital Status" value="Married" />
+              <InfoItem label="Client ID" value="1322" />
              <InfoItem label="SSN" value="***-**-7142" />
              <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Email Address" value="nina@gmail.com" />
+              <InfoItem label="State ID" value="D-123-456-7890" />
+             <InfoItem label="Driver’s License" value="D-123-456-7890" />
+             <InfoItem label="PASSPORT" value="D-123-456-7890" />
+             <InfoItem label="Military ID" value="D-123-456-7890" />
+             <InfoItem label="USCIS ID" value="D-123-456-7890" />
+             <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
              <InfoItem label="Language Spoken" value="English" />
              <InfoItem label="Street Address" value="1509 Oakview Dr." />
              <InfoItem label="City" value="McLean" />

@@ -84,22 +84,23 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
            <p className="text-sm text-gray-500 mt-1">Update {basicInfo.firstName}'s personal details, professional information, and documents.</p>
         </div>
 
-        {/* Wizard Stepper */}
-        <div className="w-full mx-auto mb-3 px-0">
-           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm flex justify-center items-center gap-4">
+      
+
+        {/* Content Area */}
+         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              {/* Wizard Stepper */}
+       
+          <div className="bg-blue-50/50 rounded-xl p-6 mb-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-blue-100/50">
               <StepIndicator num={1} label="Basic Information" current={step} onClick={() => setStep(1)} />
               <div className="w-12 h-px bg-gray-200"></div>
               <StepIndicator num={2} label="Professional Detail" current={step} onClick={() => setStep(2)} />
               <div className="w-12 h-px bg-gray-200"></div>
               <StepIndicator num={3} label="Documents" current={step} onClick={() => setStep(3)} />
            </div>
-        </div>
-
-        {/* Content Area */}
-         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex-1">
+      
            <div className="">
               
-              <div className="p-2 flex-1">
+              <div className="space-y-6">
                  
                  {/* ================= STEP 1: BASIC INFO ================= */}
                  {step === 1 && (
