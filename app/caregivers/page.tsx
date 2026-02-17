@@ -526,12 +526,10 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              <InputGroup label="USCIS ID" placeholder="Enter" />
          </div>
          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
-            <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
+             <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
              <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-
-                      <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-
-                      <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+             <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+             <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
          </div>
          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <InputGroup label="Address Line1" placeholder="Enter" />

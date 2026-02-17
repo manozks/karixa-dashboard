@@ -8,6 +8,13 @@ import Link from "next/link";
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("Contacts Address");
 
+  // --- ADD THIS MOCK DATA TO FIX THE ERROR ---
+  const employee = {
+    id: "1", // This ID will be used in the link: /employees/1/edit
+    name: "Jane Doe",
+    status: "Active"
+  };
+
   const tabs = [
     "Contacts Address", "Documents", "Payroll", "Complains", 
     "Performance", "Trackable Licenses", "Employment History", "Reference"
@@ -36,7 +43,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
               </div>
               <div className="flex gap-3">
                  <Link 
-  href="/clients/add" 
+href={`/employees/${params.id}/edit`} 
   className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center"
 >
   <i className="fa-solid fa-download mr-1"></i> Edit Profile

@@ -165,7 +165,7 @@ export default function EditClientPage() {
     router.push('/clients'); 
   };
 
-  if (loading) return <DashboardLayout><div className="p-10 text-center">Loading client data...</div></DashboardLayout>;
+  
 
   return (
     <DashboardLayout>

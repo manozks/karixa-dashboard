@@ -8,7 +8,7 @@ import Link from "next/link";
 // =========================================================================
 // MAIN PAGE COMPONENT
 // =========================================================================
-export default function ClientProfilePage() {
+export default function ClientProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("General Info");
 
   const tabs = [
@@ -52,7 +52,7 @@ export default function ClientProfilePage() {
                       <div className="flex gap-2">
                          <button className="w-8 h-8 rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 flex items-center justify-center"><i className="fa-solid fa-download"></i></button>
                         <Link 
-  href={`/clients/${client.id}/edit`} 
+  href={`/clients/${params.id}/edit`} 
   className="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 text-sm font-medium hover:bg-gray-50 hover:text-gray-800 transition-colors"
 >
   Edit

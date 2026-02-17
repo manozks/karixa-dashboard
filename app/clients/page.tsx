@@ -148,7 +148,7 @@ export default function ClientsPage() {
         </div>
 
         {/* --- Table Section --- */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
