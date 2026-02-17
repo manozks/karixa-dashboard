@@ -142,10 +142,10 @@ export default function EditEmployeePage() {
           </div>
 
           {/* Main Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
              
              {/* Stepper */}
-             <div className="bg-blue-50/50 rounded-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 border border-blue-100/50">
+             <div className="bg-blue-50/50 rounded-xl p-6 mb-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-blue-100/50">
                 <StepIndicator num={1} label="Identity" sub="Personal Details" current={currentStep} />
                 <div className="hidden md:block w-12 h-px bg-gray-300"></div>
                 <StepIndicator num={2} label="Employment" sub="Role & Status" current={currentStep} />
