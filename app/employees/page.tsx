@@ -353,7 +353,7 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                           <InputField label="Last Name*" placeholder="Doe" />
                           <SelectInput label="Suffix" options={["Jr.", "Sr.", "II", "III"]} />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                           <SelectInput label="Gender*" options={["Male", "Female", "Other"]} />
                           <DateInput label="Date of Birth*" />
                           <SelectInput label="Marital Status" options={["Single", "Married", "Divorced"]} />
