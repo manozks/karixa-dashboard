@@ -162,20 +162,22 @@ export default function EditEmployeePage() {
                       
                       {/* Section A */}
                       <Accordion title="Basic Information" defaultOpen={true}>
-                         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
+                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <SelectInput label="Title" options={["Ms.", "Mrs.", "Mr.", "Dr."]} defaultValue="Ms." />
                             <InputField label="First Name*" defaultValue="Olivia" />
                             <InputField label="Middle Name" defaultValue="Grace" />
                             <InputField label="Last Name*" defaultValue="Thompson" />
-                            <SelectInput label="Suffix" options={["None", "Jr.", "Sr."]} defaultValue="None" />
+                           
                          </div>
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                            <SelectInput label="Suffix" options={["None", "Jr.", "Sr."]} defaultValue="None" />
                             <SelectInput label="Gender*" options={["Female", "Male", "Other"]} defaultValue="Female" />
                             <DateInput label="Date of Birth*" defaultValue="1990-05-15" />
                             <SelectInput label="Marital Status" options={["Single", "Married", "Divorced"]} defaultValue="Single" />
-                            <InputField label="SSN* (Masked)" defaultValue="***-**-1234" disabled />
+                           
                          </div>
-                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <InputField label="SSN* (Masked)" defaultValue="***-**-1234" disabled />
                              <SelectInput label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
                              <SelectInput label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
                              <SelectInput label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
