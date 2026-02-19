@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
-  const [activeTab, setActiveTab] = useState("Contacts Address");
+  const [activeTab, setActiveTab] = useState("General Info");
 
   // --- ADD THIS MOCK DATA TO FIX THE ERROR ---
   const employee = {
@@ -16,8 +16,8 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
   };
 
   const tabs = [
-    "Contacts Address", "Documents", "Payroll", "Complains", 
-    "Performance", "Trackable Licenses", "Employment History", "Reference"
+    "General Info", 
+     "Employment History", "Attendance", "Notes", "Certificates & Documents", "Contacts Address", "Reference"
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                  <img src="https://i.pravatar.cc/150?img=5" alt="Profile" className="w-20 h-20 rounded-full object-cover border-4 border-gray-50" />
                  <div>
                     <h1 className="text-xl font-bold text-gray-800">Nina Mcintire</h1>
-                    <p className="text-sm text-gray-500">Caregiver, PCA • <span className="font-medium text-gray-700">$32 / per hour</span></p>
+                    <p className="text-sm text-gray-500">Employee, PCA • <span className="font-medium text-gray-700">$32 / per hour</span></p>
                  </div>
               </div>
               <div className="flex gap-3">
@@ -54,20 +54,15 @@ href={`/employees/${params.id}/edit`}
 
            {/* Info Grid */}
            <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-8 text-sm border-t border-gray-100 pt-6">
-              <div><span className="block text-xs text-gray-400 mb-1">Name</span><span className="font-medium text-gray-800">Nina Mcintire</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Employee ID</span><span className="font-medium text-gray-800">322</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">DOB</span><span className="font-medium text-gray-800">24 Oct, 1933</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Gender</span><span className="font-medium text-gray-800">Female</span></div>
-              
+             
+              <div><span className="block text-xs text-gray-400 mb-1">Employee ID</span><span className="font-medium text-gray-800">322</span></div>              
+               <div><span className="block text-xs text-gray-400 mb-1">Type</span><span className="font-medium text-gray-800">Manager</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Social Security Number</span><span className="font-medium text-gray-800">(***) ***-7142</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Phone/Mobile</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Email Address</span><span className="font-medium text-gray-800">nina@gmail.com</span></div>
+               <div><span className="block text-xs text-gray-400 mb-1">Mobile</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
+              <div><span className="block text-xs text-gray-400 mb-1">Emergency No.</span><span className="font-medium text-gray-800">(703) 981-7142</span></div>
               <div><span className="block text-xs text-gray-400 mb-1">Language Spoken</span><span className="font-medium text-gray-800">English</span></div>
 
-              <div><span className="block text-xs text-gray-400 mb-1">Street Address</span><span className="font-medium text-gray-800">1509 Oakview Dr.</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">City</span><span className="font-medium text-gray-800">McLean</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">State</span><span className="font-medium text-gray-800">Ohio</span></div>
-              <div><span className="block text-xs text-gray-400 mb-1">Zip Code</span><span className="font-medium text-gray-800">22101</span></div>
+             
            </div>
         </div>
 
@@ -98,15 +93,163 @@ href={`/employees/${params.id}/edit`}
 
 function renderTabContent(tab: string) {
   switch (tab) {
-    case "Contacts Address": return <ContactsTab />;
-    case "Documents": return <DocumentsTab />;
-    case "Complains": return <ComplainsTab />;
-    case "Trackable Licenses": return <TrackableLicensesTab />;
+   case "General Info": return <GeneralInfoTab />;  
     case "Employment History": return <EmploymentHistoryTab />;
+    case "Attendance": return <AttendanceTab />;  
+    case "Notes": return <NotesTab />;
+    case "Certificates & Documents": return <CertificatesTab/>;
+    case "Contacts Address": return <ContactsTab />;
     case "Reference": return <ReferenceTab />;
     default: return <div className="text-center py-20 text-gray-400">Content for {tab} is coming soon...</div>;
   }
 }
+
+// =========================================================================
+// 1. GENERAL INFO TAB 
+// =========================================================================
+
+function GeneralInfoTab() {
+  return (
+    <div className="animate-fade-in space-y-8">
+       {/* Basic Information */}
+       <div>
+          <h3 className="font-bold text-gray-800 mb-4 text-sm">Basic Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <InfoItem label="Salutation" value="Ms." />
+             <InfoItem label="Name" value="Nina Mcintire" />
+             <InfoItem label="DOB" value="24 Oct, 1933" />             
+             <InfoItem label="Gender" value="Female" />
+             <InfoItem label="Marital Status" value="Married" />
+             <InfoItem label="Department" value="Support" />
+             <InfoItem label="Qualification" value="Certificate III in Individual Support" />            
+             <InfoItem label="User Name" value="John KK" />
+             <InfoItem label="Hourly Charge" value="$32 / per hour" />
+             <InfoItem label="Employment Type" value="Full Time" />
+             <InfoItem label="Hire Date" value="12 Jan, 2020" />
+             <InfoItem label="Role Type" value="Employee" />
+             <InfoItem label="Social Security Number (SSN)" value="(***) ***-7142" />
+             <InfoItem label="State ID" value="D-123-456-7890" />
+             <InfoItem label="Driver’s License" value="D-123-456-7890" />
+             <InfoItem label="PASSPORT" value="D-123-456-7890" />
+             <InfoItem label="Military ID" value="D-123-456-7890" />
+             <InfoItem label="USCIS ID" value="D-123-456-7890" />
+             <InfoItem label="Phone/Mobile" value="(703) 981-7142" />
+             <InfoItem label="Email Address" value="nina@gmail.com" />
+             <InfoItem label="Language Spoken" value="English" />
+             <InfoItem label="City" value="McLean" />
+             <InfoItem label="State" value="VA (Virginia)" />
+             <InfoItem label="Zip Code" value="22101" />
+             <div className="col-span-2"><InfoItem label="Street Address" value="1509 Oakview Dr." /></div>
+          </div>
+       </div>
+
+       <div className="h-px bg-gray-100 w-full"></div>
+
+       {/* Emergency Contact */}
+       <div>
+          <h3 className="font-bold text-gray-800 mb-4 text-sm">Emergency Contact Number</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+             <InfoItem label="Full Name" value="Daniel Choi" />
+             <InfoItem label="Relationship" value="Son" />
+             <InfoItem label="Phone" value="(703)981 -71-45" />
+             <InfoItem label="Alternative Phone" value="(703)981-71-45" />
+          </div>
+       </div>
+
+       <div className="h-px bg-gray-100 w-full"></div>
+
+       {/* Availability */}
+       <div>
+          <h3 className="font-bold text-gray-800 mb-4 text-sm">Availability & Assignment</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+             <InfoItem label="Availability Start Date" value="24 Oct, 2024" />
+             <InfoItem label="Assigned Region Shifts" value="Melbourne East" />
+             <InfoItem label="Preferred shift" value="Evening" />
+             <div className="col-span-2">
+                <span className="block text-gray-400 text-xs mb-2">Days Available</span>
+                <div className="flex gap-2 flex-wrap">
+                   {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map(d => <span key={d} className="bg-gray-50 border border-gray-200 px-2 py-1 rounded text-xs text-gray-600">{d}</span>)}
+                </div>
+             </div>
+          </div>
+       </div>
+
+       <div className="h-px bg-gray-100 w-full"></div>
+
+       {/* Documents */}
+       <div>
+          <h3 className="font-bold text-gray-800 mb-4 text-sm">Document & Certification</h3>
+          <div className="space-y-3">
+             <DocItem label="Resume" file="Nina_resume.pdf" />
+             <DocItem label="Police Check" file="Nina_police.pdf" />
+             <DocItem label="First Aid Certficate" file="Nina_first aid.pdf" />
+             <DocItem label="Covid-19 Vaccination" file="Nina_Covid-19.pdf" />
+          </div>
+       </div>
+    </div>
+  );
+}
+
+function InfoItem({ label, value }: { label: string, value: string }) {
+  return (
+    <div>
+      <span className="block text-gray-400 text-xs mb-1">{label}</span>
+      <span className="font-medium text-gray-800 text-sm">{value}</span>
+    </div>
+  );
+}
+
+function DocItem({ label, file }: { label: string, file: string }) {
+   return (
+      <div className="flex items-center gap-2 text-sm">
+         <span className="text-gray-500 w-40">{label}:</span>
+         <span className="flex items-center gap-1 text-gray-800 font-medium"><i className="fa-solid fa-download text-gray-400 text-xs"></i> {file}</span>
+      </div>
+   )
+}
+
+
+// =========================================================================
+// 1. ATTENDANCE TAB 
+// =========================================================================
+function AttendanceTab() {
+  const attendanceData = [
+    { id: "01", client: "Nina Mcintire", date: "01 April, 2025 | Saturday", in: "09:00 AM", out: "5:30 PM", approved: "Admin", status: "Present" },
+    { id: "02", client: "Nina Mcintire", date: "03 April, 2025 | Monday", in: "09:00 AM", out: "5:30 PM", approved: "Admin", status: "Present" },
+    { id: "03", client: "Nina Mcintire", date: "04 April, 2025 | Tuesday", in: "09:00 AM", out: "5:30 PM", approved: "Admin", status: "Present" },
+    { id: "04", client: "Nina Mcintire", date: "05 April, 2025 | Wednesday", in: "09:00 AM", out: "5:30 PM", approved: "Admin", status: "Present" },
+    { id: "05", client: "Nina Mcintire", date: "06 April, 2025 | Thursday", in: "09:00 AM", out: "5:30 PM", approved: "Admin", status: "Present" },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex justify-between items-center">
+          <div className="flex gap-3 w-full md:w-auto">
+             <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+             <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white"><i className="fa-regular fa-calendar"></i> April 2025</div>
+             <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white">Month <i className="fa-solid fa-chevron-down text-xs"></i></div>
+          </div>
+          <button className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Download Attendance</button>
+       </div>
+
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4">SN</th><th className="p-4">Employee Name</th><th className="p-4">Date</th><th className="p-4">Check In</th><th className="p-4">Check Out</th><th className="p-4">Approved By</th><th className="p-4">Status</th><th className="p-4"></th></tr></thead>
+             <tbody className="divide-y divide-gray-50">{attendanceData.map((a, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                   <td className="p-4 text-gray-500">{a.id}</td>
+                   <td className="p-4 flex items-center gap-3"><img src="https://i.pravatar.cc/150?img=1" className="w-8 h-8 rounded-full" /><span className="font-medium text-gray-800">{a.client}</span></td>
+                   <td className="p-4 text-gray-600">{a.date}</td><td className="p-4 text-gray-800 font-medium">{a.in}</td><td className="p-4 text-gray-800 font-medium">{a.out}</td><td className="p-4 text-gray-600">{a.approved}</td>
+                   <td className="p-4"><span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium border border-blue-100 flex items-center gap-1 w-fit">{a.status} <i className="fa-solid fa-chevron-down text-[10px]"></i></span></td>
+                   <td className="p-4 text-right text-blue-500"><i className="fa-regular fa-eye"></i></td>
+                </tr>))}
+             </tbody>
+          </table>
+       </div>
+       <div className="flex justify-between items-center text-xs text-gray-500 pt-2"><span>Showing 1 to 10 of 1000 Results</span><div className="flex gap-2"><button className="hover:text-blue-600">Previous</button><button className="text-blue-600 font-medium">Next</button></div></div>
+    </div>
+  );
+}
+
 
 // =========================================================================
 // 1. CONTACTS TAB & MODAL
@@ -327,25 +470,82 @@ function ComplaintDetailModal({ incident, onClose }: { incident: any, onClose: (
 // =========================================================================
 // 1. TRACKABLE LICENSES TAB
 // =========================================================================
-function TrackableLicensesTab() {
-  const [showModal, setShowModal] = useState(false);
-  const licenses = [
-    { name: "Driving License", id: "01", expiry: "22 April, 2025 | 5:28:20 PM", remark: "Renewal Required" },
-    { name: "CPR Certificate", id: "02", expiry: "22 April, 2025 | 5:28:20 PM", remark: "Expired" },
+function CertificatesTab() {
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Mock Data 
+  const documents = [
+    { id: "01XBY4", type: "Driving License", mode: "Trackable", created: "22 April, 2025 | 5:28:20 PM", expiry: "22 July, 2025 | 5:28:20 PM", remark: "This is Driving License Document", status: "Active" },
+    { id: "01XBY4", type: "CPR Certificate", mode: "Untrackable", created: "22 April, 2025 | 5:28:20 PM", expiry: "22 July, 2025 | 5:28:20 PM", remark: "This is CPR Medical Document", status: "Expired" },
   ];
 
   return (
     <div className="animate-fade-in space-y-6">
+       
+       {/* Header */}
        <div className="flex justify-between items-center">
-          <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
-          <button onClick={() => setShowModal(true)} className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Add License</button>
+        <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+          <button 
+            onClick={() => setShowAddModal(true)}
+            className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors shadow-sm"
+          >
+            Add Certificates/Documents
+          </button>
        </div>
-       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <table className="w-full text-left text-sm"><thead className="bg-gray-50 text-gray-500 text-xs uppercase"><tr><th className="p-4">Trackable Item Type</th><th className="p-4">Item Number</th><th className="p-4">Expiration Date</th><th className="p-4">Remark</th><th className="p-4 text-right"></th></tr></thead>
-             <tbody className="divide-y divide-gray-50">{licenses.map((l, i) => (<tr key={i} className="hover:bg-gray-50"><td className="p-4 font-medium">{l.name}</td><td className="p-4">{l.id}</td><td className="p-4 font-medium">{l.expiry}</td><td className="p-4 text-gray-600">{l.remark}</td><td className="p-4 text-right"><button className="text-[#0074D9] flex items-center justify-end gap-1 ml-auto hover:underline"><i className="fa-solid fa-download"></i> Download</button></td></tr>))}</tbody>
-          </table>
+
+       {/* Table */}
+       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+             <table className="w-full text-left text-xs whitespace-nowrap">
+                <thead className="bg-gray-50 text-gray-500 uppercase font-semibold">
+                   <tr>
+                      <th className="p-4">Document Number</th>
+                      <th className="p-4">Document Type</th>
+                      <th className="p-4">Document Mode</th>
+                      <th className="p-4">Created On</th>
+                      <th className="p-4">Expiry Date</th>
+                      <th className="p-4">Remark</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4 text-right"></th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                   {documents.map((doc, index) => (
+                      <tr key={index} className="hover:bg-gray-50/50 transition-colors">
+                         <td className="p-4 text-gray-600">{doc.id}</td>
+                         <td className="p-4 font-medium text-gray-800">{doc.type}</td>
+                         <td className="p-4">
+                            <span className={`px-2 py-1 rounded text-[10px] font-medium ${doc.mode === 'Trackable' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                               {doc.mode}
+                            </span>
+                         </td>
+                         <td className="p-4 text-gray-600">{doc.created}</td>
+                         <td className="p-4 text-gray-600">{doc.expiry}</td>
+                         <td className="p-4 text-gray-600 max-w-[200px] truncate">{doc.remark}</td>
+                         <td className="p-4">
+                            <span className={`px-2 py-1 rounded-full text-[10px] font-medium border ${doc.status === 'Active' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
+                               {doc.status}
+                            </span>
+                         </td>
+                         <td className="p-4 text-right">
+                            <button className="text-[#0074D9] hover:text-blue-700 font-medium flex items-center justify-end gap-2">
+                               <i className="fa-solid fa-download"></i> Download
+                            </button>
+                         </td>
+                      </tr>
+                   ))}
+                </tbody>
+             </table>
+          </div>
+          <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+             <span>Showing 1 to 10 of 1000 Results</span>
+             <div className="flex gap-2"><button className="hover:text-brand">Previous</button><button className="text-brand font-medium">Next</button></div>
+          </div>
        </div>
-       {showModal && <AddLicenseModal onClose={() => setShowModal(false)} />}
+
+       {/* --- MODAL --- */}
+       {showAddModal && <AddLicenseModal onClose={() => setShowAddModal(false)} />}
+
     </div>
   );
 }
@@ -353,17 +553,60 @@ function TrackableLicensesTab() {
 function AddLicenseModal({ onClose }: { onClose: () => void }) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
-       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up">
-          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Employee Trackable License</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
-          <div className="p-6 space-y-4">
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Item Type</label><select className="w-full border rounded-lg p-2 text-sm">
-               <option>Select</option>
-               <option>Driving License</option>
-               <option>CPR Certificate</option>
-               
-               </select></div><div><label className="text-xs text-gray-500">Item Number</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
-             <div className="grid grid-cols-2 gap-4"><div><label className="text-xs text-gray-500">Incident Date</label><input type="date" className="w-full border rounded-lg p-2 text-sm" placeholder="dd / mm / yyyy" /></div><div><label className="text-xs text-gray-500">Remark</label><input className="w-full border rounded-lg p-2 text-sm" placeholder="Enter" /></div></div>
-             <div className="border-2 border-dashed border-gray-200 p-6 flex flex-col items-center justify-center rounded-xl bg-gray-50"><i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i><p className="text-xs text-gray-500">Drag and drop or click to upload file</p></div>
+       <div className="bg-white rounded-2xl max-w-3xl shadow-2xl flex flex-col animate-scale-up">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Certificates & Documents</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+           <div className="p-6 overflow-y space-y-4">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div><label className="text-sm font-medium text-gray-700">Document Name</label>
+                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+               <div><label className="text-sm font-medium text-gray-700">Document Type</label>
+                <select className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand text-gray-500">
+                   <option>Select</option>
+                   <option>State ID</option>
+                   <option>Driver’s License</option>
+                   <option>PASSPORT</option>
+                   <option>Military ID</option>
+                   <option>USCIS ID</option>
+                   <option>ODA-Approved Core Training </option>
+                   <option>CPR/First Aid Certified (Exp: 04-04-2027)</option>
+                   <option>Alzheimer's/Dementia Training - Ohio Curriculum</option>
+                   <option>Incident Reporting Training</option>
+                   <option>HIPAA/Confidentiality Training</option>
+                   <option>Abuse/Neglect Prevention Training</option>
+                   <option>Infection Control/Universal Precautions</option>
+                   <option>Choke Prevention & Food Safety</option>
+                </select></div>
+             </div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <div> <label className="text-sm font-medium text-gray-700">Remark</label>
+                <input type="text" placeholder="Enter" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+               <div>  <label className="text-sm font-medium text-gray-700">Issued Date</label>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+             </div>
+              <div className="grid grid-cols-1 md:grid-cols-1gap-4">
+               <div> <label className="text-sm font-medium text-gray-700">Expiry Date</label>
+                {/* FIXED: Changed to type="date" and removed manual icon */}
+                <input type="date" className="w-full bg-white border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand" /></div>
+              
+             </div>
+            
+
+
+             {/* Upload Area */}
+             <div className="space-y-1.5">
+                <label className="text-sm font-medium text-gray-700">Upload File</label>
+                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+                   <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2"></i>
+                   <p className="text-xs text-gray-600 text-center">Drag and drop or click to upload file</p>
+                   <p className="text-[10px] text-gray-400 mt-1">Supported file type: pdf, word, png</p>
+                </div>
+             </div>
+
+             <div className="flex items-center gap-2">
+                <input type="checkbox" className="w-4 h-4 text-brand rounded border-gray-300 focus:ring-brand" />
+                <label className="text-sm text-gray-700">Is the document Trackable? Check if Yes</label>
+             </div>
           </div>
           <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm">Cancel</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm">Save</button></div>
        </div>
@@ -430,6 +673,59 @@ function EmploymentDetailModal({ history, onClose }: { history: any, onClose: ()
           <h3 className="text-xl font-bold text-gray-800 mb-1">{history.role}</h3>
           <p className="text-sm text-gray-500 mb-4">{history.company}<br/>{history.date}</p>
           <div className="text-sm text-gray-600"><span className="font-medium block mb-2">Responsibility:</span><ul className="list-disc ml-4 space-y-2"><li>Provided personal care, assisted with mobility, medication reminders, and companionship for elderly clients.</li></ul></div>
+       </div>
+    </div>, document.body
+  );
+}
+
+
+// =========================================================================
+// 2. NOTES TAB & MODAL 
+// =========================================================================
+function NotesTab() {
+  const [showModal, setShowModal] = useState(false);
+  
+  const notes = [
+    { title: "Suffering with Headache", date: "23 Feb, 2025", author: "Rajesh Maharjan", desc: "Here is a dummy note that will come here that will be added by different users..." },
+    { title: "Daily Diet Routine", date: "23 Feb, 2025", author: "Rajesh Maharjan", desc: "Here is a dummy note that will come here that will be added by different users..." },
+    { title: "Suffering with Headache", date: "23 Feb, 2025", author: "Rajesh Maharjan", desc: "Here is a dummy note that will come here that will be added by different users..." },
+    { title: "Daily Diet Routine", date: "23 Feb, 2025", author: "Rajesh Maharjan", desc: "Here is a dummy note that will come here that will be added by different users..." },
+  ];
+
+  return (
+    <div className="animate-fade-in space-y-6">
+       <div className="flex justify-between items-center">
+          <div className="relative w-64"><i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i><input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:border-brand" /></div>
+          <button onClick={() => setShowModal(true)} className="bg-[#0074D9] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#0062b8] shadow-sm">Create A Note</button>
+       </div>
+
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {notes.map((n, i) => (
+             <div key={i} className="bg-[#F8FAFC] border border-[#E2E8F0] p-5 rounded-xl hover:shadow-md transition-shadow">
+                <h4 className="font-bold text-[#0074D9] text-sm mb-2">{n.title}</h4>
+                <p className="text-xs text-gray-500 mb-4 line-clamp-3 leading-relaxed">{n.desc}</p>
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                   <div className="flex items-center gap-2"><img src="https://i.pravatar.cc/150?img=3" className="w-8 h-8 rounded-full border border-white shadow-sm" /><div className="text-[10px]"><div className="font-bold text-gray-700">{n.author}</div><div className="text-gray-400">Employee</div></div></div>
+                   <span className="text-[10px] text-gray-400">{n.date}</span>
+                </div>
+             </div>
+          ))}
+       </div>
+       {showModal && <CreateNoteModal onClose={() => setShowModal(false)} />}
+    </div>
+  );
+}
+
+function CreateNoteModal({ onClose }: { onClose: () => void }) {
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
+       <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl flex flex-col animate-scale-up relative">
+          <div className="flex justify-between items-center p-6 border-b border-gray-100"><h2 className="text-xl font-bold">Notes</h2><button onClick={onClose}><i className="fa-solid fa-xmark text-xl text-gray-400"></i></button></div>
+          <div className="p-6 space-y-4">
+             <div className="space-y-1"><label className="text-xs text-gray-500">Title</label><input className="w-full border rounded-lg p-2.5 text-sm outline-none focus:border-brand" placeholder="Enter" /></div>
+             <div className="space-y-1"><label className="text-xs text-gray-500">Notes</label><textarea className="w-full border rounded-lg p-2.5 text-sm h-32 outline-none focus:border-brand resize-none" placeholder="Start typing..."></textarea></div>
+          </div>
+          <div className="p-6 border-t flex justify-end gap-3"><button onClick={onClose} className="px-6 py-2 border rounded-lg text-sm font-medium hover:bg-gray-50">Cancel</button><button className="px-6 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8]">Create</button></div>
        </div>
     </div>, document.body
   );

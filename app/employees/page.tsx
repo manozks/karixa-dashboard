@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MultiSelectDropdown from "@/components/MultiSelectDropdown";
+import MultiSelectInput from "@/components/ui/MultiSelectInput";
 
 export default function EmployeePage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,11 +18,11 @@ export default function EmployeePage() {
 
   // Mock Data
   const employees = [
-    { id: "CN-10001", name: "Olivia Thompson", phone: "(202) 555-0101", shift: "8:30 AM | 7:00 PM", date: "Feb 01, 2023", status: "Active", img: 1 },
-    { id: "CN-10002", name: "Alexander Smith", phone: "(202) 555-0102", shift: "10:00 AM | 5:30 PM", date: "Feb 01, 2023", status: "Active", img: 2 },
-    { id: "CN-10003", name: "Amelia Robinson", phone: "(202) 555-0103", shift: "8:15 AM | 7:45 PM", date: "Feb 01, 2023", status: "Active", img: 3 },
-    { id: "CN-10004", name: "Liam Harris", phone: "(202) 555-0104", shift: "7:45 AM | 6:15 PM", date: "Feb 01, 2023", status: "Active", img: 4 },
-    { id: "CN-10005", name: "Charlotte White", phone: "(202) 555-0105", shift: "11:00 AM | 4:45 PM", date: "Feb 01, 2023", status: "Active", img: 5 },
+    { id: "EM-10001", name: "Olivia Thompson", phone: "(202) 555-0101", shift: "8:30 AM | 7:00 PM", date: "Feb 01, 2023", status: "Active", img: 1 },
+    { id: "EM-10002", name: "Alexander Smith", phone: "(202) 555-0102", shift: "10:00 AM | 5:30 PM", date: "Feb 01, 2023", status: "Active", img: 2 },
+    { id: "EM-10003", name: "Amelia Robinson", phone: "(202) 555-0103", shift: "8:15 AM | 7:45 PM", date: "Feb 01, 2023", status: "Active", img: 3 },
+    { id: "EM-10004", name: "Liam Harris", phone: "(202) 555-0104", shift: "7:45 AM | 6:15 PM", date: "Feb 01, 2023", status: "Active", img: 4 },
+    { id: "EM-10005", name: "Charlotte White", phone: "(202) 555-0105", shift: "11:00 AM | 4:45 PM", date: "Feb 01, 2023", status: "Active", img: 5 },
   ];
 
   // --- SORTING LOGIC ---
@@ -225,15 +226,17 @@ function SmsModal({ recipient, onClose }: { recipient: { name: string, phone: st
 function Accordion({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white mb-4 shadow-sm animate-fade-in">
+    <div className={`border border-gray-200 rounded-xl bg-white mb-4 shadow-sm animate-fade-in ${isOpen ? 'overflow-visible' : 'overflow-hidden'}`}
+    >
       <button 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+        className={`w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left ${isOpen ? 'rounded-t-xl' : 'rounded-xl'}`}
       >
         <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
         <i className={`fa-solid fa-chevron-down text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
-      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
+      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100 overflow-visible' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}
+      >
         {children}
       </div>
     </div>
@@ -307,8 +310,53 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
 
+    // 1. Phone Numbers State
+    const [phones, setPhones] = useState([{ type: "Cell Phone", number: "", note: "" }]);
+    
+    // 2. Email Addresses State
+    const [emails, setEmails] = useState([{ type: "Work", address: "", note: "" }]);
+  
+    // 3. Emergency Contacts State (NEW)
+    const [emergencyContacts, setEmergencyContacts] = useState([
+      { name: "", relation: "", phone: "", email: "", address: "" }
+    ]);
+
+      // NEW: State for Step 3 (Dynamic Documents with Type)
+      const [documents, setDocuments] = useState([
+        { type: "Document", title: "", file: null } 
+      ]);
+
   useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
   if (!mounted) return null;
+
+   // --- Handlers ---
+  const addPhone = () => setPhones([...phones, { type: "Cell Phone", number: "", note: "" }]);
+  const removePhone = (index: number) => setPhones(phones.filter((_, i) => i !== index));
+  
+  const addEmail = () => setEmails([...emails, { type: "Work", address: "", note: "" }]);
+  const removeEmail = (index: number) => setEmails(emails.filter((_, i) => i !== index));
+
+  // Emergency Contact Handlers
+  const addEmergencyContact = () => setEmergencyContacts([...emergencyContacts, { name: "", relation: "", phone: "", email: "", address: "" }]);
+  const removeEmergencyContact = (index: number) => setEmergencyContacts(emergencyContacts.filter((_, i) => i !== index));
+  const updateEmergencyContact = (index: number, field: string, value: string) => {
+    const updated = [...emergencyContacts];
+    // @ts-ignore
+    updated[index][field] = value;
+    setEmergencyContacts(updated);
+  };
+
+ // NEW: Document Handlers
+  const addDocument = () => setDocuments([...documents, { type: "Document", title: "", file: null }]);
+  const removeDocument = (index: number) => setDocuments(documents.filter((_, i) => i !== index));
+  
+  const updateDocument = (index: number, field: string, value: string) => {
+    const updated = [...documents];
+    // @ts-ignore
+    updated[index][field] = value;
+    setDocuments(updated);
+  };
+
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
@@ -346,48 +394,146 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
              {step === 1 && (
                 <div className="animate-slide-up space-y-4">
                    <Accordion title="Basic Information" defaultOpen={true}>
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                           <SelectInput label="Title" options={["Mr.", "Mrs.", "Ms.", "Miss", "Dr."]} />
                           <InputField label="First Name*" placeholder="Jane" />
                           <InputField label="Middle Name" placeholder="Marie" />
                           <InputField label="Last Name*" placeholder="Doe" />
-                          <SelectInput label="Suffix" options={["Jr.", "Sr.", "II", "III"]} />
+                         
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                         <SelectInput label="Suffix" options={["Jr.", "Sr.", "II", "III"]} />
                           <SelectInput label="Gender*" options={["Male", "Female", "Other"]} />
                           <DateInput label="Date of Birth*" />
                           <SelectInput label="Marital Status" options={["Single", "Married", "Divorced"]} />
-                          <InputField label="SSN* (Masked)" placeholder="XXX-XX-XXXX" />
+                         
                       </div>
-                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                         <InputField label="SSN* (Masked)" placeholder="XXX-XX-XXXX" />
                            <SelectInput label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                           <SelectInput label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                           <SelectInput label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+                           <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                           <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
                       </div>
                    </Accordion>
-                   <Accordion title="Contact Information">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                          <InputField label="Mobile Phone*" placeholder="(555) 000-0000" />
-                          <InputField label="Home Phone" placeholder="(555) 000-0000" />
-                          <InputField label="Email*" placeholder="email@example.com" type="email" />
+               
+      {/* 2. PHONE NUMBERS (Collapsed by default) */}
+      <Accordion title="Phone Numbers">
+         <div className="flex justify-end mb-2">
+            <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
+         </div>
+         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            {phones.map((phone, index) => (
+               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                  <div className="col-span-2">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
+                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
+                        <option>Cell</option><option>Home</option><option>Work</option>
+                     </select>
+                  </div>
+                  <div className="col-span-3">
+                     <InputField label="Number" placeholder="+1 (555) 000-0000" />
+                  </div>
+                  <div className="col-span-5">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
+                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
+                  </div>
+                  <div className="col-span-2 flex justify-end gap-2 pb-1">
+                     {phones.length > 1 && (
+                        <button onClick={() => removePhone(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                     )}
+                  </div>
+               </div>
+            ))}
+         </div>
+      </Accordion>
+
+      {/* 3. EMAIL ADDRESSES (Collapsed by default) */}
+      <Accordion title="Email Addresses">
+         <div className="flex justify-end mb-2">
+            <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
+         </div>
+         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+            {emails.map((email, index) => (
+               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                  <div className="col-span-2">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
+                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
+                        <option>Work</option><option>Personal</option>
+                     </select>
+                  </div>
+                  <div className="col-span-3">
+                     <InputField label="Email" placeholder="example@mail.com" />
+                  </div>
+                  <div className="col-span-5">
+                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
+                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
+                  </div>
+                  <div className="col-span-2 flex justify-end gap-2 pb-1">
+                     {emails.length > 1 && (
+                        <button onClick={() => removeEmail(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                     )}
+                  </div>
+               </div>
+            ))}
+         </div>
+      </Accordion>
+
+      {/* 4. EMERGENCY CONTACTS (NEW SECTION) */}
+                   <Accordion title="Emergency Contacts">
+                      <div className="flex justify-end mb-2">
+                         <button onClick={addEmergencyContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <InputField label="Street Address 1*" placeholder="123 Main St" />
-                          <InputField label="Street Address 2" placeholder="Apt, Suite" />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <InputField label="City*" placeholder="Enter City" />
-                          <SelectInput label="State*" options={["CA", "NY", "TX", "FL"]} />
-                          <InputField label="Zip Code*" placeholder="12345" />
-                          <SelectInput label="County" options={["County A", "County B"]} />
-                      </div>
-                   </Accordion>
-                   <Accordion title="Emergency Contact">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <InputField label="Contact Name*" placeholder="Full Name" />
-                          <SelectInput label="Relationship*" options={["Spouse", "Parent", "Child", "Friend"]} />
-                          <InputField label="Phone Number*" placeholder="(555) 000-0000" />
-                          <InputField label="Email" placeholder="contact@example.com" />
+                      <div className="space-y-4">
+                         {emergencyContacts.map((contact, index) => (
+                            <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
+                               {emergencyContacts.length > 1 && (
+                                  <button 
+                                    onClick={() => removeEmergencyContact(index)} 
+                                    className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
+                                    title="Remove Contact"
+                                  >
+                                     <i className="fa-regular fa-trash-can"></i>
+                                  </button>
+                               )}
+                               
+                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                  <InputField 
+                                    label="Full Name*" 
+                                    placeholder="Enter full name" 
+                                    value={contact.name}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'name', e.target.value)}
+                                  />
+                                  <InputField 
+                                    label="Relationship*" 
+                                    placeholder="e.g. Spouse, Parent" 
+                                    value={contact.relation}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'relation', e.target.value)}
+                                  />
+                               </div>
+                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                  <InputField 
+                                    label="Phone Number*" 
+                                    placeholder="+1 (555) 000-0000" 
+                                    value={contact.phone}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'phone', e.target.value)}
+                                  />
+                                  <InputField 
+                                    label="Email Address*" 
+                                    placeholder="example@mail.com" 
+                                    value={contact.email}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'email', e.target.value)}
+                                  />
+                               </div>
+                               <div>
+                                  <InputField 
+                                    label="Physical Address (Optional)" 
+                                    placeholder="Enter street address, city, state, zip" 
+                                    value={contact.address}
+                                    onChange={(e:any) => updateEmergencyContact(index, 'address', e.target.value)}
+                                  />
+                               </div>
+                            </div>
+                         ))}
                       </div>
                    </Accordion>
                 </div>
@@ -433,6 +579,28 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                           <InputField label="Payroll ID" placeholder="External ID" />
                       </div>
                    </Accordion>
+                               {/* 3. REFERRAL SOURCE (New Section) */}
+                   <Accordion title="Referral Source">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                         <SelectInput label="Referred By" options={["Another Agency", "Temporary Staffing Agency", "Employee Referral", "Online Ad", "Other"]} />
+                         <InputField label="Referral Date" type="date" />
+                         <InputField label="Notes" placeholder="Start Writing..." />
+                      </div>
+                   </Accordion>
+
+                   {/* 4. NOTES (New Section) */}
+                   <Accordion title="Notes">
+                      <div className="space-y-1">
+                         <label className="text-xs font-medium text-gray-700">Additional Notes</label>
+                         <textarea 
+                            maxLength={8000}
+                            className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9] placeholder:text-gray-400"
+                            placeholder="Type any necessary notes here..."
+                         ></textarea>
+                         <p className="text-[10px] text-gray-400 text-right">Max 8000 characters</p>
+                      </div>
+                   </Accordion>
+
                 </div>
              )}
 
@@ -450,6 +618,88 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                           <RadioGroup label="Account Status" name="accStatus" options={["Active", "Suspended"]} />
                       </div>
                    </Accordion>
+                     {/* 2. DOCUMENTS & CERTIFICATIONS (New Section) */}
+                     <Accordion title="Documents & Certifications">
+                        <div className="flex justify-end mb-2">
+                           <button onClick={addDocument} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Document</button>
+                        </div>
+ <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {documents.map((doc, index) => (
+                         <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative animate-fade-in group hover:border-[#0074D9] transition-colors">
+                            
+                            {/* Delete Button */}
+                            {documents.length > 1 && (
+                               <button 
+                                  onClick={() => removeDocument(index)}
+                                  className="absolute top-3 right-3 text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white shadow-sm z-10"
+                                  title="Remove Item"
+                               >
+                                  <i className="fa-regular fa-trash-can"></i>
+                               </button>
+                            )}
+
+                            <div className="space-y-3">
+                               {/* Row 1: Type & Title */}
+                               <div className="flex gap-3">
+                                  <div className="w-1/3">
+                                     <label className="text-xs font-medium text-gray-700 mb-1 block">Type</label>
+                                     <select 
+                                        className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9] bg-white cursor-pointer"
+                                        value={doc.type}
+                                        onChange={(e) => updateDocument(index, 'type', e.target.value)}
+                                     >
+                                        <option value="Document">Document</option>
+                                        <option value="Folder">Folder</option>
+                                     </select>
+                                  </div>
+                                  <div className="flex-1">
+                                     <label className="text-xs font-medium text-gray-700 mb-1 block">
+                                        {doc.type === 'Folder' ? 'Folder Name' : 'Document Title'}
+                                     </label>
+                                     <input 
+                                        type="text" 
+                                        placeholder={doc.type === 'Folder' ? "e.g. Medical Records" : "e.g. CPR Cert"} 
+                                        className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9] bg-white"
+                                        value={doc.title}
+                                        onChange={(e) => updateDocument(index, 'title', e.target.value)}
+                                     />
+                                  </div>
+                               </div>
+
+                               {/* Row 2: Upload Area (Visual changes based on type) */}
+                               <div className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition-colors h-32 ${doc.type === 'Folder' ? 'border-blue-200 bg-blue-50/30 hover:bg-blue-50' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
+                                  {doc.type === 'Folder' ? (
+                                     <>
+                                        <i className="fa-regular fa-folder-open text-3xl text-[#0074D9] mb-2"></i>
+                                        <p className="text-xs text-[#0074D9] font-medium text-center">Click to upload files to folder</p>
+                                        <p className="text-[10px] text-blue-400 mt-1">Supports multiple files</p>
+                                     </>
+                                  ) : (
+                                     <>
+                                        <i className="fa-solid fa-cloud-arrow-up text-2xl text-gray-400 mb-2 opacity-70"></i>
+                                        <p className="text-xs text-gray-600 text-center font-medium">Click to upload document</p>
+                                        <p className="text-[10px] text-gray-400 mt-1">PDF, JPG, PNG (Max 5MB)</p>
+                                     </>
+                                  )}
+                               </div>
+                            </div>
+                         </div>
+                      ))}
+                      
+                      {/* Add Button Placeholder Card */}
+                      <button 
+                        onClick={addDocument}
+                        className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center bg-gray-50/50 hover:bg-gray-50 hover:border-[#0074D9] transition-all min-h-[200px] text-gray-400 hover:text-[#0074D9]"
+                      >
+                         <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center mb-2">
+                            <i className="fa-solid fa-plus text-lg"></i>
+                         </div>
+                         <span className="text-sm font-medium">Add New Item</span>
+                      </button>
+                   </div>
+                        
+                       
+                   </Accordion>  
                    <Accordion title="Additional Notes">
                       <div className="space-y-1">
                          <label className="text-xs font-medium text-gray-700">Internal Notes</label>

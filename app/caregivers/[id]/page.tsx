@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function CaregiverProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState("General Info");
 
-  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Service Notes", "Certificates & Documents", "Contacts Address", "Reference"];
+  const tabs = ["General Info", "Schedule", "Clients", "Attendance", "Notes", "Certificates & Documents", "Contacts Address", "Reference"];
 
   return (
     <DashboardLayout>
@@ -95,7 +95,7 @@ function renderTabContent(tab: string) {
     case "Schedule": return <ScheduleTab />; 
     case "Clients": return <ClientsTab />; 
     case "Attendance": return <AttendanceTab />; 
-    case "Service Notes": return <NotesTab />;
+    case "Notes": return <NotesTab />;
     case "Certificates & Documents": return <CertificatesTab />;
     case "Contacts Address": return <ContactsTab />;
      case "Reference": return <ReferenceTab />;
