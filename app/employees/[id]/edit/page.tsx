@@ -4,38 +4,42 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
+import MultiSelectDropdown from "@/components/MultiSelectDropdown";
 
 // =========================================================================
-// HELPER COMPONENTS (With defaultValue support)
+// HELPER COMPONENTS
 // =========================================================================
 
 function Accordion({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white mb-4 shadow-sm animate-fade-in">
+    <div className={`border border-gray-200 rounded-xl bg-white mb-4 shadow-sm animate-fade-in ${isOpen ? 'overflow-visible' : 'overflow-hidden'}`}>
       <button 
         type="button"
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+        className={`w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left ${isOpen ? 'rounded-t-xl' : 'rounded-xl'}`}
       >
         <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
         <i className={`fa-solid fa-chevron-down text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
-      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
+      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100 overflow-visible' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
         {children}
       </div>
     </div>
   );
 }
 
-function InputField({ label, placeholder, type = "text", defaultValue, disabled }: any) {
+// Added value and onChange support for dynamic lists
+function InputField({ label, placeholder, type = "text", defaultValue, value, onChange, disabled }: any) {
   return (
     <div className="space-y-1 w-full">
       <label className="text-xs font-medium text-gray-700">{label}</label>
       <input 
         type={type} 
         placeholder={placeholder} 
-        defaultValue={defaultValue} 
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
         disabled={disabled}
         className={`w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9] ${disabled ? 'bg-gray-100 text-gray-500' : ''}`} 
       />
@@ -43,11 +47,17 @@ function InputField({ label, placeholder, type = "text", defaultValue, disabled 
   );
 }
 
-function SelectInput({ label, options, defaultValue }: any) {
+// Added value and onChange support for dynamic lists
+function SelectInput({ label, options, defaultValue, value, onChange }: any) {
   return (
     <div className="space-y-1 w-full">
       <label className="text-xs font-medium text-gray-700">{label}</label>
-      <select defaultValue={defaultValue} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-700 outline-none focus:border-[#0074D9]">
+      <select 
+        defaultValue={defaultValue} 
+        value={value}
+        onChange={onChange}
+        className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-700 outline-none focus:border-[#0074D9]"
+      >
         <option value="">Select</option>
         {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
       </select>
@@ -85,6 +95,29 @@ function RadioGroup({ label, options, name, defaultValue }: { label: string, opt
   );
 }
 
+// UploadBox component added to fix reference error in Step 3
+function UploadBox({ label, uploaded, fileName }: any) {
+  return (
+    <div className="space-y-1">
+      <label className="text-xs font-medium text-gray-700">{label}</label>
+      <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer relative">
+        {uploaded && fileName ? (
+            <>
+                <i className="fa-solid fa-file-pdf text-red-500 mb-1 text-xl"></i>
+                <span className="text-xs text-gray-800 font-medium">{fileName}</span>
+                <span className="text-[10px] text-gray-400">Click to replace</span>
+            </>
+        ) : (
+            <>
+                <i className="fa-solid fa-cloud-arrow-up text-gray-400 mb-1"></i>
+                <span className="text-xs text-gray-500">Click to upload</span>
+            </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function StepIndicator({ num, label, sub, current }: any) {
    const active = current >= num;
    return (
@@ -105,21 +138,45 @@ function StepIndicator({ num, label, sub, current }: any) {
 export default function EditEmployeePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const router = useRouter();
-  const params = useParams(); // Fetch ID from URL (e.g. /employees/123/edit)
+  const params = useParams(); 
   const [loading, setLoading] = useState(true);
 
-  // Simulate Fetching Data
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 500);
     return () => clearTimeout(timer);
   }, []);
 
   const handleSave = () => {
-    // Logic to update employee would go here
     router.push('/employees');
   };
 
- 
+  const [phones, setPhones] = useState([
+    { type: "Cell Phone", number: "(703) 981-7142", note: "Primary" },
+    { type: "Home Phone", number: "(703) 555-0199", note: "Evening only" }
+  ]);
+
+  const [emails, setEmails] = useState([
+    { type: "Personal", address: "nina.m@gmail.com", note: "Primary" },
+    { type: "Work", address: "nina@agency.com", note: "" }
+  ]);
+
+  const [emergencyContacts, setEmergencyContacts] = useState([
+    { name: "Daniel Choi", relation: "Son", phone: "(703) 981-7145", email: "daniel@gmail.com", address: "Same as above" }
+  ]);
+
+   // Dynamic Lists Handlers
+  const addPhone = () => setPhones([...phones, { type: "Cell Phone", number: "", note: "" }]);
+  const removePhone = (i: number) => setPhones(phones.filter((_, idx) => idx !== i));
+  const updatePhone = (i: number, field: string, val: string) => { const n = [...phones]; (n[i] as any)[field] = val; setPhones(n); };
+
+  const addEmail = () => setEmails([...emails, { type: "Work", address: "", note: "" }]);
+  const removeEmail = (i: number) => setEmails(emails.filter((_, idx) => idx !== i));
+  const updateEmail = (i: number, field: string, val: string) => { const n = [...emails]; (n[i] as any)[field] = val; setEmails(n); };
+
+  const addContact = () => setEmergencyContacts([...emergencyContacts, { name: "", relation: "", phone: "", email: "", address: "" }]);
+  const removeContact = (i: number) => setEmergencyContacts(emergencyContacts.filter((_, idx) => idx !== i));
+  const updateContact = (i: number, field: string, val: string) => { const n = [...emergencyContacts]; (n[i] as any)[field] = val; setEmergencyContacts(n); };
+
 
   return (
     <DashboardLayout>
@@ -160,58 +217,73 @@ export default function EditEmployeePage() {
                 {currentStep === 1 && (
                    <div className="animate-slide-up space-y-4">
                       
-                      {/* Section A */}
                       <Accordion title="Basic Information" defaultOpen={true}>
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <SelectInput label="Title" options={["Ms.", "Mrs.", "Mr.", "Dr."]} defaultValue="Ms." />
                             <InputField label="First Name*" defaultValue="Olivia" />
                             <InputField label="Middle Name" defaultValue="Grace" />
                             <InputField label="Last Name*" defaultValue="Thompson" />
-                           
                          </div>
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <SelectInput label="Suffix" options={["None", "Jr.", "Sr."]} defaultValue="None" />
                             <SelectInput label="Gender*" options={["Female", "Male", "Other"]} defaultValue="Female" />
                             <DateInput label="Date of Birth*" defaultValue="1990-05-15" />
                             <SelectInput label="Marital Status" options={["Single", "Married", "Divorced"]} defaultValue="Single" />
-                           
                          </div>
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             <InputField label="SSN* (Masked)" defaultValue="***-**-1234" disabled />
-                             <SelectInput label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+                             <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
                              <SelectInput label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                             <SelectInput label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                             <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
                          </div>
                       </Accordion>
 
-                      {/* Section B */}
-                      <Accordion title="Contact Information">
-                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                            <InputField label="Mobile Phone*" defaultValue="(202) 555-0101" />
-                            <InputField label="Home Phone" />
-                            <InputField label="Personal Email*" defaultValue="olivia.thompson@email.com" type="email" />
-                         </div>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <InputField label="Street Address 1*" defaultValue="789 Pine Road" />
-                            <InputField label="Street Address 2" defaultValue="Apt 202" />
-                         </div>
-                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <InputField label="City*" defaultValue="Alexandria" />
-                            <SelectInput label="State*" options={["VA", "MD", "DC"]} defaultValue="VA" />
-                            <InputField label="Zip Code*" defaultValue="22314" />
-                            <SelectInput label="County" options={["Fairfax", "Arlington"]} defaultValue="Fairfax" />
-                         </div>
-                      </Accordion>
+                      <Accordion title="Phone Numbers">
+                          <div className="flex justify-end mb-2"><button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button></div>
+                          <div className="space-y-3">
+                             {phones.map((p, i) => (
+                                <div key={i} className="grid grid-cols-12 gap-4 items-end border-b border-gray-100 pb-3">
+                                   <div className="col-span-2"><SelectInput label="Type" value={p.type} options={["Cell Phone", "Home Phone", "Work Phone"]} onChange={(e:any)=>updatePhone(i, 'type', e.target.value)} /></div>
+                                   <div className="col-span-3"><InputField label="Number" value={p.number} onChange={(e:any)=>updatePhone(i, 'number', e.target.value)} /></div>
+                                   <div className="col-span-5"><InputField label="Note" value={p.note} onChange={(e:any)=>updatePhone(i, 'note', e.target.value)} /></div>
+                                   <div className="col-span-2 flex justify-end pb-1">{phones.length > 1 && <button onClick={()=>removePhone(i)} className="text-red-500 hover:bg-red-50 p-2 rounded"><i className="fa-regular fa-trash-can"></i></button>}</div>
+                                </div>
+                             ))}
+                          </div>
+                       </Accordion>
 
-                      {/* Section C */}
-                      <Accordion title="Emergency Contact">
-                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <InputField label="Contact Name*" defaultValue="Mark Thompson" />
-                            <SelectInput label="Relationship*" options={["Parent", "Spouse", "Sibling"]} defaultValue="Parent" />
-                            <InputField label="Phone Number*" defaultValue="(202) 555-9999" />
-                            <InputField label="Email (Optional)" />
-                         </div>
-                      </Accordion>
+                       <Accordion title="Email Addresses">
+                          <div className="flex justify-end mb-2"><button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button></div>
+                          <div className="space-y-3">
+                             {emails.map((e, i) => (
+                                <div key={i} className="grid grid-cols-12 gap-4 items-end border-b border-gray-100 pb-3">
+                                   <div className="col-span-2"><SelectInput label="Type" value={e.type} options={["Personal", "Work"]} onChange={(e:any)=>updateEmail(i, 'type', e.target.value)} /></div>
+                                   <div className="col-span-3"><InputField label="Email" value={e.address} onChange={(e:any)=>updateEmail(i, 'address', e.target.value)} /></div>
+                                   <div className="col-span-5"><InputField label="Note" value={e.note} onChange={(e:any)=>updateEmail(i, 'note', e.target.value)} /></div>
+                                   <div className="col-span-2 flex justify-end pb-1">{emails.length > 1 && <button onClick={()=>removeEmail(i)} className="text-red-500 hover:bg-red-50 p-2 rounded"><i className="fa-regular fa-trash-can"></i></button>}</div>
+                                </div>
+                             ))}
+                          </div>
+                       </Accordion>
+
+                       <Accordion title="Emergency Contacts">
+                          <div className="flex justify-end mb-2"><button onClick={addContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button></div>
+                          <div className="space-y-4">
+                             {emergencyContacts.map((c, i) => (
+                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative">
+                                   {emergencyContacts.length > 1 && <button onClick={()=>removeContact(i)} className="absolute top-2 right-2 text-red-400 hover:text-red-600"><i className="fa-regular fa-trash-can"></i></button>}
+                                   <div className="grid grid-cols-2 gap-4 mb-2">
+                                      <InputField label="Name" value={c.name} onChange={(e:any)=>updateContact(i, 'name', e.target.value)} />
+                                      <InputField label="Relationship" value={c.relation} onChange={(e:any)=>updateContact(i, 'relation', e.target.value)} />
+                                   </div>
+                                   <div className="grid grid-cols-2 gap-4">
+                                      <InputField label="Phone" value={c.phone} onChange={(e:any)=>updateContact(i, 'phone', e.target.value)} />
+                                      <InputField label="Email" value={c.email} onChange={(e:any)=>updateContact(i, 'email', e.target.value)} />
+                                   </div>
+                                </div>
+                             ))}
+                          </div>
+                       </Accordion>
                    </div>
                 )}
 
@@ -219,7 +291,6 @@ export default function EditEmployeePage() {
                 {currentStep === 2 && (
                    <div className="animate-slide-up space-y-4">
                       
-                      {/* Section A */}
                       <Accordion title="Role & Department" defaultOpen={true}>
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <InputField label="Employee ID*" defaultValue="CN-10001" disabled />
@@ -235,7 +306,6 @@ export default function EditEmployeePage() {
                          </div>
                       </Accordion>
 
-                      {/* Section B */}
                       <Accordion title="Dates & Schedule">
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <DateInput label="Hire Date*" defaultValue="2023-02-01" />
@@ -252,7 +322,6 @@ export default function EditEmployeePage() {
                          </div>
                       </Accordion>
 
-                      {/* Section C */}
                       <Accordion title="Compensation">
                          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             <SelectInput label="Pay Type" options={["Hourly", "Salary"]} defaultValue="Hourly" />
@@ -261,6 +330,26 @@ export default function EditEmployeePage() {
                             <InputField label="Payroll ID" defaultValue="PR-998877" />
                          </div>
                       </Accordion>
+
+                      <Accordion title="Referral Source">
+                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                             <SelectInput label="Referred By" options={["Employee Referral", "Agency", "Ad"]} defaultValue="Agency" />   
+                             <InputField label="Referral Date" type="date" defaultValue="2023-01-10" />
+                             <InputField label="Notes" defaultValue="Referred via external recruiter." />
+                         </div>
+                      </Accordion>
+
+                      <Accordion title="Notes">
+                         <div className="space-y-1">
+                             <label className="text-xs font-medium text-gray-700">Additional Notes</label>
+                             <textarea 
+                                maxLength={8000}
+                                className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9]"
+                                defaultValue="Excellent performance during probationary period."
+                             ></textarea>
+                         </div>
+                      </Accordion>
+
                    </div>
                 )}
 
@@ -268,7 +357,6 @@ export default function EditEmployeePage() {
                 {currentStep === 3 && (
                    <div className="animate-slide-up space-y-4">
                       
-                      {/* Section A */}
                       <Accordion title="System Access" defaultOpen={true}>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             <InputField label="System Username / Email*" defaultValue="olivia.thompson@agency.com" disabled />
@@ -281,7 +369,17 @@ export default function EditEmployeePage() {
                          </div>
                       </Accordion>
 
-                      {/* Section B */}
+                      <Accordion title="Document & Certification">
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <UploadBox label="Upload CV" uploaded={true} fileName="Nina_CV.pdf" />
+                            <UploadBox label="Police Check" uploaded={true} fileName="Police_Check_2024.pdf" />
+                         </div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <UploadBox label="First Aid Certificate" />
+                            <UploadBox label="COVID-19 Vaccination" uploaded={true} fileName="Vax_Cert.pdf" />
+                         </div>
+                      </Accordion>
+
                       <Accordion title="Additional Notes">
                          <div className="space-y-1">
                             <label className="text-xs font-medium text-gray-700">Internal Notes</label>
