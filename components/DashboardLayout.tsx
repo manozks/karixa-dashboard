@@ -10,9 +10,12 @@ export default function DashboardLayout({
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isBillingOpen, setIsBillingOpen] = useState(false);
   
-  // New State for Notification Dropdown
+  // Dropdown States
+  const [isBillingOpen, setIsBillingOpen] = useState(false);
+  const [isStaffOpen, setIsStaffOpen] = useState(false); // New Staff State
+  
+  // Notification Dropdown
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
@@ -22,6 +25,15 @@ export default function DashboardLayout({
     { id: 2, title: "Report Generated", message: "Monthly attendance report is ready.", time: "1 hour ago", read: false },
     { id: 3, title: "System Update", message: "System maintenance scheduled for tonight.", time: "5 hours ago", read: true },
   ];
+
+  const pathname = usePathname();
+
+  // Auto-open Staff menu if we are on a staff-related page
+  useEffect(() => {
+    if (pathname.includes('/employees') || pathname.includes('/caregivers')) {
+      setIsStaffOpen(true);
+    }
+  }, [pathname]);
 
   // Toggle Mobile Drawer
   const toggleMobileSidebar = () => {
@@ -34,8 +46,9 @@ export default function DashboardLayout({
       expandSidebar();
     } else {
       setIsCollapsed(true);
-      // Close submenu when collapsing
+      // Close all submenus when collapsing
       setIsBillingOpen(false); 
+      setIsStaffOpen(false);
     }
   };
 
@@ -47,25 +60,31 @@ export default function DashboardLayout({
   const toggleBillingMenu = () => {
     if (isCollapsed) {
       expandSidebar();
-      // Small delay to allow expansion animation before showing menu
       setTimeout(() => setIsBillingOpen(true), 150);
     } else {
       setIsBillingOpen(!isBillingOpen);
     }
   };
 
-  const pathname = usePathname();
+  // Toggle Submenu (Staff)
+  const toggleStaffMenu = () => {
+    if (isCollapsed) {
+      expandSidebar();
+      setTimeout(() => setIsStaffOpen(true), 150);
+    } else {
+      setIsStaffOpen(!isStaffOpen);
+    }
+  };
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      // Close User Dropdown
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
-      // Close Notification Dropdown
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setIsNotificationOpen(false);
       }
@@ -100,12 +119,9 @@ export default function DashboardLayout({
             isCollapsed ? "justify-center px-0" : "px-6"
           }`}
         >
-          {/* OPTION 1: Show Icon ONLY when collapsed (Mini Mode) */}
           {isCollapsed && (
             <i className="fa-solid fa-k text-2xl font-bold"></i>
           )}
-
-          {/* OPTION 2: Show Text ONLY when expanded (Full Mode) */}
           {!isCollapsed && (
             <span className="tracking-wide opacity-100 transition-opacity duration-300 band-logo">
               <img src="/images/logo.png" alt="Karixa" className="" />
@@ -114,14 +130,15 @@ export default function DashboardLayout({
         </Link>
 
         {/* Scrollable Nav */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-1 overflow-x-hidden no-scrollbar pl-2">
+        <div className="flex-1 overflow-y-auto py-4 space-y-1 overflow-x-hidden no-scrollbar pl-2 pr-2">
+          
           {/* Dashboard Link */}
           <Link 
             href="/" title='Dashboard' 
-            className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+            className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/" 
-                ? "bg-[#0085C9] border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-[#0085C9] hover:text-white border border-[transparent] rounded-lg" // Inactive Style
+                ? "bg-[#0085C9] border border-[#00629B] text-white rounded-lg" 
+                : "text-blue-100 hover:bg-[#0085C9] hover:text-white border border-[transparent] rounded-lg"
             }`}
           >
             <i className="fa-solid fa-table-columns w-6 text-center text-lg"></i>
@@ -130,10 +147,10 @@ export default function DashboardLayout({
 
           {/* Notification Link */}
           <Link href="/notification" title='Notification'
-            className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+            className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/notification" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}
           >
             <i className="fa-regular fa-bell w-6 text-center text-lg"></i>
@@ -141,76 +158,105 @@ export default function DashboardLayout({
           </Link>
 
           {/* Message */}
-          <Link href="/message" title='Message' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+          <Link href="/message" title='Message' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/message" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
             <i className="fa-regular fa-message w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Message</span>}
           </Link>
 
           {/* Group Label */}
-          {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-6 truncate">Manage</div>}
+          {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-4 truncate">Manage</div>}
 
           {/* Client */}
-          <Link href="/clients" title='Clients' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/clients" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+          <Link href="/clients" title='Clients' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname.includes("/clients")
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
             <i className="fa-regular fa-user w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Clients</span>}
           </Link>
 
-          {/* Employees */}
-          <Link href="/employees" title='Employees' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/employees" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>
-            <i className="fa-solid fa-briefcase w-6 text-center text-lg"></i>
-            {!isCollapsed && <span className="ml-3 whitespace-nowrap">Employees</span>}
-          </Link>
+          {/* ========================================================= */}
+          {/* NEW STAFF DROPDOWN (Employees & Caregivers) */}
+          {/* ========================================================= */}
+          <div className="relative">
+            <button 
+              onClick={toggleStaffMenu}
+              className={`w-full flex items-center rounded-lg px-4 py-3 outline-none transition-all group focus:outline-none ${isCollapsed ? "justify-center" : ""} ${
+                pathname.includes('/employees') || pathname.includes('/caregivers')
+                  ? "bg-white/10 text-white" 
+                  : "text-blue-100 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              <i className="fa-solid fa-users w-6 text-center text-lg"></i>
+              {!isCollapsed && (
+                <>
+                  <span className="ml-3 whitespace-nowrap font-medium">Staff</span>
+                  <i className={`fa-solid fa-chevron-down ml-auto text-xs opacity-70 transition-transform duration-300 ${isStaffOpen ? "rotate-180" : ""}`}></i>
+                </>
+              )}
+            </button>
 
-          {/* Caregiver */}
-          <Link href="/caregivers" title='Caregiver' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/caregivers" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>
-            <i className="fa-solid fa-user-nurse w-6 text-center text-lg"></i>
-            {!isCollapsed && <span className="ml-3 whitespace-nowrap">Caregiver</span>}
-          </Link>
+            {/* Staff Submenu */}
+            {!isCollapsed && (
+              <div className={`bg-transparent transition-all duration-300 overflow-hidden ${isStaffOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
+                <Link 
+                  href="/employees" 
+                  title="Employees" 
+                  className={`flex items-center py-2.5 pl-12 pr-4 transition-all rounded-lg mt-1 ${
+                    pathname.includes("/employees") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
+                  <span className="whitespace-nowrap">Employees</span>
+                </Link>
+                <Link 
+                  href="/caregivers" 
+                  title="Caregivers" 
+                  className={`flex items-center py-2.5 pl-12 pr-4 transition-all rounded-lg mt-1 ${
+                    pathname.includes("/caregivers") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
+                  <span className="whitespace-nowrap">Caregivers</span>
+                </Link>
+              </div>
+            )}
+          </div>
+          {/* ========================================================= */}
 
           {/* Schedule */}
-          <Link href="/schedule" title='Schedule' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+          <Link href="/schedule" title='Schedule' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/schedule" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
             <i className="fa-regular fa-calendar w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Schedule</span>}
           </Link>
 
           {/* Attendance */}
-          <Link href="/attendance" title='Attendance' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+          <Link href="/attendance" title='Attendance' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/attendance" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
             <i className="fa-solid fa-clipboard-user w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Attendance</span>}
           </Link>
 
           {/* Group Label */}
-          {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-6 truncate">Data Analysis</div>}
+          {!isCollapsed && <div className="pt-4 pb-2 text-xs font-semibold text-blue-200 uppercase tracking-wider px-4 truncate">Data Analysis</div>}
 
           {/* Billing / Payroll Dropdown */}
           <div className="relative">
             <button 
               onClick={toggleBillingMenu}
-              className={`w-full flex items-center rounded-lg px-6 py-3 bottom-0 outline-none text-blue-100 hover:text-white transition-all group focus:outline-none ${isCollapsed ? "justify-center" : ""}`}
+              className={`w-full flex items-center rounded-lg px-4 py-3 outline-none text-blue-100 hover:text-white hover:bg-white/10 transition-all group focus:outline-none ${isCollapsed ? "justify-center" : ""}`}
             >
               <i className="fa-solid fa-file-invoice-dollar w-6 text-center text-lg"></i>
               {!isCollapsed && (
@@ -220,80 +266,26 @@ export default function DashboardLayout({
                 </>
               )}
             </button>
-
-            {/* Submenu */}
-          {/*   {!isCollapsed && (
-              <div className={`bg-transparent transition-all duration-300 overflow-hidden ${isBillingOpen ? "max-h-260" : "max-h-0"}`}>
-                
-                <Link href="/billing" title='Billing' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">Billing</span>}
-          </Link>
-                <Link href="/billing/private" title='Private Pay Billing' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing/private" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">Private Pay Billing</span>}
-          </Link>
-                <Link href="/billing/claim-report" title='Claim Report' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing/claim-report" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">Claim Report</span>}
-          </Link>
-                  <Link href="/billing/evv" title='EVV' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing/evv" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">EVV</span>}
-          </Link>
-
-          <Link href="/billing/denial-analysis" title='Denial Analysis Report' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing/denial-analysis" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">Denial Analysis Report</span>}
-          </Link>
-                
-                  <Link href="/billing/invoice" title='Invoice' className={`flex items-center px-6 py-2 pl-10 mx-5 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "/billing/invoice" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
-            }`}>          
-            {!isCollapsed && <span className="ml-0 whitespace-nowrap">Invoice</span>}
-          </Link>
-                  <a href="#" className="flex items-center px-6 py-2 pl-14 text-sm text-blue-100 hover:text-white hover:bg-white/5 transition-all">
-                    <span className="opacity-90">Pay Roll Statement</span>
-                  </a>
-                </div>
-            )} */}
+            {/* Submenu (Commented out in original but ready for use) */}
           </div>
 
           {/* Reports */}
-          <Link href="#/reports" title='Reports' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
-              pathname === "#" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+          <Link href="#/reports" title='Reports' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname === "#/reports" 
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
             <i className="fa-regular fa-file-lines w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Reports</span>}
           </Link>
       
-
-            {/* User Role */}
-          <Link href="/user-role" title='User Role' className={`flex items-center px-6 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+          {/* User Role */}
+          <Link href="/user-role" title='User Role' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
               pathname === "/user-role" 
-                ? "bg-white/10 border border-[#00629B] text-white rounded-lg" // Active Style
-                : "text-blue-100 hover:bg-white/10 hover:text-white border-r-2 border-transparent rounded-lg" // Inactive Style
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
             }`}>
-            <i className="fa-regular fa-file-lines w-6 text-center text-lg"></i>
+            <i className="fa-regular fa-id-badge w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">User Role</span>}
           </Link>
         </div>
@@ -362,7 +354,6 @@ export default function DashboardLayout({
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      
       <div className="flex-1 flex flex-col h-screen overflow-hidden relative w-full bg-[#0074D9] p-2 ">
         {/* Header */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0 rounded-t-lg relative z-40">
@@ -371,7 +362,6 @@ export default function DashboardLayout({
             {/* Toggle Button */}
             <button
               onClick={() => {
-                // Check if mobile via width (or just toggle both logic, standard Tailwind handles visibility)
                 if (window.innerWidth < 768) {
                   toggleMobileSidebar();
                 } else {
@@ -431,7 +421,7 @@ export default function DashboardLayout({
               )}
             </div>
 
-            <img src="/images/manoj.jpg" alt="Profile" className="h-8 w-8 rounded-full md:hidden" />
+            <img src="/images/manoj.jpg" alt="Profile" className="h-8 w-8 rounded-full md:hidden object-cover" />
           </div>
         </header>
 

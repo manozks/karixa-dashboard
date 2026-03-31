@@ -313,13 +313,13 @@ export default function EditEmployeePage() {
                             <DateInput label="Review Date" defaultValue="2024-02-05" />
                             <DateInput label="Termination Date" />
                          </div>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/*      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="flex gap-4">
                                <InputField label="Shift Start" type="time" defaultValue="08:30" />
                                <InputField label="Shift End" type="time" defaultValue="19:00" />
                             </div>
                             <SelectInput label="Time Zone" options={["EST", "CST", "PST"]} defaultValue="EST" />
-                         </div>
+                         </div> */}
                       </Accordion>
 
                       <Accordion title="Compensation">

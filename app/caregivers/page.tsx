@@ -1,25 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import Link from "next/link";
 import MultiSelectSkills from "@/components/MultiSelect";
-import MultiSelectDropdown from "@/components/MultiSelectDropdown";
+// import MultiSelectDropdown from "@/components/MultiSelectDropdown"; // Using the internal one now
 
 export default function CaregiverPage() {
   const [showAddModal, setShowAddModal] = useState(false);
 
-  
-
-    // --- NEW: Sorting State ---
+  // --- NEW: Sorting State ---
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   
   // SMS Modal State
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [selectedCaregiver, setSelectedCaregiver] = useState<{name: string, phone: string} | null>(null);
-
-
 
   // Email Modal State (NEW)
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -46,14 +42,11 @@ export default function CaregiverPage() {
   const sortedCaregivers = [...caregivers].sort((a: any, b: any) => {
     if (!sortConfig) return 0;
     const { key, direction } = sortConfig;
-    
-    // Handle nested or special sorts if needed, otherwise string compare
     if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
     if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
     return 0;
   });
 
-  // Updated Helper: Removed 'ml-1' as flex gap handles it now
   const getSortIcon = (key: string) => {
     if (sortConfig?.key !== key) return <i className="fa-solid fa-sort text-gray-300"></i>;
     return sortConfig.direction === 'asc' 
@@ -66,40 +59,25 @@ export default function CaregiverPage() {
     setShowSmsModal(true);
   };
 
-  // Handle Email Icon Click
   const handleEmailClick = (cg: any) => {
     setSelectedEmailCaregiver({ name: cg.name, email: cg.email });
     setShowEmailModal(true);
   };
 
-  // --- 1. NEW: CHECKBOX STATE ---
+  // --- 1. CHECKBOX STATE ---
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  // ... (Keep existing Mock Data & Sorting Logic) ...
-
-  // --- 2. NEW: CHECKBOX HANDLERS ---
-  
-  // Toggle All
+  // --- 2. CHECKBOX HANDLERS ---
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      // Select all visible (sorted) caregivers
-      setSelectedIds(sortedCaregivers.map(cg => cg.id));
-    } else {
-      // Deselect all
-      setSelectedIds([]);
-    }
+    if (e.target.checked) setSelectedIds(sortedCaregivers.map(cg => cg.id));
+    else setSelectedIds([]);
   };
 
-  // Toggle Single Row
   const handleSelectRow = (id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter(i => i !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
+    if (selectedIds.includes(id)) setSelectedIds(selectedIds.filter(i => i !== id));
+    else setSelectedIds([...selectedIds, id]);
   };
 
-  // Check if all are selected
   const isAllSelected = sortedCaregivers.length > 0 && selectedIds.length === sortedCaregivers.length;
 
   return (
@@ -121,7 +99,7 @@ export default function CaregiverPage() {
                <input 
                  type="text" 
                  placeholder="Search..." 
-                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand w-40"
+                 className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#0074D9] w-40"
                />
             </div>
 
@@ -150,7 +128,6 @@ export default function CaregiverPage() {
                <table className="w-full text-left text-sm">
                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-100">
                     <tr>
-                     {/* --- NEW: MASTER CHECKBOX HEADER --- */}
                        <th className="p-4 w-10">
                           <input 
                              type="checkbox" 
@@ -159,7 +136,6 @@ export default function CaregiverPage() {
                              onChange={handleSelectAll}
                           />
                        </th>
-                       {/* ----------------------------------- */}
                        <th className="p-3 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('id')}>
                           <div className="flex items-center gap-2">SNO {getSortIcon('id')}</div>
                        </th>
@@ -194,7 +170,6 @@ export default function CaregiverPage() {
                           key={cg.id} 
                           className={`transition-colors group relative z-0 hover:z-20 ${selectedIds.includes(cg.id) ? 'bg-blue-50/30' : 'hover:bg-gray-50/50'}`}
                        >
-                          {/* --- NEW: ROW CHECKBOX --- */}
                           <td className="p-4">
                              <input 
                                 type="checkbox" 
@@ -203,7 +178,6 @@ export default function CaregiverPage() {
                                 onChange={() => handleSelectRow(cg.id)}
                              />
                           </td>
-                          {/* ------------------------- */}
 
                           <td className="p-4 text-gray-500">{i + 1}</td>
                           <td className="p-4">
@@ -239,65 +213,58 @@ export default function CaregiverPage() {
                           <td className="p-4 text-gray-600">{cg.zone}</td>
                           <td className="p-4"><Link href={`/caregivers/${cg.id}`} className="text-gray-600 text-xs hover:text-[#0074D9] hover:underline">{cg.nextShift}</Link></td>
                           <td className="p-4"><span className="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">{cg.status}</span></td>
-                         {/* Actions */}
-<td className="p-4 text-right overflow-visible">
-   <div className="flex justify-end gap-2">
-      
-      {/* 1. View Profile */}
-      <Link href={`/caregivers/${cg.id}`}>
-         {/* 'group/tooltip' isolates the hover to this button only */}
-         <button className="relative group/tooltip w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-100 transition-colors">
-            <i className="fa-regular fa-eye text-xs"></i>
-            {/* Tooltip: 'group-hover/tooltip:block' ensures it only shows when THIS button is hovered */}
-            <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
-               Caregiver's Profile
-               {/* Arrow */}
-               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-            </div>
-         </button>
-      </Link>
+                          
+                          {/* Actions */}
+                          <td className="p-4 text-right overflow-visible">
+                             <div className="flex justify-end gap-2">
+                                {/* 1. View Profile */}
+                                <Link href={`/caregivers/${cg.id}`}>
+                                   <button className="relative group/tooltip w-7 h-7 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center hover:bg-blue-100 transition-colors">
+                                      <i className="fa-regular fa-eye text-xs"></i>
+                                      <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+                                         Caregiver's Profile
+                                         <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                      </div>
+                                   </button>
+                                </Link>
 
-      {/* 2. Send Email */}
-      <button 
-         onClick={() => handleEmailClick(cg)} 
-         className="relative group/tooltip w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors"
-      >
-         <i className="fa-regular fa-envelope text-xs"></i>
-         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
-            Send Email
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-         </div>
-      </button>
+                                {/* 2. Send Email */}
+                                <button onClick={() => handleEmailClick(cg)} className="relative group/tooltip w-7 h-7 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center hover:bg-[#0074D9] hover:text-white transition-colors">
+                                   <i className="fa-regular fa-envelope text-xs"></i>
+                                   <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+                                      Send Email
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                   </div>
+                                </button>
 
-      {/* 3. View Schedule */}
-      <button className="relative group/tooltip w-7 h-7 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center hover:bg-yellow-100 transition-colors">
-         <i className="fa-regular fa-calendar text-xs"></i>
-         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
-            View Schedule
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-         </div>
-      </button>
+                                {/* 3. View Schedule */}
+                                <button className="relative group/tooltip w-7 h-7 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center hover:bg-yellow-100 transition-colors">
+                                   <i className="fa-regular fa-calendar text-xs"></i>
+                                   <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+                                      View Schedule
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                   </div>
+                                </button>
 
-      {/* 4. Pay Rates */}
-      <button className="relative group/tooltip w-7 h-7 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 transition-colors">
-         <i className="fa-solid fa-dollar-sign text-xs"></i>
-         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
-            View Pay Rates
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-         </div>
-      </button>
+                                {/* 4. Pay Rates */}
+                                <button className="relative group/tooltip w-7 h-7 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 transition-colors">
+                                   <i className="fa-solid fa-dollar-sign text-xs"></i>
+                                   <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+                                      View Pay Rates
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                   </div>
+                                </button>
 
-      {/* 5. Delete */}
-      <button className="relative group/tooltip w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
-         <i className="fa-regular fa-trash-can text-xs"></i>
-         <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
-            Delete Caregiver
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-         </div>
-      </button>
-
-   </div>
-</td>
+                                {/* 5. Delete */}
+                                <button className="relative group/tooltip w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                                   <i className="fa-regular fa-trash-can text-xs"></i>
+                                   <div className="absolute bottom-full right-1/2 translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-max px-2 py-1 bg-gray-800 text-white text-[10px] rounded shadow-lg z-50 whitespace-nowrap font-normal">
+                                      Delete Caregiver
+                                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                                   </div>
+                                </button>
+                             </div>
+                          </td>
                        </tr>
                     ))}
                  </tbody>
@@ -305,27 +272,19 @@ export default function CaregiverPage() {
            </div>
            <div className="p-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
               <span>Showing 1 to 10 of 1000 Results</span>
-              <div className="flex gap-2"><button className="flex items-center gap-1 hover:text-brand">Previous</button><button className="flex items-center gap-1 text-brand font-medium">Next</button></div>
+              <div className="flex gap-2"><button className="flex items-center gap-1 hover:text-[#0074D9]">Previous</button><button className="flex items-center gap-1 text-[#0074D9] font-medium">Next</button></div>
            </div>
         </div>
 
         {/* --- Modals --- */}
         {showAddModal && <AddCaregiverModal onClose={() => setShowAddModal(false)} />}
         
-        {/* SMS Modal */}
         {showSmsModal && selectedCaregiver && (
-           <SmsModal 
-              recipient={selectedCaregiver} 
-              onClose={() => setShowSmsModal(false)} 
-           />
+           <SmsModal recipient={selectedCaregiver} onClose={() => setShowSmsModal(false)} />
         )}
 
-        {/* NEW: Email Modal */}
         {showEmailModal && selectedEmailCaregiver && (
-           <EmailModal 
-              recipient={selectedEmailCaregiver} 
-              onClose={() => setShowEmailModal(false)} 
-           />
+           <EmailModal recipient={selectedEmailCaregiver} onClose={() => setShowEmailModal(false)} />
         )}
 
       </div>
@@ -334,7 +293,7 @@ export default function CaregiverPage() {
 }
 
 // =========================================================================
-// NEW: EMAIL MODAL
+// EMAIL MODAL
 // =========================================================================
 function EmailModal({ recipient, onClose }: { recipient: { name: string, email: string }, onClose: () => void }) {
   const [mounted, setMounted] = useState(false);
@@ -344,8 +303,6 @@ function EmailModal({ recipient, onClose }: { recipient: { name: string, email: 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
        <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col animate-scale-up relative">
-          
-          {/* Header */}
           <div className="flex justify-between items-center p-5 border-b border-gray-100">
              <div>
                 <h2 className="text-lg font-bold text-gray-800">Send Email</h2>
@@ -353,38 +310,26 @@ function EmailModal({ recipient, onClose }: { recipient: { name: string, email: 
              </div>
              <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 transition-colors"><i className="fa-solid fa-xmark"></i></button>
           </div>
-
-          {/* Body */}
           <div className="p-6 space-y-4">
              <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-600">Subject</label>
-                <input 
-                   type="text" 
-                   className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]"
-                   placeholder="Enter subject..."
-                />
+                <input type="text" className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]" placeholder="Enter subject..." />
              </div>
              <div className="space-y-1">
                 <label className="text-xs font-medium text-gray-600">Message</label>
-                <textarea 
-                   className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9] placeholder:text-gray-300"
-                   placeholder="Type your email content here..."
-                ></textarea>
+                <textarea className="w-full border border-gray-200 rounded-lg p-3 text-sm h-40 resize-none outline-none focus:border-[#0074D9] placeholder:text-gray-300" placeholder="Type your email content here..."></textarea>
              </div>
              <div className="flex items-center gap-2">
                 <input type="checkbox" id="cc-myself" className="rounded border-gray-300 text-[#0074D9] focus:ring-[#0074D9]" />
                 <label htmlFor="cc-myself" className="text-xs text-gray-500">Send me a copy</label>
              </div>
           </div>
-
-          {/* Footer */}
           <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50 rounded-b-2xl">
              <button onClick={onClose} className="px-5 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-white transition-colors">Cancel</button>
              <button onClick={() => { console.log("Email Sent"); onClose(); }} className="px-5 py-2 bg-[#0074D9] text-white rounded-lg text-sm font-medium hover:bg-[#0062b8] transition-colors flex items-center gap-2">
                 <i className="fa-regular fa-paper-plane"></i> Send Email
              </button>
           </div>
-
        </div>
     </div>, document.body
   );
@@ -419,26 +364,21 @@ function SmsModal({ recipient, onClose }: { recipient: { name: string, phone: st
 }
 
 // =========================================================================
-// ADD CAREGIVER MODAL (Updated Step 1 for Multiple Phone & Email)
+// ADD CAREGIVER MODAL
 // =========================================================================
 function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [mounted, setMounted] = useState(false);
   
-  // 1. Phone Numbers State
+  // States
   const [phones, setPhones] = useState([{ type: "Cell Phone", number: "", note: "" }]);
-  
-  // 2. Email Addresses State
   const [emails, setEmails] = useState([{ type: "Work", address: "", note: "" }]);
-
-  // 3. Emergency Contacts State (NEW)
-  const [emergencyContacts, setEmergencyContacts] = useState([
-    { name: "", relation: "", phone: "", email: "", address: "" }
-  ]);
-
-  // NEW: State for Step 3 (Dynamic Documents with Type)
-  const [documents, setDocuments] = useState([
-    { type: "Document", title: "", file: null } 
+  const [emergencyContacts, setEmergencyContacts] = useState([{ name: "", relation: "", phone: "", email: "", address: "" }]);
+  const [documents, setDocuments] = useState([{ type: "Document", title: "", file: null }]);
+  
+  // --- NEW: REFERRAL SOURCES STATE ---
+  const [referralSources, setReferralSources] = useState([
+    { referredBy: "", detail: "", date: "", notes: "" }
   ]);
 
   useEffect(() => { setMounted(true); document.body.style.overflow = "hidden"; return () => { document.body.style.overflow = "unset"; }; }, []);
@@ -451,7 +391,6 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
   const addEmail = () => setEmails([...emails, { type: "Work", address: "", note: "" }]);
   const removeEmail = (index: number) => setEmails(emails.filter((_, i) => i !== index));
 
-  // Emergency Contact Handlers
   const addEmergencyContact = () => setEmergencyContacts([...emergencyContacts, { name: "", relation: "", phone: "", email: "", address: "" }]);
   const removeEmergencyContact = (index: number) => setEmergencyContacts(emergencyContacts.filter((_, i) => i !== index));
   const updateEmergencyContact = (index: number, field: string, value: string) => {
@@ -461,10 +400,8 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
     setEmergencyContacts(updated);
   };
 
- // NEW: Document Handlers
   const addDocument = () => setDocuments([...documents, { type: "Document", title: "", file: null }]);
   const removeDocument = (index: number) => setDocuments(documents.filter((_, i) => i !== index));
-  
   const updateDocument = (index: number, field: string, value: string) => {
     const updated = [...documents];
     // @ts-ignore
@@ -472,7 +409,25 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
     setDocuments(updated);
   };
 
+  // --- NEW: REFERRAL SOURCE HANDLERS ---
+  const addReferralSource = () => setReferralSources([...referralSources, { referredBy: "", detail: "", date: "", notes: "" }]);
+  const removeReferralSource = (index: number) => setReferralSources(referralSources.filter((_, i) => i !== index));
+  const updateReferralSource = (index: number, field: string, value: string) => {
+    const updated: any = [...referralSources];
+    updated[index][field] = value;
+    setReferralSources(updated);
+  };
 
+  const getReferralDetailLabel = (type: string) => {
+    switch (type) {
+      case "Another Agency":
+      case "Temporary Staffing Agency": return "Agency Name*";
+      case "Employee Referral": return "Employee Name*";
+      case "Online Ad": return "Platform / Website*";
+      case "Other": return "Please Specify*";
+      default: return null;
+    }
+  };
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-fade-in">
@@ -502,190 +457,184 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              {step === 1 && (
                <div className="animate-slide-up space-y-4">
       
-      {/* 1. BASIC INFORMATION (Open by default) */}
-      <Accordion title="Basic Information" defaultOpen={true}>
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <SelectGroup label="Title" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
-            <InputGroup label="First Name*" placeholder="Enter First Name" />
-            <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
-            <InputGroup label="Last Name*" placeholder="Enter Last Name" />
-         </div>
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
-             <SelectGroup label="Marial Status" options={["Single", "Married", "Divorced", "Widowed"]} />
-            
-            {/* Using your custom MultiSelect component here */}
-         
-            
-            <SelectGroup label="Gender*" options={["Male", "Female", "Other", "Prefer Not to Say"]} />
-            <InputGroup label="Date of Birth*" type="date" /> 
-            <InputGroup label="State ID" placeholder="Enter" />
-             <InputGroup label="Driver’s License" placeholder="Enter" />
-             <InputGroup label="PASSPORT" placeholder="Enter" />
-             <InputGroup label="Military ID" placeholder="Enter" />
-             <InputGroup label="USCIS ID" placeholder="Enter" />
-         </div>
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4">
-             <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
-             <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-             <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-             <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
-         </div>
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <InputGroup label="Address Line1" placeholder="Enter" />
-            <InputGroup label="Address Line2" placeholder="Enter" />
-            <InputGroup label="Zip/Postal Code*" placeholder="Enter" />
-           <SelectGroup label="City" options={["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]} />
+                 {/* 1. BASIC INFORMATION */}
+                 <Accordion title="Basic Information" defaultOpen={true}>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <SelectGroup label="Title" options={["None", "Mr.", "Mrs.", "Ms.", "Miss", "Mx.", "Dr."]} />
+                      <InputGroup label="First Name*" placeholder="Enter First Name" />
+                      <InputGroup label="Middle Name" placeholder="Enter Middle Name" />
+                      <InputGroup label="Last Name*" placeholder="Enter Last Name" />
+                    </div>
 
-                        <SelectGroup label="State/Province" options={["Los Angeles County", "Cook County", "Harris County", "Maricopa County", "San Diego County", "Orange County", "Miami-Dade County", "Dallas County", "Kings County", "Riverside County"]} />
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <SelectGroup label="Suffix" options={["None", "Jr.", "Sr.", "II", "III", "RN", "LPN", "CNA"]} />
+                      <SelectGroup label="Marital Status" options={["Single", "Married", "Divorced", "Widowed"]} />
+                      <SelectGroup label="Gender*" options={["Male", "Female", "Other", "Prefer Not to Say"]} />
+                      <InputGroup label="Date of Birth*" type="date" /> 
+                    </div>
 
-                        <SelectGroup label="Country" options={["United States", "India", "China", "United Kingdom", "Germany", "France", "Brazil", "Canada", "Australia", "Italy"]} />
-            <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
-               <SelectGroup 
-         label="Status" 
-         options={[
-            "Active", 
-            "Inactive (Medical Leave)", 
-            "Inactive (Personal Leave)", 
-            "Inactive (No Shifts)", 
-            "Terminated", 
-            "Resigned", 
-            "On Hold"
-         ]} 
-      />
-            
-         </div>
-      </Accordion>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 overflow-visible z-50 relative">
+                      <StateIdInput 
+                        label="State ID" 
+                        tooltip="For EVV aggregators, this field will be used to enter state / Caregiver ID's or Caregiver NPI."
+                      />
+                      <StateIdInput 
+                        label="Driver’s License" 
+                        tooltip="Select the US state that issued the license along with the license number."
+                      />
+                      <InputGroup label="PASSPORT" placeholder="Enter" />
+                      <InputGroup label="Military ID" placeholder="Enter" />
+                    </div>
 
-      {/* 2. PHONE NUMBERS (Collapsed by default) */}
-      <Accordion title="Phone Numbers">
-         <div className="flex justify-end mb-2">
-            <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
-         </div>
-         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-            {phones.map((phone, index) => (
-               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
-                  <div className="col-span-2">
-                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
-                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
-                        <option>Cell</option><option>Home</option><option>Work</option>
-                     </select>
-                  </div>
-                  <div className="col-span-3">
-                     <InputGroup label="Number" placeholder="+1 (555) 000-0000" />
-                  </div>
-                  <div className="col-span-5">
-                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
-                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
-                  </div>
-                  <div className="col-span-2 flex justify-end gap-2 pb-1">
-                     {phones.length > 1 && (
-                        <button onClick={() => removePhone(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
-                     )}
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4 overflow-visible z-10 relative">
+                      <InputGroup label="USCIS ID" placeholder="Enter" />
+                      <InputGroup label="Social Security Number (SSN)" placeholder="Enter SSN number" />
+                      <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                      <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-4 overflow-visible">
+                      <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian", "Pacific Islander", "Unknown"]} />
+                      <InputGroup label="Address Line 1" placeholder="Enter" />
+                      <InputGroup label="Address Line 2" placeholder="Enter" />
+                      <InputGroup label="Zip/Postal Code*" placeholder="Enter" />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <SelectGroup label="City" options={["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"]} />
+                      <SelectGroup label="State/Province" options={["Los Angeles County", "Cook County", "Harris County", "Maricopa County", "San Diego County", "Orange County", "Miami-Dade County", "Dallas County", "Kings County", "Riverside County"]} />
+                      <SelectGroup label="Country" options={["United States", "India", "China", "United Kingdom", "Germany", "France", "Brazil", "Canada", "Australia", "Italy"]} />
+                      <SelectGroup label="Role Type" options={["Caregiver", "Supervisor", "Manager"]} />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
+                      <SelectGroup 
+                        label="Status" 
+                        options={["Active", "Inactive (Medical Leave)", "Inactive (Personal Leave)", "Inactive (No Shifts)", "Terminated", "Resigned", "On Hold"]} 
+                      />
+                    </div>
+                 </Accordion>
+
+                 {/* 2. PHONE NUMBERS */}
+                 <Accordion title="Phone Numbers">
+                    <div className="flex justify-end mb-2">
+                       <button onClick={addPhone} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Phone</button>
+                    </div>
+                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                       {phones.map((phone, index) => (
+                          <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                             <div className="col-span-2">
+                                <SelectGroup label="Type" options={["Cell", "Home", "Work"]} />
+                             </div>
+                             <div className="col-span-3">
+                                <InputGroup label="Number" placeholder="+1 (555) 000-0000" />
+                             </div>
+                             <div className="col-span-5">
+                                <InputGroup label="Note" placeholder="Max 100 chars" />
+                             </div>
+                             <div className="col-span-2 flex justify-end gap-2 pb-1">
+                                {phones.length > 1 && (
+                                   <button onClick={() => removePhone(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                                )}
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+                 </Accordion>
+
+                 {/* 3. EMAIL ADDRESSES */}
+                 <Accordion title="Email Addresses">
+                    <div className="flex justify-end mb-2">
+                       <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
+                    </div>
+                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                       {emails.map((email, index) => (
+                          <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
+                             <div className="col-span-2">
+                                <SelectGroup label="Type" options={["Work", "Personal"]} />
+                             </div>
+                             <div className="col-span-3">
+                                <InputGroup label="Email" placeholder="example@mail.com" />
+                             </div>
+                             <div className="col-span-5">
+                                <InputGroup label="Note" placeholder="Max 100 chars" />
+                             </div>
+                             <div className="col-span-2 flex justify-end gap-2 pb-1">
+                                {emails.length > 1 && (
+                                   <button onClick={() => removeEmail(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
+                                )}
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+                 </Accordion>
+
+                 {/* 4. EMERGENCY CONTACTS */}
+                 <Accordion title="Emergency Contacts">
+                    <div className="flex justify-end mb-2">
+                       <button onClick={addEmergencyContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button>
+                    </div>
+                    <div className="space-y-4">
+                       {emergencyContacts.map((contact, index) => (
+                          <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
+                             {emergencyContacts.length > 1 && (
+                                <button 
+                                  onClick={() => removeEmergencyContact(index)} 
+                                  className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
+                                  title="Remove Contact"
+                                >
+                                   <i className="fa-regular fa-trash-can"></i>
+                                </button>
+                             )}
+                             
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <InputGroup 
+                                  label="Full Name*" 
+                                  placeholder="Enter full name" 
+                                  value={contact.name}
+                                  onChange={(e:any) => updateEmergencyContact(index, 'name', e.target.value)}
+                                />
+                                <InputGroup 
+                                  label="Relationship*" 
+                                  placeholder="e.g. Spouse, Parent" 
+                                  value={contact.relation}
+                                  onChange={(e:any) => updateEmergencyContact(index, 'relation', e.target.value)}
+                                />
+                             </div>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <InputGroup 
+                                  label="Phone Number*" 
+                                  placeholder="+1 (555) 000-0000" 
+                                  value={contact.phone}
+                                  onChange={(e:any) => updateEmergencyContact(index, 'phone', e.target.value)}
+                                />
+                                <InputGroup 
+                                  label="Email Address*" 
+                                  placeholder="example@mail.com" 
+                                  value={contact.email}
+                                  onChange={(e:any) => updateEmergencyContact(index, 'email', e.target.value)}
+                                />
+                             </div>
+                             <div>
+                                <InputGroup 
+                                  label="Physical Address (Optional)" 
+                                  placeholder="Enter street address, city, state, zip" 
+                                  value={contact.address}
+                                  onChange={(e:any) => updateEmergencyContact(index, 'address', e.target.value)}
+                                />
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+                 </Accordion>
+
                </div>
-            ))}
-         </div>
-      </Accordion>
-
-      {/* 3. EMAIL ADDRESSES (Collapsed by default) */}
-      <Accordion title="Email Addresses">
-         <div className="flex justify-end mb-2">
-            <button onClick={addEmail} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Email</button>
-         </div>
-         <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
-            {emails.map((email, index) => (
-               <div key={index} className="grid grid-cols-12 gap-4 items-end border-b border-gray-200 last:border-0 pb-3 last:pb-0">
-                  <div className="col-span-2">
-                     <label className="text-xs font-medium text-gray-500 mb-1 block">Type</label>
-                     <select className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none">
-                        <option>Work</option><option>Personal</option>
-                     </select>
-                  </div>
-                  <div className="col-span-3">
-                     <InputGroup label="Email" placeholder="example@mail.com" />
-                  </div>
-                  <div className="col-span-5">
-                     <label className="text-xs font-medium text-gray-500 mb-1 block">Note</label>
-                     <input type="text" maxLength={100} placeholder="Max 100 chars" className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:border-[#0074D9] outline-none" />
-                  </div>
-                  <div className="col-span-2 flex justify-end gap-2 pb-1">
-                     {emails.length > 1 && (
-                        <button onClick={() => removeEmail(index)} className="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded hover:bg-red-100"><i className="fa-regular fa-trash-can text-xs"></i></button>
-                     )}
-                  </div>
-               </div>
-            ))}
-         </div>
-      </Accordion>
-
-      {/* 4. EMERGENCY CONTACTS (NEW SECTION) */}
-                   <Accordion title="Emergency Contacts">
-                      <div className="flex justify-end mb-2">
-                         <button onClick={addEmergencyContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button>
-                      </div>
-                      <div className="space-y-4">
-                         {emergencyContacts.map((contact, index) => (
-                            <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
-                               {emergencyContacts.length > 1 && (
-                                  <button 
-                                    onClick={() => removeEmergencyContact(index)} 
-                                    className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
-                                    title="Remove Contact"
-                                  >
-                                     <i className="fa-regular fa-trash-can"></i>
-                                  </button>
-                               )}
-                               
-                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                  <InputGroup 
-                                    label="Full Name*" 
-                                    placeholder="Enter full name" 
-                                    value={contact.name}
-                                    onChange={(e:any) => updateEmergencyContact(index, 'name', e.target.value)}
-                                  />
-                                  <InputGroup 
-                                    label="Relationship*" 
-                                    placeholder="e.g. Spouse, Parent" 
-                                    value={contact.relation}
-                                    onChange={(e:any) => updateEmergencyContact(index, 'relation', e.target.value)}
-                                  />
-                               </div>
-                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                  <InputGroup 
-                                    label="Phone Number*" 
-                                    placeholder="+1 (555) 000-0000" 
-                                    value={contact.phone}
-                                    onChange={(e:any) => updateEmergencyContact(index, 'phone', e.target.value)}
-                                  />
-                                  <InputGroup 
-                                    label="Email Address*" 
-                                    placeholder="example@mail.com" 
-                                    value={contact.email}
-                                    onChange={(e:any) => updateEmergencyContact(index, 'email', e.target.value)}
-                                  />
-                               </div>
-                               <div>
-                                  <InputGroup 
-                                    label="Physical Address (Optional)" 
-                                    placeholder="Enter street address, city, state, zip" 
-                                    value={contact.address}
-                                    onChange={(e:any) => updateEmergencyContact(index, 'address', e.target.value)}
-                                  />
-                               </div>
-                            </div>
-                         ))}
-                      </div>
-                   </Accordion>
-
-   </div>
              )}
 
              {step === 2 && (
-              /* STEP 2: PROFESSIONAL DETAIL */
                 <div className="animate-slide-up space-y-4">
                    
-                   {/* 1. PROFESSIONAL DETAILS (Open Default) */}
+                   {/* 1. PROFESSIONAL DETAILS */}
                    <Accordion title="Professional Details" defaultOpen={true}>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                          <SelectGroup 
@@ -710,59 +659,128 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                          <InputGroup label="HIRE DATE" placeholder="Enter official hire date" type="date" />
-                         {/* --- EVV ENABLED CHECKBOX --- */}
-            <div className="flex items-center h-full pt-6">
-              
-               <label className="flex items-center gap-2 cursor-pointer group">
-                  <input 
-                     type="checkbox" 
-                     className="w-5 h-5 text-[#0074D9] rounded border-gray-300 focus:ring-[#0074D9] cursor-pointer" 
-                  />
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-[#0074D9] transition-colors">
-                     EVV Enabled
-                  </span>
-               </label>
-            </div>
-            {/* --------------------------- */}
+                         <div className="flex items-center h-full pt-6">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                               <input 
+                                  type="checkbox" 
+                                  className="w-5 h-5 text-[#0074D9] rounded border-gray-300 focus:ring-[#0074D9] cursor-pointer" 
+                               />
+                               <span className="text-sm font-medium text-gray-700 group-hover:text-[#0074D9] transition-colors">
+                                  EVV Enabled
+                               </span>
+                            </label>
+                         </div>
                       </div>
                    </Accordion>
 
                    {/* 2. AVAILABILITY & ASSIGNMENT */}
                    <Accordion title="Availability & Assignment">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                         <InputGroup label="Availability Start Date" type="date" />
-                         <InputGroup label="Assigned Region Shifts" placeholder="Enter" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 overflow-visible z-10 relative">
+                          <InputGroup label="Availability Start Date" type="date" />
+                          <InputGroup 
+                              label="Assigned Region Shifts" 
+                              placeholder="e.g., North Zone, Columbus Metro" 
+                              tooltip="Specify the geographical zone, county, or district where this caregiver is assigned to work (e.g., 'North Zone', 'Columbus Metro'). This helps schedulers quickly match the caregiver to clients in the same vicinity."
+                          />
                       </div>
                       
                       <div className="mb-6">
-                         <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
-                         <div className="flex gap-2 flex-wrap">
-                            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(d => (
-                               <button key={d} className="px-3 py-1 border rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">{d}</button>
-                            ))}
-                         </div>
+                          <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
+                          <div className="flex gap-2 flex-wrap">
+                          {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(d => (
+                              <button key={d} className="px-3 py-1 border rounded-full text-xs text-gray-600 hover:bg-gray-50 transition-colors">{d}</button>
+                          ))}
+                          </div>
                       </div>
 
                       <div>
-                         <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
-                         <div className="flex gap-6">
-                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning</label>
-                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening</label>
-                            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"><input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night</label>
-                         </div>
+                          <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
+                          <div className="flex gap-6">
+                          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                              <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                              <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening
+                          </label>
+                          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                              <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night
+                          </label>
+                          </div>
                       </div>
-                   </Accordion>
+                  </Accordion>
 
-                   {/* 3. REFERRAL SOURCE (New Section) */}
-                   <Accordion title="Referral Source">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                         <SelectGroup label="Referred By" options={["Another Agency", "Temporary Staffing Agency", "Employee Referral", "Online Ad", "Other"]} />
-                         <InputGroup label="Referral Date" type="date" />
-                         <InputGroup label="Notes" placeholder="Start Writing..." />
-                      </div>
-                   </Accordion>
+                   {/* 3. REFERRAL SOURCE (UPDATED SECTION) */}
+                   <Accordion title="Referral Sources">
+                       <div className="flex justify-end mb-2">
+                          <button 
+                             onClick={addReferralSource} 
+                             className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"
+                          >
+                             <i className="fa-solid fa-plus"></i> Add Referral Source
+                          </button>
+                       </div>
+                       
+                       <div className="space-y-4">
+                          {referralSources.map((source, index) => {
+                             const detailLabel = getReferralDetailLabel(source.referredBy);
+                             
+                             return (
+                                <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
+                                   {/* Remove Button */}
+                                   {referralSources.length > 1 && (
+                                      <button 
+                                         onClick={() => removeReferralSource(index)} 
+                                         className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors" 
+                                         title="Remove Referral Source"
+                                      >
+                                         <i className="fa-regular fa-trash-can"></i>
+                                      </button>
+                                   )}
 
-                   {/* 4. NOTES (New Section) */}
+                                   {/* Top Row: Dropdown + Conditional Field */}
+                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                      <SelectGroup 
+                                         label="Referred By" 
+                                         options={["Another Agency", "Temporary Staffing Agency", "Employee Referral", "Online Ad", "Other"]}
+                                         value={source.referredBy}
+                                         onChange={(val: string) => updateReferralSource(index, 'referredBy', val)} 
+                                      />
+                                      
+                                      {/* Conditional Detail Field */}
+                                      {detailLabel ? (
+                                         <InputGroup 
+                                            label={detailLabel} 
+                                            placeholder={`Enter ${detailLabel.replace('*', '').toLowerCase()}`}
+                                            value={source.detail}
+                                            onChange={(e: any) => updateReferralSource(index, 'detail', e.target.value)} 
+                                         />
+                                      ) : (
+                                         <div className="hidden md:block"></div> 
+                                      )}
+                                   </div>
+
+                                   {/* Bottom Row: Date & Notes */}
+                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                      <InputGroup 
+                                         label="Referral Date" 
+                                         type="date" 
+                                         value={source.date}
+                                         onChange={(e: any) => updateReferralSource(index, 'date', e.target.value)} 
+                                      />
+                                      <InputGroup 
+                                         label="Notes" 
+                                         placeholder="Start Writing..." 
+                                         value={source.notes}
+                                         onChange={(e: any) => updateReferralSource(index, 'notes', e.target.value)} 
+                                      />
+                                   </div>
+                                </div>
+                             );
+                          })}
+                       </div>
+                    </Accordion>
+
+                   {/* 4. NOTES */}
                    <Accordion title="Notes">
                       <div className="space-y-1">
                          <label className="text-xs font-medium text-gray-700">Additional Notes</label>
@@ -779,8 +797,7 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
              )}
 
              {step === 3 && (
-                /* STEP 3: DOCUMENTS */
-              <div className="animate-slide-up space-y-6">
+               <div className="animate-slide-up space-y-6">
                    <div className="flex justify-between items-end mb-4">
                       <div>
                          <h3 className="font-bold text-gray-800 text-sm">Documents & Certifications</h3>
@@ -797,8 +814,6 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {documents.map((doc, index) => (
                          <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative animate-fade-in group hover:border-[#0074D9] transition-colors">
-                            
-                            {/* Delete Button */}
                             {documents.length > 1 && (
                                <button 
                                   onClick={() => removeDocument(index)}
@@ -810,7 +825,6 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                             )}
 
                             <div className="space-y-3">
-                               {/* Row 1: Type & Title */}
                                <div className="flex gap-3">
                                   <div className="w-1/3">
                                      <label className="text-xs font-medium text-gray-700 mb-1 block">Type</label>
@@ -837,7 +851,6 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                                   </div>
                                </div>
 
-                               {/* Row 2: Upload Area (Visual changes based on type) */}
                                <div className={`border-2 border-dashed rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer transition-colors h-32 ${doc.type === 'Folder' ? 'border-blue-200 bg-blue-50/30 hover:bg-blue-50' : 'border-gray-300 bg-white hover:bg-gray-50'}`}>
                                   {doc.type === 'Folder' ? (
                                      <>
@@ -857,7 +870,6 @@ function AddCaregiverModal({ onClose }: { onClose: () => void }) {
                          </div>
                       ))}
                       
-                      {/* Add Button Placeholder Card */}
                       <button 
                         onClick={addDocument}
                         className="border-2 border-dashed border-gray-200 rounded-xl p-6 flex flex-col items-center justify-center bg-gray-50/50 hover:bg-gray-50 hover:border-[#0074D9] transition-all min-h-[200px] text-gray-400 hover:text-[#0074D9]"
@@ -891,23 +903,44 @@ function StepIndicator({ num, label, sub, current }: any) {
    )
 }
 
-function InputGroup({ label, placeholder, icon, type = "text" }: any) {
+function InputGroup({ label, placeholder, type = "text", value, onChange, tooltip }: any) {
    return (
-      <div className="space-y-1">
-         <label className="text-xs font-medium text-gray-700">{label}</label>
-         <div className="relative">
-            <input type={type} placeholder={placeholder} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-brand" />
-            {icon === 'calendar' && type !== 'date' && <i className="fa-regular fa-calendar absolute right-3 top-3 text-gray-400 pointer-events-none"></i>}
-         </div>
+      <div className="space-y-3 w-full overflow-visible relative">
+         {label && (
+            <div className="flex items-center gap-1.5">
+               <label className="text-xs font-medium text-gray-700">{label}</label>
+               {tooltip && (
+                  <div className="relative group/tooltip flex items-center">
+                     <i className="fa-solid fa-circle-question text-[#0074D9] text-xs cursor-help"></i>
+                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-[100] whitespace-normal leading-relaxed text-center font-normal">
+                        {tooltip}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-800"></div>
+                     </div>
+                  </div>
+               )}
+            </div>
+         )}
+         <input 
+            type={type} 
+            placeholder={placeholder} 
+            value={value} 
+            onChange={onChange} 
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]" 
+         />
       </div>
    )
 }
 
-function SelectGroup({ label, options }: { label: string, options?: string[] }) {
+// FIXED: Added value and onChange to SelectGroup
+function SelectGroup({ label, options, value, onChange }: { label: string, options?: string[], value?: string, onChange?: (val: string) => void }) {
    return (
       <div className="space-y-1">
          <label className="text-xs font-medium text-gray-700">{label}</label>
-         <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500 outline-none focus:border-brand">
+         <select 
+            value={value}
+            onChange={(e) => onChange && onChange(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm bg-white text-gray-500 outline-none focus:border-brand"
+         >
             <option value="">Select</option>
             {options?.map((opt, index) => <option key={index} value={opt}>{opt}</option>)}
          </select>
@@ -927,22 +960,102 @@ function UploadBox({ label }: any) {
    )
 }
 
-
 function Accordion({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white mb-4 shadow-sm">
+    <div className={`border border-gray-200 rounded-xl bg-white mb-4 shadow-sm animate-fade-in relative ${isOpen ? 'overflow-visible z-40' : 'overflow-hidden z-10'}`}>
       <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
+        type="button" 
+        onClick={() => setIsOpen(!isOpen)} 
+        className={`w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left relative z-20 ${isOpen ? 'rounded-t-xl' : 'rounded-xl'}`}
       >
         <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
         <i className={`fa-solid fa-chevron-down text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
-      
-      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[1000px] opacity-100 p-6' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
+      <div className={`transition-all duration-300 ease-in-out relative z-10 ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100 overflow-visible' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
         {children}
+      </div>
+    </div>
+  );
+}
+
+function StateIdInput({ label, tooltip, stateValue, idValue, onStateChange, onIdChange }: any) {
+  return (
+    <div className="space-y-1 w-full overflow-visible">
+      <div className="flex items-center gap-1.5">
+        <label className="text-xs font-medium text-gray-700">{label}</label>
+        {tooltip && (
+          <div className="relative group/tooltip flex items-center">
+            <i className="fa-solid fa-circle-question text-[#0074D9] text-xs cursor-help"></i>
+            <div className="absolute top-full left-[-10px] mt-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-[100] whitespace-normal leading-relaxed text-left font-normal">
+              {tooltip}
+              <div className="absolute bottom-full left-[14px] border-4 border-transparent border-b-gray-800"></div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex border border-gray-200 rounded-lg focus-within:border-[#0074D9] transition-colors bg-white">
+        <select
+          value={stateValue}
+          onChange={onStateChange}
+          className="w-[75px] bg-gray-50 border-r border-gray-200 p-2.5 text-sm text-gray-600 rounded-l-lg outline-none cursor-pointer focus:text-gray-900"
+        >
+          <option value="">State</option>
+          <option value="OH">OH</option>
+          <option value="CA">CA</option>
+          <option value="NY">NY</option>
+          <option value="FL">FL</option>
+          <option value="TX">TX</option>
+          <option value="VA">VA</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Enter ID"
+          value={idValue}
+          onChange={onIdChange}
+          className="flex-1 p-2.5 text-sm outline-none rounded-r-lg w-full min-w-0"
+        />
+      </div>
+    </div>
+  );
+}
+
+function MultiSelectDropdown({ label, options, selectedItems = [], onChange }: { label: string, options: string[], selectedItems?: string[], onChange?: (items: string[]) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: any) => { if (ref.current && !ref.current.contains(event.target)) setIsOpen(false); };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleOption = (option: string) => {
+    let newSelected;
+    if (selectedItems.includes(option)) newSelected = selectedItems.filter((item) => item !== option);
+    else newSelected = [...selectedItems, option];
+    if (onChange) onChange(newSelected);
+  };
+
+  return (
+    <div className={`space-y-1 relative ${isOpen ? 'z-[100]' : 'z-10'}`} ref={ref}>
+      <label className="text-xs font-medium text-gray-700">{label}</label>
+      <div className="relative">
+        <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center bg-white border border-gray-200 rounded-lg p-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#0074D9]">
+          <span className="truncate block max-w-[90%] text-left">{selectedItems.length === 0 ? "Select" : selectedItems.join(", ")}</span>
+          <i className={`fa-solid fa-chevron-down text-xs text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}></i>
+        </button>
+        {isOpen && (
+          <div className="absolute z-[100] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto custom-scrollbar">
+            {options.map((opt, index) => (
+              <label key={index} className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
+                <input type="checkbox" checked={selectedItems.includes(opt)} onChange={() => toggleOption(opt)} className="w-4 h-4 rounded text-[#0074D9] focus:ring-[#0074D9]" />
+                <span className="text-sm text-gray-700">{opt}</span>
+              </label>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

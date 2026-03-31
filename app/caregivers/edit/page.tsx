@@ -18,7 +18,7 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
     gender: "Female", dob: "1983-10-24", ssn: "***-**-7142",
     race: ["White"], primaryLang: ["English"], secondaryLang: ["Spanish"],
     address1: "1509 Oakview Dr", address2: "", city: "McLean", state: "Virginia", zip: "22101", country: "USA",
-      stateId: "V1234567", driversLicense: "D7654321", passport: "P987654321", militaryId: "", uscisId: ""
+    stateId: "V1234567", stateIdIssueState: "VA", driversLicense: "D7654321", driversLicenseState: "VA", passport: "P987654321", militaryId: "", uscisId: ""
   });
 
   const [phones, setPhones] = useState([
@@ -115,11 +115,28 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                             <SelectGroup label="Suffix" value={basicInfo.suffix} options={["Jr.", "Sr.", "III"]} onChange={(v:string)=>handleBasicChange('suffix', v)} />
-                            <InputGroup label="State ID" value={basicInfo.stateId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('stateId', e.target.value)} />
-             <InputGroup label="Driver’s License" value={basicInfo.driversLicense} placeholder="Enter" onChange={(e:any)=>handleBasicChange('driversLicense', e.target.value)} />
-             <InputGroup label="PASSPORT" value={basicInfo.passport} placeholder="Enter" onChange={(e:any)=>handleBasicChange('passport', e.target.value)} />
+                            <StateIdInput 
+    label="State ID" tooltip="For EVV aggregators, this field will be used to enter state / Caregiver ID's or Caregiver NPI."
+    stateValue={basicInfo.stateIdIssueState}  idValue={basicInfo.stateId}
+    onStateChange={(e:any) => handleBasicChange('stateIdIssueState', e.target.value)}
+    onIdChange={(e:any) => handleBasicChange('stateId', e.target.value)}
+  />
+            <StateIdInput 
+    label="Driver’s License" 
+    stateValue={basicInfo.driversLicenseState} 
+    idValue={basicInfo.driversLicense}
+    onStateChange={(e:any) => handleBasicChange('driversLicenseState', e.target.value)}
+    onIdChange={(e:any) => handleBasicChange('driversLicense', e.target.value)}
+  />
+             <InputGroup 
+    label="PASSPORT" 
+    value={basicInfo.passport} 
+    placeholder="Enter" 
+    onChange={(e:any) => handleBasicChange('passport', e.target.value)} 
+  />
              
                           </div>
+                          
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                             <InputGroup label="Military ID" value={basicInfo.militaryId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('militaryId', e.target.value)} />
              <InputGroup label="USCIS ID" value={basicInfo.uscisId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('uscisId', e.target.value)} />
@@ -409,4 +426,53 @@ function UploadBox({ label, uploaded, fileName }: any) {
          </div>
       </div>
    )
+}
+
+function StateIdInput({ label, tooltip, stateValue, idValue, onStateChange, onIdChange }: any) {
+  return (
+    <div className="space-y-3 w-full overflow-visible">
+      {/* Label & Tooltip Wrapper */}
+      <div className="flex items-center gap-2">
+        <label className="text-xs font-medium text-gray-700">{label}</label>
+        
+        {/* Tooltip Icon & Popup */}
+        {tooltip && (
+          <div className="relative group/tooltip flex items-center">
+            <i className="fa-solid fa-circle-question text-[#0074D9] text-xs cursor-help"></i>
+            {/* Tooltip Bubble */}
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-50 whitespace-normal leading-relaxed text-center font-normal">
+              {tooltip}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Combined State Dropdown + ID Input */}
+      <div className="flex border border-gray-200 rounded-lg focus-within:border-[#0074D9] transition-colors bg-white">
+        <select
+          value={stateValue}
+          onChange={onStateChange}
+          className="w-[75px] bg-gray-50 border-r border-gray-200 p-2.5 text-sm text-gray-600 rounded-l-lg outline-none cursor-pointer focus:text-gray-900"
+        >
+          <option value="">State</option>
+          <option value="OH">OH</option>
+          <option value="CA">CA</option>
+          <option value="NY">NY</option>
+          <option value="FL">FL</option>
+          <option value="TX">TX</option>
+          <option value="MI">MI</option>
+          <option value="PA">PA</option>
+          {/* Add more states as needed */}
+        </select>
+        <input
+          type="text"
+          placeholder="Enter ID"
+          value={idValue}
+          onChange={onIdChange}
+          className="flex-1 p-2.5 text-sm outline-none rounded-r-lg w-full min-w-0"
+        />
+      </div>
+    </div>
+  );
 }
