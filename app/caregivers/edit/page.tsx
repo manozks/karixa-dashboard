@@ -40,11 +40,13 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
     types: ["PCA", "HHA"], id: "CG-20012", skills: ["Catheter Care", "Gait Belt Transfers"],
     qualification: "Certificate III", experience: "5", payRate: "Hourly Rate", hireDate: "2020-01-12",
     availStart: "2024-10-24", region: "Melbourne East", 
-    days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], 
-    shifts: ["Morning", "Evening"],
-    referredBy: "Employee Referral", referralDate: "2019-12-15", referralNotes: "Referred by Sarah J.",
     notes: "Nina is a very dedicated caregiver with extensive experience in dementia care."
   });
+
+  // NEW: Referral Sources Array State
+  const [referralSources, setReferralSources] = useState([
+    { referredBy: "Employee Referral", detail: "Sarah J.", date: "2019-12-15", notes: "Highly recommended." }
+  ]);
 
   useEffect(() => { setMounted(true); }, []);
   if (!mounted) return null;
@@ -64,13 +66,34 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
   const removeContact = (i: number) => setEmergencyContacts(emergencyContacts.filter((_, idx) => idx !== i));
   const updateContact = (i: number, field: string, val: string) => { const n = [...emergencyContacts]; (n[i] as any)[field] = val; setEmergencyContacts(n); };
 
+  // NEW: Referral Sources Handlers
+  const addReferralSource = () => setReferralSources([...referralSources, { referredBy: "", detail: "", date: "", notes: "" }]);
+  const removeReferralSource = (i: number) => setReferralSources(referralSources.filter((_, idx) => idx !== i));
+  const updateReferralSource = (i: number, field: string, val: string) => { 
+    const n: any = [...referralSources]; 
+    n[i][field] = val; 
+    setReferralSources(n); 
+  };
+
+  // Helper to define conditional labels based on dropdown selection
+  const getReferralDetailLabel = (type: string) => {
+    switch (type) {
+      case "Another Agency":
+      case "Temporary Staffing Agency": return "Agency Name*";
+      case "Employee Referral": return "Employee Name*";
+      case "Online Ad": return "Platform / Website*";
+      case "Other": return "Please Specify*";
+      default: return null;
+    }
+  };
+
   // Generic Field Handler
   const handleBasicChange = (field: string, val: any) => setBasicInfo({ ...basicInfo, [field]: val });
   const handleProfChange = (field: string, val: any) => setProfessional({ ...professional, [field]: val });
 
   return (
     <DashboardLayout>
-    <div className="flex flex-col h-full bg-gray-50/50 p-0">
+    <div className="flex flex-col h-full bg-gray-50/50 p-0 pb-20">
         
         {/* Header Section */}
         <div className="mb-6">
@@ -78,28 +101,24 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
               <Link href={`/caregivers/${params.id}`} className="hover:text-gray-800 flex items-center gap-1">
                  <i className="fa-solid fa-chevron-left text-xs"></i> Back
               </Link>
-            
            </div>
            <h1 className="text-2xl font-bold text-gray-800">Edit Caregiver Profile</h1>
            <p className="text-sm text-gray-500 mt-1">Update {basicInfo.firstName}'s personal details, professional information, and documents.</p>
         </div>
 
-      
-
         {/* Content Area */}
-         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              {/* Wizard Stepper */}
-       
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              
+           {/* Wizard Stepper */}
           <div className="bg-blue-50/50 rounded-xl p-6 mb-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-blue-100/50">
               <StepIndicator num={1} label="Basic Information" current={step} onClick={() => setStep(1)} />
-              <div className="w-12 h-px bg-gray-200"></div>
+              <div className="hidden md:block w-12 h-px bg-gray-300"></div>
               <StepIndicator num={2} label="Professional Detail" current={step} onClick={() => setStep(2)} />
-              <div className="w-12 h-px bg-gray-200"></div>
+              <div className="hidden md:block w-12 h-px bg-gray-300"></div>
               <StepIndicator num={3} label="Documents" current={step} onClick={() => setStep(3)} />
            </div>
       
            <div className="">
-              
               <div className="space-y-6">
                  
                  {/* ================= STEP 1: BASIC INFO ================= */}
@@ -111,50 +130,60 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                              <InputGroup label="First Name" value={basicInfo.firstName} onChange={(e:any)=>handleBasicChange('firstName', e.target.value)} />
                              <InputGroup label="Middle Name" value={basicInfo.middleName} onChange={(e:any)=>handleBasicChange('middleName', e.target.value)} />
                              <InputGroup label="Last Name" value={basicInfo.lastName} onChange={(e:any)=>handleBasicChange('lastName', e.target.value)} />
-                             
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                            <SelectGroup label="Suffix" value={basicInfo.suffix} options={["Jr.", "Sr.", "III"]} onChange={(v:string)=>handleBasicChange('suffix', v)} />
-                            <StateIdInput 
-    label="State ID" tooltip="For EVV aggregators, this field will be used to enter state / Caregiver ID's or Caregiver NPI."
-    stateValue={basicInfo.stateIdIssueState}  idValue={basicInfo.stateId}
-    onStateChange={(e:any) => handleBasicChange('stateIdIssueState', e.target.value)}
-    onIdChange={(e:any) => handleBasicChange('stateId', e.target.value)}
-  />
-            <StateIdInput 
-    label="Driver’s License" 
-    stateValue={basicInfo.driversLicenseState} 
-    idValue={basicInfo.driversLicense}
-    onStateChange={(e:any) => handleBasicChange('driversLicenseState', e.target.value)}
-    onIdChange={(e:any) => handleBasicChange('driversLicense', e.target.value)}
-  />
-             <InputGroup 
-    label="PASSPORT" 
-    value={basicInfo.passport} 
-    placeholder="Enter" 
-    onChange={(e:any) => handleBasicChange('passport', e.target.value)} 
-  />
-             
                           </div>
                           
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 overflow-visible">
+                            <SelectGroup 
+                              label="Suffix" 
+                              value={basicInfo.suffix} 
+                              options={["Jr.", "Sr.", "III"]} 
+                              onChange={(v:string) => handleBasicChange('suffix', v)} 
+                            />
+
+                            <StateIdInput 
+                              label="State ID" 
+                              tooltip="For EVV aggregators, this field will be used to enter state / Caregiver ID's or Caregiver NPI."
+                              stateValue={basicInfo.stateIdIssueState} 
+                              idValue={basicInfo.stateId}
+                              onStateChange={(e:any) => handleBasicChange('stateIdIssueState', e.target.value)}
+                              onIdChange={(e:any) => handleBasicChange('stateId', e.target.value)}
+                            />
+
+                            <StateIdInput 
+                              label="Driver’s License" 
+                              tooltip="Select the US state that issued the license along with the license number."
+                              stateValue={basicInfo.driversLicenseState} 
+                              idValue={basicInfo.driversLicense}
+                              onStateChange={(e:any) => handleBasicChange('driversLicenseState', e.target.value)}
+                              onIdChange={(e:any) => handleBasicChange('driversLicense', e.target.value)}
+                            />
+
+                            <InputGroup 
+                              label="PASSPORT" 
+                              value={basicInfo.passport} 
+                              placeholder="Enter" 
+                              onChange={(e:any) => handleBasicChange('passport', e.target.value)} 
+                            />
+                          </div>
+
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                            <InputGroup label="Military ID" value={basicInfo.militaryId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('militaryId', e.target.value)} />
-             <InputGroup label="USCIS ID" value={basicInfo.uscisId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('uscisId', e.target.value)} />
-                             <SelectGroup label="Gender" value={basicInfo.gender} options={["Male", "Female"]} onChange={(v:string)=>handleBasicChange('gender', v)} />
+                             <InputGroup label="Military ID" value={basicInfo.militaryId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('militaryId', e.target.value)} />
+                             <InputGroup label="USCIS ID" value={basicInfo.uscisId} placeholder="Enter" onChange={(e:any)=>handleBasicChange('uscisId', e.target.value)} />
+                             <SelectGroup label="Gender" value={basicInfo.gender} options={["Male", "Female", "Other"]} onChange={(v:string)=>handleBasicChange('gender', v)} />
                              <InputGroup label="Date of Birth" type="date" value={basicInfo.dob} onChange={(e:any)=>handleBasicChange('dob', e.target.value)} />
-                            
                           </div>
                          
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 overflow-visible z-50 relative">
                              <InputGroup label="SSN" value={basicInfo.ssn} onChange={(e:any)=>handleBasicChange('ssn', e.target.value)} />
-                             <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
-                             <SelectGroup label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
-                             <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
+                             <MultiSelectDropdown label="Race" selectedItems={basicInfo.race} options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} onChange={(vals) => handleBasicChange('race', vals)} />
+                             <SelectGroup label="Primary Language" value={basicInfo.primaryLang[0] || ""} options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} onChange={(v:string) => handleBasicChange('primaryLang', [v])} />
+                             <MultiSelectDropdown label="Secondary Language" selectedItems={basicInfo.secondaryLang} options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} onChange={(vals) => handleBasicChange('secondaryLang', vals)} />
                           </div>
+
                           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                              <InputGroup label="Address Line 1" value={basicInfo.address1} onChange={(e:any)=>handleBasicChange('address1', e.target.value)} />
                              <InputGroup label="City" value={basicInfo.city} onChange={(e:any)=>handleBasicChange('city', e.target.value)} />
-                             <SelectGroup label="State" value={basicInfo.state} options={["Virginia", "Maryland", "DC"]} onChange={(v:string)=>handleBasicChange('state', v)} />
+                             <SelectGroup label="State" value={basicInfo.state} options={["Virginia", "Maryland", "DC", "Ohio"]} onChange={(v:string)=>handleBasicChange('state', v)} />
                              <InputGroup label="Zip Code" value={basicInfo.zip} onChange={(e:any)=>handleBasicChange('zip', e.target.value)} />
                           </div>
                        </Accordion>
@@ -191,8 +220,8 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                           <div className="flex justify-end mb-2"><button onClick={addContact} className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"><i className="fa-solid fa-plus"></i> Add Contact</button></div>
                           <div className="space-y-4">
                              {emergencyContacts.map((c, i) => (
-                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative">
-                                   {emergencyContacts.length > 1 && <button onClick={()=>removeContact(i)} className="absolute top-2 right-2 text-red-400 hover:text-red-600"><i className="fa-regular fa-trash-can"></i></button>}
+                                <div key={i} className="bg-gray-50 border border-gray-200 rounded-xl p-4 relative animate-fade-in">
+                                   {emergencyContacts.length > 1 && <button onClick={()=>removeContact(i)} className="absolute top-4 right-4 text-red-400 hover:text-red-600"><i className="fa-regular fa-trash-can"></i></button>}
                                    <div className="grid grid-cols-2 gap-4 mb-2">
                                       <InputGroup label="Name" value={c.name} onChange={(e:any)=>updateContact(i, 'name', e.target.value)} />
                                       <InputGroup label="Relationship" value={c.relation} onChange={(e:any)=>updateContact(i, 'relation', e.target.value)} />
@@ -212,13 +241,13 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                  {step === 2 && (
                     <div className="animate-fade-in space-y-4">
                        <Accordion title="Professional Details" defaultOpen={true}>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                             <MultiSelectDropdown label="Caregiver Type" options={["PCA", "HHA", "CNA", "LPN", "RN"]} />
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4 overflow-visible z-50 relative">
+                             <MultiSelectDropdown label="Caregiver Type" selectedItems={professional.types} options={["PCA", "HHA", "CNA", "LPN", "RN"]} onChange={(vals)=>handleProfChange('types', vals)} />
                              <InputGroup label="Caregiver ID" value={professional.id} onChange={(e:any)=>handleProfChange('id', e.target.value)} />
-                             <MultiSelectDropdown label="Skills" options={["DODD Medication Category 1", "DODD Medication Category 2", "DODD Medication Category 3",
+                             <MultiSelectDropdown label="Skills" selectedItems={professional.skills} options={["DODD Medication Category 1", "DODD Medication Category 2", "DODD Medication Category 3",
                                "Vagus Nerve Stimulator (VNS) Certified", "Hoyer Lift", "Gait Belt Transfers", "Catheter Care",
                                "Licensed Driver", "Severe Behavior Experience", "Seizure Experience", "Dementia Care Experience",
-                               "Wound Care Certified (LPNs & RNs only)"]} />
+                               "Wound Care Certified (LPNs & RNs only)"]} onChange={(vals)=>handleProfChange('skills', vals)} />
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                              <SelectGroup label="Qualification" value={professional.qualification} options={["Certificate III", "Certificate IV"]} onChange={(v:string)=>handleProfChange('qualification', v)} />
@@ -227,15 +256,27 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                              <InputGroup label="Hire Date" type="date" value={professional.hireDate} onChange={(e:any)=>handleProfChange('hireDate', e.target.value)} />
+                             <div className="flex items-center h-full pt-6">
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                   <input type="checkbox" className="w-5 h-5 text-[#0074D9] rounded border-gray-300 focus:ring-[#0074D9] cursor-pointer" />
+                                   <span className="text-sm font-medium text-gray-700 group-hover:text-[#0074D9] transition-colors">EVV Enabled</span>
+                                </label>
+                             </div>
                           </div>
                        </Accordion>
 
                        <Accordion title="Availability & Assignment">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                             <InputGroup label="Availability Start" type="date" value={professional.availStart} onChange={(e:any)=>handleProfChange('availStart', e.target.value)} />
-                             <InputGroup label="Region" value={professional.region} onChange={(e:any)=>handleProfChange('region', e.target.value)} />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 overflow-visible z-10 relative">
+                             <InputGroup label="Availability Start Date" type="date" value={professional.availStart} onChange={(e:any)=>handleProfChange('availStart', e.target.value)} />
+                             <InputGroup 
+                                label="Assigned Region Shifts" 
+                                placeholder="e.g., North Zone, Columbus Metro"
+                                tooltip="Specify the geographical zone, county, or district where this caregiver is assigned to work (e.g., 'North Zone', 'Columbus Metro'). This helps schedulers quickly match the caregiver to clients in the same vicinity." 
+                                value={professional.region} 
+                                onChange={(e:any)=>handleProfChange('region', e.target.value)} 
+                             />
                           </div>
-                          <div className="mb-4">
+                          <div className="mb-6">
                              <label className="text-xs text-gray-500 mb-2 block">Days Available</label>
                              <div className="flex gap-2 flex-wrap">
                                 {['Monday','Tuesday','Wednesday','Thursday','Friday'].map(d => (
@@ -246,13 +287,90 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
                                 ))}
                              </div>
                           </div>
+                          <div>
+                              <label className="text-xs text-gray-500 mb-2 block">Preferred Shift</label>
+                              <div className="flex gap-6">
+                                 <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                     <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Morning
+                                 </label>
+                                 <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                     <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Evening
+                                 </label>
+                                 <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                                     <input type="checkbox" className="rounded text-[#0074D9] focus:ring-[#0074D9]" /> Night
+                                 </label>
+                              </div>
+                          </div>
                        </Accordion>
 
-                       <Accordion title="Referral Source">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                             <SelectGroup label="Referred By" value={professional.referredBy} options={["Employee Referral", "Agency", "Ad"]} onChange={(v:string)=>handleProfChange('referredBy', v)} />
-                             <InputGroup label="Referral Date" type="date" value={professional.referralDate} onChange={(e:any)=>handleProfChange('referralDate', e.target.value)} />
-                             <InputGroup label="Notes" value={professional.referralNotes} onChange={(e:any)=>handleProfChange('referralNotes', e.target.value)} />
+                       {/* --- UPDATED: REFERRAL SOURCES --- */}
+                       <Accordion title="Referral Sources">
+                          <div className="flex justify-end mb-2">
+                             <button 
+                                onClick={addReferralSource} 
+                                className="text-[#0074D9] text-xs font-bold hover:underline flex items-center gap-1"
+                             >
+                                <i className="fa-solid fa-plus"></i> Add Referral Source
+                             </button>
+                          </div>
+                          
+                          <div className="space-y-4">
+                             {referralSources.map((source, index) => {
+                                const detailLabel = getReferralDetailLabel(source.referredBy);
+                                
+                                return (
+                                   <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative animate-fade-in">
+                                      {/* Remove Button */}
+                                      {referralSources.length > 1 && (
+                                         <button 
+                                            onClick={() => removeReferralSource(index)} 
+                                            className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors" 
+                                            title="Remove Referral Source"
+                                         >
+                                            <i className="fa-regular fa-trash-can"></i>
+                                         </button>
+                                      )}
+
+                                      {/* Top Row: Dropdown + Conditional Field */}
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                         <SelectGroup 
+                                            label="Referred By" 
+                                            options={["Another Agency", "Temporary Staffing Agency", "Employee Referral", "Online Ad", "Other"]}
+                                            value={source.referredBy}
+                                            onChange={(val: string) => updateReferralSource(index, 'referredBy', val)} 
+                                         />
+                                         
+                                         {/* Conditional Detail Field */}
+                                         {detailLabel ? (
+                                            <InputGroup 
+                                               label={detailLabel} 
+                                               placeholder={`Enter ${detailLabel.replace('*', '').toLowerCase()}`}
+                                               value={source.detail}
+                                               onChange={(e: any) => updateReferralSource(index, 'detail', e.target.value)} 
+                                            />
+                                         ) : (
+                                            <div className="hidden md:block"></div> 
+                                         )}
+                                      </div>
+
+                                      {/* Bottom Row: Date & Notes */}
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                         <InputGroup 
+                                            label="Referral Date" 
+                                            type="date" 
+                                            value={source.date}
+                                            onChange={(e: any) => updateReferralSource(index, 'date', e.target.value)} 
+                                         />
+                                         <InputGroup 
+                                            label="Notes" 
+                                            placeholder="Start Writing..." 
+                                            value={source.notes}
+                                            onChange={(e: any) => updateReferralSource(index, 'notes', e.target.value)} 
+                                         />
+                                      </div>
+                                   </div>
+                                );
+                             })}
                           </div>
                        </Accordion>
 
@@ -289,8 +407,7 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
               </div>
 
               {/* Footer Actions */}
-              <div className="p-2 flex justify-end items-end">
-              
+              <div className="p-2 flex justify-end items-end mt-4">
                  <div className="flex gap-3">
                     {step > 1 && (
                        <button onClick={() => setStep(step - 1)} className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-white transition-colors">
@@ -324,12 +441,16 @@ export default function EditCaregiverPage({ params }: { params: { id: string } }
 function Accordion({ title, children, defaultOpen = false }: { title: string, children: React.ReactNode, defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white mb-4 shadow-sm">
-      <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left">
+    <div className={`border border-gray-200 rounded-xl bg-white mb-4 shadow-sm animate-fade-in relative ${isOpen ? 'overflow-visible z-40' : 'overflow-hidden z-10'}`}>
+      <button 
+        type="button" 
+        onClick={() => setIsOpen(!isOpen)} 
+        className={`w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left relative z-20 ${isOpen ? 'rounded-t-xl' : 'rounded-xl'}`}
+      >
         <h3 className="font-bold text-gray-800 text-sm">{title}</h3>
         <i className={`fa-solid fa-chevron-down text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}></i>
       </button>
-      <div className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
+      <div className={`transition-all duration-300 ease-in-out relative z-10 ${isOpen ? 'max-h-[2000px] opacity-100 p-6 border-t border-gray-100 overflow-visible' : 'max-h-0 opacity-0 p-0 overflow-hidden'}`}>
         {children}
       </div>
     </div>
@@ -346,11 +467,30 @@ function StepIndicator({ num, label, current, onClick }: any) {
    )
 }
 
-function InputGroup({ label, placeholder, type = "text", value, onChange }: any) {
+function InputGroup({ label, placeholder, type = "text", value, onChange, tooltip }: any) {
    return (
-      <div className="space-y-1 w-full">
-         {label && <label className="text-xs font-medium text-gray-700">{label}</label>}
-         <input type={type} placeholder={placeholder} value={value} onChange={onChange} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]" />
+      <div className="space-y-3 w-full overflow-visible relative">
+         {label && (
+            <div className="flex items-center gap-1.5">
+               <label className="text-xs font-medium text-gray-700">{label}</label>
+               {tooltip && (
+                  <div className="relative group/tooltip flex items-center">
+                     <i className="fa-solid fa-circle-question text-[#0074D9] text-xs cursor-help"></i>
+                     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-[100] whitespace-normal leading-relaxed text-center font-normal">
+                        {tooltip}
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-800"></div>
+                     </div>
+                  </div>
+               )}
+            </div>
+         )}
+         <input 
+            type={type} 
+            placeholder={placeholder} 
+            value={value} 
+            onChange={onChange} 
+            className="w-full border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-[#0074D9]" 
+         />
       </div>
    )
 }
@@ -367,9 +507,8 @@ function SelectGroup({ label, value, options, onChange }: any) {
    )
 }
 
-function MultiSelectDropdown({ label, options }: { label: string, options: string[] }) {
+function MultiSelectDropdown({ label, options, selectedItems = [], onChange }: { label: string, options: string[], selectedItems?: string[], onChange?: (items: string[]) => void }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState<string[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
@@ -379,23 +518,25 @@ function MultiSelectDropdown({ label, options }: { label: string, options: strin
   }, []);
 
   const toggleOption = (option: string) => {
-    if (selected.includes(option)) setSelected(selected.filter((item) => item !== option));
-    else setSelected([...selected, option]);
+    let newSelected;
+    if (selectedItems.includes(option)) newSelected = selectedItems.filter((item) => item !== option);
+    else newSelected = [...selectedItems, option];
+    if (onChange) onChange(newSelected);
   };
 
   return (
-    <div className="space-y-1 relative" ref={ref}>
+    <div className={`space-y-1 relative ${isOpen ? 'z-[100]' : 'z-10'}`} ref={ref}>
       <label className="text-xs font-medium text-gray-700">{label}</label>
       <div className="relative">
-        <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center bg-white border border-gray-200 rounded-lg p-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#0074D9]">
-          <span className="truncate block max-w-[90%] text-left">{selected.length === 0 ? "Select" : selected.join(", ")}</span>
+        <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center bg-white border border-gray-200 rounded-lg p-2.5 text-sm text-gray-600 focus:outline-none focus:border-[#0074D9]">
+          <span className="truncate block max-w-[90%] text-left">{selectedItems.length === 0 ? "Select" : selectedItems.join(", ")}</span>
           <i className={`fa-solid fa-chevron-down text-xs text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}></i>
         </button>
         {isOpen && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto custom-scrollbar">
+          <div className="absolute z-[100] mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-48 overflow-y-auto custom-scrollbar">
             {options.map((opt, index) => (
               <label key={index} className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
-                <input type="checkbox" checked={selected.includes(opt)} onChange={() => toggleOption(opt)} className="w-4 h-4 rounded text-[#0074D9] focus:ring-[#0074D9]" />
+                <input type="checkbox" checked={selectedItems.includes(opt)} onChange={() => toggleOption(opt)} className="w-4 h-4 rounded text-[#0074D9] focus:ring-[#0074D9]" />
                 <span className="text-sm text-gray-700">{opt}</span>
               </label>
             ))}
@@ -430,25 +571,20 @@ function UploadBox({ label, uploaded, fileName }: any) {
 
 function StateIdInput({ label, tooltip, stateValue, idValue, onStateChange, onIdChange }: any) {
   return (
-    <div className="space-y-3 w-full overflow-visible">
-      {/* Label & Tooltip Wrapper */}
-      <div className="flex items-center gap-2">
+    <div className="space-y-1 w-full overflow-visible">
+      <div className="flex items-center gap-1.5">
         <label className="text-xs font-medium text-gray-700">{label}</label>
-        
-        {/* Tooltip Icon & Popup */}
         {tooltip && (
           <div className="relative group/tooltip flex items-center">
             <i className="fa-solid fa-circle-question text-[#0074D9] text-xs cursor-help"></i>
-            {/* Tooltip Bubble */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-50 whitespace-normal leading-relaxed text-center font-normal">
+            <div className="absolute top-full left-[-10px] mt-2 hidden group-hover/tooltip:block w-64 p-2.5 bg-gray-800 text-white text-[10px] rounded-lg shadow-xl z-[100] whitespace-normal leading-relaxed text-left font-normal">
               {tooltip}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+              <div className="absolute bottom-full left-[14px] border-4 border-transparent border-b-gray-800"></div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Combined State Dropdown + ID Input */}
       <div className="flex border border-gray-200 rounded-lg focus-within:border-[#0074D9] transition-colors bg-white">
         <select
           value={stateValue}
@@ -461,9 +597,7 @@ function StateIdInput({ label, tooltip, stateValue, idValue, onStateChange, onId
           <option value="NY">NY</option>
           <option value="FL">FL</option>
           <option value="TX">TX</option>
-          <option value="MI">MI</option>
-          <option value="PA">PA</option>
-          {/* Add more states as needed */}
+          <option value="VA">VA</option>
         </select>
         <input
           type="text"
