@@ -180,50 +180,70 @@ export default function DashboardLayout({
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Clients</span>}
           </Link>
 
-          {/* ========================================================= */}
-          {/* NEW STAFF DROPDOWN (Employees & Caregivers) */}
+        {/* ========================================================= */}
+          {/* NEW STAFF DROPDOWN (Employees | Caregivers | Applicants) */}
           {/* ========================================================= */}
           <div className="relative">
             <button 
               onClick={toggleStaffMenu}
               className={`w-full flex items-center rounded-lg px-4 py-3 outline-none transition-all group focus:outline-none ${isCollapsed ? "justify-center" : ""} ${
-                pathname.includes('/employees') || pathname.includes('/caregivers')
+                pathname.includes('/employees') || pathname.includes('/caregivers') || pathname.includes('/caregivers-applicants')
                   ? "bg-white/10 text-white" 
-                  : "text-blue-100 hover:bg-white/10 hover:text-white"
+                  : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent"
               }`}
             >
               <i className="fa-solid fa-users w-6 text-center text-lg"></i>
               {!isCollapsed && (
                 <>
                   <span className="ml-3 whitespace-nowrap font-medium">Staff</span>
-                  <i className={`fa-solid fa-chevron-down ml-auto text-xs opacity-70 transition-transform duration-300 ${isStaffOpen ? "rotate-180" : ""}`}></i>
+                  {/* Changed duration to 500ms for a slower, smoother arrow rotation */}
+                  <i className={`fa-solid fa-chevron-down ml-auto text-xs opacity-70 transition-transform duration-500 ${isStaffOpen ? "rotate-180" : ""}`}></i>
                 </>
               )}
             </button>
 
-            {/* Staff Submenu */}
+            {/* Staff Submenu - SMOOTH GRID TRANSITION */}
             {!isCollapsed && (
-              <div className={`bg-transparent transition-all duration-300 overflow-hidden ${isStaffOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
-                <Link 
-                  href="/employees" 
-                  title="Employees" 
-                  className={`flex items-center py-2.5 pl-12 pr-4 transition-all rounded-lg mt-1 ${
-                    pathname.includes("/employees") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
-                  <span className="whitespace-nowrap">Employees</span>
-                </Link>
-                <Link 
-                  href="/caregivers" 
-                  title="Caregivers" 
-                  className={`flex items-center py-2.5 pl-12 pr-4 transition-all rounded-lg mt-1 ${
-                    pathname.includes("/caregivers") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
-                  <span className="whitespace-nowrap">Caregivers</span>
-                </Link>
+              <div 
+                className={`grid transition-all duration-500 ease-in-out ${isStaffOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+              >
+                {/* The inner container holds the actual height and hides overflow during the transition */}
+                <div className="overflow-hidden">
+                  <div className="flex flex-col gap-1 pt-1 pb-1">
+                    <Link 
+                      href="/employees" 
+                      title="Employees" 
+                      className={`flex items-center py-2 pl-12 pr-4 transition-all rounded-lg ${
+                        pathname.includes("/employees") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
+                      <span className="whitespace-nowrap">Employees</span>
+                    </Link>
+                    
+                    <Link 
+                      href="/caregivers" 
+                      title="Caregivers" 
+                      className={`flex items-center py-2 pl-12 pr-4 transition-all rounded-lg ${
+                        pathname.includes("/caregivers") && !pathname.includes("/caregivers-applicants") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
+                      <span className="whitespace-nowrap">Caregivers</span>
+                    </Link>
+                    
+                    <Link 
+                      href="/caregiver-applicants" 
+                      title="Caregivers Applicants" 
+                      className={`flex items-center py-2 pl-12 pr-4 transition-all rounded-lg ${
+                        pathname.includes("/caregiver-applicants") ? "text-white font-medium bg-white/5" : "text-blue-200 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <i className="fa-solid fa-circle text-[6px] mr-3 opacity-50"></i>
+                      <span className="whitespace-nowrap">Caregivers Applicants</span>
+                    </Link>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -247,6 +267,18 @@ export default function DashboardLayout({
             }`}>
             <i className="fa-solid fa-clipboard-user w-6 text-center text-lg"></i>
             {!isCollapsed && <span className="ml-3 whitespace-nowrap">Attendance</span>}
+          </Link>
+
+          {/* ========================================================= */}
+          {/* NEW: CUSTOM FORMS TAB */}
+          {/* ========================================================= */}
+          <Link href="/forms/builder" title='Custom Forms' className={`flex items-center px-4 py-3 transition-all group ${isCollapsed ? "justify-center" : ""} ${
+              pathname.includes("/forms") 
+                ? "bg-white/10 border border-[#00629B] text-white rounded-lg"
+                : "text-blue-100 hover:bg-white/10 hover:text-white border border-transparent rounded-lg"
+            }`}>
+            <i className="fa-solid fa-file-signature w-6 text-center text-lg"></i>
+            {!isCollapsed && <span className="ml-3 whitespace-nowrap">Custom Forms</span>}
           </Link>
 
           {/* Group Label */}

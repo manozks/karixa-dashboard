@@ -413,6 +413,19 @@ function AddEmployeeModal({ onClose }: { onClose: () => void }) {
                            <SelectInput label="Primary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
                            <MultiSelectDropdown label="Secondary Language" options={["English", "Mandarin", "Hindi", "Spanish", "French", "Modern Standard Arabic", "Portuguese", "Russian", "Bengali", "Urdu", "German", "Italian", "Japanese", "Nigerian Pidgin"]} />
                            <MultiSelectDropdown label="Race" options={["Asian", "American indian", "African American or Black", "Hispanic or Latino", "White or Caucasian", "European American", "Multiracial", "Native Hawaiian",  "Pacific Islander", "Unknown"]} />
+                           <SelectInput 
+                        label="Role Type*" 
+                        options={[
+                          "Agency Administrator", 
+                          "HR Manager", 
+                          "Scheduler", 
+                          "Billing Specialist", 
+                          "Payroll Specialist", 
+                          "Recruiter", 
+                          "Office Coordinator", 
+                          "Other"
+                        ]} 
+                      />
                       </div>
                    </Accordion>
                
